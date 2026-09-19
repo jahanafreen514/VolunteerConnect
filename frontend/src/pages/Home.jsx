@@ -18,10 +18,12 @@ const Home = () => {
     const fetchOpportunities = async () => {
       try {
         const response = await opportunityService.getOpportunities({ status: 'published', limit: 6 });
-        setOpportunities(response.data.opportunities || []);
-        setTotalOpportunities(response.data.totalDocs || response.data.total || 0);
+        const list = response?.data?.opportunities || response?.opportunities || (Array.isArray(response?.data) ? response.data : (Array.isArray(response) ? response : []));
+        setOpportunities(list);
+        setTotalOpportunities(response?.data?.totalDocs || response?.data?.total || response?.total || list.length || 0);
       } catch (error) {
         console.error('Failed to fetch opportunities:', error);
+        setOpportunities([]);
       } finally {
         setLoading(false);
       }

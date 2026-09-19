@@ -20,7 +20,11 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('vc_token');
-      window.location.href = '/login';
+      const currentPath = window.location.pathname;
+      const isPublic = ['/', '/login', '/register', '/about', '/opportunities'].includes(currentPath) || currentPath.startsWith('/opportunities/');
+      if (!isPublic) {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

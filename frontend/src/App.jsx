@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const Home = lazy(() => import('./pages/Home'));
 const About = lazy(() => import('./pages/About'));
@@ -59,52 +60,54 @@ function App() {
               } 
             }} 
           />
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/opportunities" element={<Opportunities />} />
-              <Route path="/opportunities/:id" element={<OpportunityDetail />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              
-              {/* Volunteer Routes */}
-              <Route path="/volunteer" element={<ProtectedRoute role="volunteer" />}>
-                <Route index element={<Navigate to="dashboard" replace />} />
-                <Route path="dashboard" element={<VolunteerDashboard />} />
-                <Route path="profile" element={<VolunteerProfile />} />
-                <Route path="applications" element={<VolunteerApplications />} />
-                <Route path="participation" element={<Participation />} />
-                <Route path="certificates" element={<Certificates />} />
-                <Route path="notifications" element={<VolunteerNotifications />} />
-              </Route>
+          <ErrorBoundary>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/opportunities" element={<Opportunities />} />
+                <Route path="/opportunities/:id" element={<OpportunityDetail />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                
+                {/* Volunteer Routes */}
+                <Route path="/volunteer" element={<ProtectedRoute role="volunteer" />}>
+                  <Route index element={<Navigate to="dashboard" replace />} />
+                  <Route path="dashboard" element={<VolunteerDashboard />} />
+                  <Route path="profile" element={<VolunteerProfile />} />
+                  <Route path="applications" element={<VolunteerApplications />} />
+                  <Route path="participation" element={<Participation />} />
+                  <Route path="certificates" element={<Certificates />} />
+                  <Route path="notifications" element={<VolunteerNotifications />} />
+                </Route>
 
-              {/* NGO Routes */}
-              <Route path="/ngo" element={<ProtectedRoute role="ngo" />}>
-                <Route index element={<Navigate to="dashboard" replace />} />
-                <Route path="dashboard" element={<NGODashboard />} />
-                <Route path="profile" element={<NGOProfile />} />
-                <Route path="opportunities" element={<NGOOpportunities />} />
-                <Route path="opportunities/create" element={<CreateOpportunity />} />
-                <Route path="opportunities/:id/edit" element={<EditOpportunity />} />
-                <Route path="applications" element={<NGOApplications />} />
-                <Route path="attendance" element={<Attendance />} />
-              </Route>
+                {/* NGO Routes */}
+                <Route path="/ngo" element={<ProtectedRoute role="ngo" />}>
+                  <Route index element={<Navigate to="dashboard" replace />} />
+                  <Route path="dashboard" element={<NGODashboard />} />
+                  <Route path="profile" element={<NGOProfile />} />
+                  <Route path="opportunities" element={<NGOOpportunities />} />
+                  <Route path="opportunities/create" element={<CreateOpportunity />} />
+                  <Route path="opportunities/:id/edit" element={<EditOpportunity />} />
+                  <Route path="applications" element={<NGOApplications />} />
+                  <Route path="attendance" element={<Attendance />} />
+                </Route>
 
-              {/* Admin Routes */}
-              <Route path="/admin" element={<ProtectedRoute role="admin" />}>
-                <Route index element={<Navigate to="dashboard" replace />} />
-                <Route path="dashboard" element={<AdminDashboard />} />
-                <Route path="ngos" element={<NGOVerification />} />
-                <Route path="users" element={<AdminUsers />} />
-                <Route path="opportunities" element={<AdminOpportunities />} />
-                <Route path="reports" element={<AdminReports />} />
-                <Route path="analytics" element={<Analytics />} />
-              </Route>
+                {/* Admin Routes */}
+                <Route path="/admin" element={<ProtectedRoute role="admin" />}>
+                  <Route index element={<Navigate to="dashboard" replace />} />
+                  <Route path="dashboard" element={<AdminDashboard />} />
+                  <Route path="ngos" element={<NGOVerification />} />
+                  <Route path="users" element={<AdminUsers />} />
+                  <Route path="opportunities" element={<AdminOpportunities />} />
+                  <Route path="reports" element={<AdminReports />} />
+                  <Route path="analytics" element={<Analytics />} />
+                </Route>
 
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </ErrorBoundary>
         </SocketProvider>
       </AuthProvider>
     </BrowserRouter>

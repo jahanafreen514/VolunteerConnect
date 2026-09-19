@@ -1,6 +1,7 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MapPin, Calendar, Users, CheckCircle } from 'lucide-react';
+import { MapPin, Calendar, CheckCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import Button from './ui/Button';
 import Badge from './ui/Badge';
@@ -14,10 +15,46 @@ const categoryColors = {
   Default: 'bg-primary-500/20 text-primary-400 border-primary-500/30'
 };
 
-const OpportunityCard = ({ opportunity, onApply, showNGOActions = false }) => {
-  const { title, ngo, location, date, category, skills, registeredCount, capacity, image } = opportunity;
+const OpportunityCard = ({ opportunity = {}, onApply, showNGOActions = false }) => {
+  const navigate = useNavigate();
+
+  const title = opportunity.title || 'Untitled Opportunity';
+  const ngo = opportunity.ngo || opportunity.ngoId || opportunity.ngoProfileId;
+  const ngoName = typeof ngo === 'object' ? (ngo?.name || ngo?.organizationName || 'Verified NGO') : (ngo || 'Verified NGO');
+  const isVerified = typeof ngo === 'object' ? (ngo?.isVerified || ngo?.verificationStatus === 'approved') : false;
+  
+  const location = opportunity.location || {};
+  const locationText = [location.city, location.state].filter(Boolean).join(', ') || location.address || 'Remote / TBA';
+  
+  const rawDate = opportunity.eventDate || opportunity.date;
+  let formattedDate = 'TBA';
+  if (rawDate) {
+    try {
+      const parsed = new Date(rawDate);
+      if (!isNaN(parsed.getTime())) {
+        formattedDate = format(parsed, 'MMM d, yyyy');
+      }
+    } catch {
+      formattedDate = 'TBA';
+    }
+  }
+
+  const category = opportunity.category || 'General';
+  const skills = opportunity.requiredSkills || opportunity.skills || [];
+  const registeredCount = opportunity.registeredVolunteers ?? opportunity.registeredCount ?? 0;
+  const capacity = opportunity.volunteerCapacity ?? opportunity.capacity ?? 10;
+  const image = opportunity.image || opportunity.imageUrl || '';
+
   const isFull = registeredCount >= capacity;
-  const progress = Math.min((registeredCount / capacity) * 100, 100);
+  const progress = Math.min(Math.round((registeredCount / Math.max(capacity, 1)) * 100), 100);
+
+  const handleAction = () => {
+    if (onApply) {
+      onApply(opportunity);
+    } else if (opportunity._id) {
+      navigate(`/opportunities/${opportunity._id}`);
+    }
+  };
 
   return (
     <motion.div
@@ -29,7 +66,7 @@ const OpportunityCard = ({ opportunity, onApply, showNGOActions = false }) => {
           <img src={image} alt={title} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-primary-600/30 to-purple-600/30 flex items-center justify-center">
-            <span className="text-white/50 font-semibold">{category || 'Opportunity'}</span>
+            <span className="text-white/50 font-semibold capitalize">{category}</span>
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent" />
@@ -42,8 +79,8 @@ const OpportunityCard = ({ opportunity, onApply, showNGOActions = false }) => {
 
       <div className="p-5 flex flex-col flex-1">
         <div className="flex items-center gap-1 mb-2">
-          <span className="text-xs text-gray-400">{ngo?.name || 'Unknown NGO'}</span>
-          {ngo?.isVerified && <CheckCircle className="w-3 h-3 text-emerald-400" />}
+          <span className="text-xs text-gray-400">{ngoName}</span>
+          {isVerified && <CheckCircle className="w-3 h-3 text-emerald-400" />}
         </div>
         
         <h3 className="text-lg font-semibold text-white mb-3 line-clamp-2">{title}</h3>
@@ -51,15 +88,15 @@ const OpportunityCard = ({ opportunity, onApply, showNGOActions = false }) => {
         <div className="space-y-2 mb-4 text-sm text-gray-400 flex-1">
           <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4 shrink-0" />
-            <span className="truncate">{location?.city}, {location?.state}</span>
+            <span className="truncate">{locationText}</span>
           </div>
           <div className="flex items-center gap-2">
             <Calendar className="w-4 h-4 shrink-0" />
-            <span>{date ? format(new Date(date), 'MMM d, yyyy') : 'TBA'}</span>
+            <span>{formattedDate}</span>
           </div>
         </div>
 
-        {skills && skills.length > 0 && (
+        {Array.isArray(skills) && skills.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
             {skills.slice(0, 2).map((skill, i) => (
               <span key={i} className="text-xs px-2 py-1 rounded-md bg-white/5 text-gray-300 border border-white/10">
@@ -97,7 +134,7 @@ const OpportunityCard = ({ opportunity, onApply, showNGOActions = false }) => {
               variant={isFull ? 'secondary' : 'primary'} 
               className="w-full" 
               disabled={isFull}
-              onClick={() => onApply?.(opportunity)}
+              onClick={handleAction}
             >
               {isFull ? 'Filled' : 'View Details'}
             </Button>
