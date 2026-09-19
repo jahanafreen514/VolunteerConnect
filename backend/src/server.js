@@ -19,12 +19,15 @@ const server = http.createServer(app);
 
 const allowedOrigins = process.env.CLIENT_URL
     ? process.env.CLIENT_URL.split(',').map(url => url.trim().replace(/\/$/, ''))
-    : ['http://localhost:5173', 'http://localhost:3000'];
+    : ['http://localhost:5173', 'http://localhost:3000', 'https://volunteer-connect-omega-ten.vercel.app'];
 
 const isOriginAllowed = (origin, callback) => {
     if (!origin) return callback(null, true);
     const cleanOrigin = origin.replace(/\/$/, '');
-    if (allowedOrigins.includes('*') || allowedOrigins.includes(cleanOrigin) || cleanOrigin.endsWith('.onrender.com')) {
+    if (allowedOrigins.includes('*') || 
+        allowedOrigins.includes(cleanOrigin) || 
+        cleanOrigin.endsWith('.onrender.com') || 
+        cleanOrigin.endsWith('.vercel.app')) {
         return callback(null, true);
     }
     return callback(null, true); // Permissive fallback for deployment environments

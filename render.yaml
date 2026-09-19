@@ -27,7 +27,7 @@ services:
       - key: JWT_SECRET
         generateValue: true # Render will automatically generate a secure random secret
       - key: CLIENT_URL
-        value: https://volunteerconnect-frontend.onrender.com
+        value: https://volunteer-connect-omega-ten.vercel.app,https://volunteerconnect-frontend.onrender.com
       - key: CLOUDINARY_CLOUD_NAME
         sync: false # Required for photo/document uploads
       - key: CLOUDINARY_API_KEY
