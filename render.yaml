@@ -1,0 +1,63 @@
+# ==========================================================
+# Render Blueprint Specification for VolunteerConnect
+# Docs: https://render.com/docs/blueprint-spec
+# ==========================================================
+
+services:
+  # ----------------------------------------------------------
+  # 1. Backend Web Service (Node.js Express API + Socket.io)
+  # ----------------------------------------------------------
+  - type: web
+    name: volunteerconnect-api
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        sync: false # Set your MongoDB Atlas connection string in Render Dashboard
+      - key: JWT_SECRET
+        generateValue: true # Render will automatically generate a secure random secret
+      - key: CLIENT_URL
+        value: https://volunteerconnect-frontend.onrender.com
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false # Required for photo/document uploads
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: ADMIN_EMAIL
+        value: admin@volunteerconnect.com
+      - key: ADMIN_PASSWORD
+        sync: false
+
+  # ----------------------------------------------------------
+  # 2. Frontend Static Site (React + Vite + Tailwind CSS)
+  # ----------------------------------------------------------
+  - type: web
+    name: volunteerconnect-frontend
+    runtime: static
+    plan: free
+    region: oregon
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    autoDeploy: true
+    routes:
+      # Single Page Application (SPA) routing rewrite
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        value: https://volunteerconnect-api.onrender.com/api
+      - key: VITE_SOCKET_URL
+        value: https://volunteerconnect-api.onrender.com

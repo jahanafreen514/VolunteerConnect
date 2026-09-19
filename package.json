@@ -1,0 +1,28 @@
+{
+  "name": "volunteerconnect",
+  "version": "1.0.0",
+  "private": true,
+  "description": "VolunteerConnect - Full-stack Community Volunteering Platform",
+  "scripts": {
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build:frontend": "npm --prefix frontend run build",
+    "start:backend": "npm --prefix backend run start",
+    "install:backend": "npm --prefix backend install",
+    "install:frontend": "npm --prefix frontend install",
+    "install:all": "npm run install:backend && npm run install:frontend",
+    "seed:admin": "npm --prefix backend run seed:admin"
+  },
+  "keywords": [
+    "volunteer",
+    "community",
+    "ngo",
+    "react",
+    "express",
+    "mongodb",
+    "socket.io",
+    "render"
+  ],
+  "author": "Jahan Afreen",
+  "license": "ISC"
+}

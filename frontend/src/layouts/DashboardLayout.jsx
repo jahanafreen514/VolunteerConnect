@@ -1,0 +1,53 @@
+import React, { useState } from 'react';
+import { Menu, X } from 'lucide-react';
+import AnimatedBackground from '../components/ui/AnimatedBackground';
+
+const DashboardLayout = ({ children, sidebar: Sidebar }) => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  return (
+    <div className="min-h-screen bg-gray-950 flex relative">
+      <AnimatedBackground />
+      
+      {/* Mobile overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 z-30 lg:hidden backdrop-blur-sm"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar container */}
+      <div 
+        className={`fixed inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        <Sidebar onNavigate={() => setIsSidebarOpen(false)} />
+      </div>
+
+      {/* Main content */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative z-10">
+        <div className="lg:hidden p-4 border-b border-white/10 bg-gray-900/50 backdrop-blur-md flex items-center">
+          <button 
+            onClick={() => setIsSidebarOpen(true)}
+            className="p-2 -ml-2 text-gray-400 hover:text-white rounded-lg hover:bg-white/5"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+          <span className="ml-2 font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-purple-400">
+            VolunteerConnect
+          </span>
+        </div>
+        
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 custom-scrollbar">
+          <div className="max-w-7xl mx-auto">
+            {children}
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default DashboardLayout;
