@@ -22,8 +22,9 @@ const Attendance = () => {
   useEffect(() => {
     const fetchOpportunities = async () => {
       try {
-        const data = await opportunityService.getOpportunities({ isNgo: true, limit: 100 });
-        setOpportunities(data.opportunities || data);
+        const res = await opportunityService.getOpportunities({ isNgo: true, limit: 100 });
+        const list = res?.data?.opportunities || res?.opportunities || (Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []));
+        setOpportunities(list);
       } catch (error) {
         toast.error('Failed to load opportunities');
       }
@@ -42,9 +43,9 @@ const Attendance = () => {
   const fetchAttendance = async () => {
     setLoading(true);
     try {
-      const data = await attendanceService.getAttendance(selectedOpp);
-      // Ensure we have editable state for inputs
-      setAttendance(data.map(item => ({
+      const res = await attendanceService.getAttendance(selectedOpp);
+      const rawList = res?.data?.attendance || (Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []));
+      setAttendance(rawList.map(item => ({
         ...item,
         checkInTime: item.checkInTime || '',
         checkOutTime: item.checkOutTime || ''
@@ -126,17 +127,22 @@ const Attendance = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
-                    {attendance.map((item) => (
-                      <tr key={item._id} className="hover:bg-white/[0.02]">
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            <Avatar src={item.user?.profileImage} alt={item.user?.name} size="sm" />
-                            <div>
-                              <p className="font-medium text-white">{item.user?.name}</p>
-                              <p className="text-xs text-gray-500">{item.user?.email}</p>
+                    {attendance.map((item) => {
+                      const vol = item.user || item.volunteer || {};
+                      const volName = vol.name || 'Volunteer';
+                      const volEmail = vol.email || '';
+
+                      return (
+                        <tr key={item._id} className="hover:bg-white/[0.02]">
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-3">
+                              <Avatar src={vol.profileImage} alt={volName} size="sm" />
+                              <div>
+                                <p className="font-medium text-white">{volName}</p>
+                                <p className="text-xs text-gray-500">{volEmail}</p>
+                              </div>
                             </div>
-                          </div>
-                        </td>
+                          </td>
                         <td className="px-6 py-4">
                           <input 
                             type="time" 
@@ -163,7 +169,8 @@ const Attendance = () => {
                           <Button size="sm" variant={item.status === 'absent' ? 'danger' : 'outline'} className={item.status === 'absent' ? '' : 'text-red-400 border-red-500/30 hover:bg-red-500/10'} onClick={() => handleStatusChange(item._id, 'absent')}>Absent</Button>
                         </td>
                       </tr>
-                    ))}
+                    );
+                  })}
                   </tbody>
                 </table>
               </div>

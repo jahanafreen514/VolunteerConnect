@@ -30,9 +30,9 @@ const VolunteerDashboard = () => {
           userService.getUpcomingEvents(),
           applicationService.getMyApplications({ limit: 5 })
         ]);
-        setStats(statsData);
-        setEvents(eventsData);
-        setApplications(appsData);
+        setStats(statsData?.data || statsData);
+        setEvents(eventsData?.data || eventsData);
+        setApplications(appsData?.data?.applications || appsData?.applications || (Array.isArray(appsData?.data) ? appsData.data : []));
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
       } finally {

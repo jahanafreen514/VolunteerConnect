@@ -39,13 +39,14 @@ const AdminOpportunities = () => {
   const fetchOpportunities = async () => {
     setLoading(true);
     try {
-      const data = await adminService.getAdminOpportunities({ 
+      const res = await adminService.getAdminOpportunities({ 
         search: debouncedSearch, 
         status, 
         category,
         limit: 50 
       });
-      setOpportunities(data.opportunities || data);
+      const list = res?.data?.opportunities || res?.opportunities || (Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []));
+      setOpportunities(list);
     } catch (error) {
       toast.error('Failed to load opportunities');
     } finally {

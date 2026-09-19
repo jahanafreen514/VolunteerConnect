@@ -30,17 +30,18 @@ const VolunteerProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const data = await userService.getProfile();
+        const res = await userService.getProfile();
+        const data = res?.data || res || {};
         setProfile(data);
         setSkills(data.skills || []);
         setInterests(data.interests || []);
         reset({
-          name: data.name,
-          phone: data.phone,
-          bio: data.bio,
-          city: data.location?.city,
-          state: data.location?.state,
-          country: data.location?.country,
+          name: data.name || '',
+          phone: data.phone || '',
+          bio: data.bio || '',
+          city: data.location?.city || '',
+          state: data.location?.state || '',
+          country: data.location?.country || '',
         });
       } catch (error) {
         toast.error('Failed to load profile');
@@ -66,8 +67,12 @@ const VolunteerProfile = () => {
           country: data.country
         }
       };
-      const updated = await userService.updateProfile(updateData);
+      const res = await userService.updateProfile(updateData);
+      const updated = res?.data || res || {};
       setProfile(updated);
+      if (setUser) {
+        setUser(prev => ({ ...prev, ...updated }));
+      }
       setUser(updated); // Update context
       toast.success('Profile updated successfully');
     } catch (error) {

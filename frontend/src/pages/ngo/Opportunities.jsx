@@ -28,9 +28,9 @@ const NGOOpportunities = () => {
         opportunityService.getOpportunities({ isNgo: true, limit: 100 }), // Assuming API returns my opps if auth'd as NGO
         ngoService.getMyProfile()
       ]);
-      // If the API returns a paginated object
-      setOpportunities(oppsData.opportunities || oppsData);
-      setProfile(profileData);
+      const oppList = oppsData?.data?.opportunities || oppsData?.opportunities || (Array.isArray(oppsData?.data) ? oppsData.data : (Array.isArray(oppsData) ? oppsData : []));
+      setOpportunities(oppList);
+      setProfile(profileData?.data || profileData);
     } catch (error) {
       toast.error('Failed to load opportunities');
     } finally {

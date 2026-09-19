@@ -103,6 +103,7 @@ app.use('/api/feedback', require('./routes/feedback'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/reports', require('./routes/reports'));
 app.use('/api/admin', require('./routes/admin'));
+app.use('/api/contact', require('./routes/contact'));
 
 // Error Handler
 app.use(errorHandler);

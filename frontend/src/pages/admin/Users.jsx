@@ -36,8 +36,9 @@ const Users = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const data = await adminService.getUsers({ search: debouncedSearch, role, limit: 50 });
-      setUsers(data.users || data);
+      const res = await adminService.getUsers({ search: debouncedSearch, role, limit: 50 });
+      const list = res?.data?.users || res?.users || (Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []));
+      setUsers(list);
     } catch (error) {
       toast.error('Failed to load users');
     } finally {

@@ -25,8 +25,9 @@ const NGOVerification = () => {
   const fetchNGOs = async () => {
     setLoading(true);
     try {
-      const data = await adminService.getNGOs({ verificationStatus: filter, limit: 50 });
-      setNgos(data.ngos || data);
+      const res = await adminService.getNGOs({ verificationStatus: filter, limit: 50 });
+      const list = res?.data?.ngos || res?.ngos || (Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []));
+      setNgos(list);
     } catch (error) {
       toast.error('Failed to load NGOs');
     } finally {

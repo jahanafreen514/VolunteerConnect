@@ -23,21 +23,22 @@ const NGOProfile = () => {
 
   const fetchProfile = async () => {
     try {
-      const data = await ngoService.getMyProfile();
+      const res = await ngoService.getMyProfile();
+      const data = res?.data || res;
       if (data) {
         setProfile(data);
         reset({
-          organizationName: data.organizationName,
-          description: data.description,
-          email: data.email,
-          phone: data.phone,
-          website: data.website,
-          registrationNumber: data.registrationNumber,
-          address: data.address?.street,
-          city: data.address?.city,
-          state: data.address?.state,
-          country: data.address?.country,
-          postalCode: data.address?.postalCode,
+          organizationName: data.organizationName || '',
+          description: data.description || '',
+          email: data.email || '',
+          phone: data.phone || '',
+          website: data.website || '',
+          registrationNumber: data.registrationNumber || '',
+          address: data.address?.street || '',
+          city: data.address?.city || '',
+          state: data.address?.state || '',
+          country: data.address?.country || '',
+          postalCode: data.address?.postalCode || '',
         });
       }
     } catch (error) {

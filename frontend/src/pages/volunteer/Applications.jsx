@@ -22,11 +22,12 @@ const VolunteerApplications = () => {
   const fetchApplications = async () => {
     setLoading(true);
     try {
-      const data = await applicationService.getMyApplications({ 
+      const res = await applicationService.getMyApplications({ 
         status: filter !== 'all' ? filter : undefined,
         limit: 50 
       });
-      setApplications(data);
+      const list = res?.data?.applications || res?.applications || (Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []));
+      setApplications(list);
     } catch (error) {
       toast.error('Failed to load applications');
     } finally {
@@ -104,38 +105,48 @@ const VolunteerApplications = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
-                  {applications.map((app) => (
-                    <tr key={app._id} className="hover:bg-white/[0.02] transition-colors">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          {app.opportunity.image ? (
-                            <img src={app.opportunity.image} alt="" className="w-10 h-10 rounded-lg object-cover" />
-                          ) : (
-                            <div className="w-10 h-10 rounded-lg bg-primary-900/50 flex items-center justify-center text-primary-400 font-bold">
-                              {app.opportunity.title.charAt(0)}
-                            </div>
+                  {applications.map((app) => {
+                    const opp = app.opportunity || app.opportunityId || {};
+                    const ngoName = opp.ngo?.organizationName || opp.ngoId?.name || opp.ngoName || 'NGO Partner';
+                    const oppId = opp._id || app.opportunityId;
+                    const oppTitle = opp.title || 'Volunteer Opportunity';
+                    const dateStr = app.appliedAt || app.createdAt;
+
+                    return (
+                      <tr key={app._id} className="hover:bg-white/[0.02] transition-colors">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            {opp.image ? (
+                              <img src={opp.image} alt="" className="w-10 h-10 rounded-lg object-cover" />
+                            ) : (
+                              <div className="w-10 h-10 rounded-lg bg-primary-900/50 flex items-center justify-center text-primary-400 font-bold">
+                                {oppTitle.charAt(0)}
+                              </div>
+                            )}
+                            <span className="font-medium text-white line-clamp-1">{oppTitle}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 truncate max-w-[150px]">{ngoName}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{dateStr ? format(new Date(dateStr), 'MMM d, yyyy') : 'Recently'}</td>
+                        <td className="px-6 py-4">{getStatusBadge(app.status)}</td>
+                        <td className="px-6 py-4 text-right space-x-3 whitespace-nowrap">
+                          {oppId && (
+                            <Link to={`/opportunities/${oppId}`} className="inline-flex items-center gap-1 text-primary-400 hover:text-primary-300 transition-colors">
+                              <Eye className="w-4 h-4" /> View
+                            </Link>
                           )}
-                          <span className="font-medium text-white line-clamp-1">{app.opportunity.title}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 truncate max-w-[150px]">{app.opportunity.ngo?.organizationName}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{format(new Date(app.createdAt), 'MMM d, yyyy')}</td>
-                      <td className="px-6 py-4">{getStatusBadge(app.status)}</td>
-                      <td className="px-6 py-4 text-right space-x-3 whitespace-nowrap">
-                        <Link to={`/opportunities/${app.opportunity._id}`} className="inline-flex items-center gap-1 text-primary-400 hover:text-primary-300 transition-colors">
-                          <Eye className="w-4 h-4" /> View
-                        </Link>
-                        {app.status === 'pending' && (
-                          <button 
-                            onClick={() => setCancelDialog({ isOpen: true, id: app._id })}
-                            className="inline-flex items-center gap-1 text-red-400 hover:text-red-300 transition-colors"
-                          >
-                            <XCircle className="w-4 h-4" /> Cancel
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
+                          {app.status === 'pending' && (
+                            <button 
+                              onClick={() => setCancelDialog({ isOpen: true, id: app._id })}
+                              className="inline-flex items-center gap-1 text-red-400 hover:text-red-300 transition-colors"
+                            >
+                              <XCircle className="w-4 h-4" /> Cancel
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

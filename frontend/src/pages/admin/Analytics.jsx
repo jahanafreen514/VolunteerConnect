@@ -17,8 +17,47 @@ const Analytics = () => {
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
-        const data = await adminService.getAnalytics();
-        setAnalytics(data);
+        const res = await adminService.getAnalytics();
+        const data = res?.data || res || {};
+
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        const formatMonthData = (arr) => {
+          if (!Array.isArray(arr)) return [];
+          return arr.map(item => {
+            const m = item._id?.month || item.month;
+            const y = item._id?.year || item.year;
+            const label = m ? `${monthNames[m - 1] || m} ${y ? `'${String(y).slice(-2)}` : ''}` : (item.month || 'Month');
+            return {
+              ...item,
+              month: label,
+              count: item.count || 0
+            };
+          });
+        };
+
+        const formattedOppsByCategory = Array.isArray(data.opportunitiesByCategory)
+          ? data.opportunitiesByCategory.map(item => ({
+              ...item,
+              category: item.category || item._id || 'Uncategorized',
+              count: item.count || 0
+            }))
+          : [];
+
+        const formattedTopNgos = Array.isArray(data.topNGOs)
+          ? data.topNGOs.map(item => ({
+              name: item.name || 'NGO Partner',
+              events: item.events !== undefined ? item.events : (item.count || 0)
+            }))
+          : [];
+
+        setAnalytics({
+          ...data,
+          volunteerGrowthByMonth: formatMonthData(data.volunteerGrowthByMonth),
+          applicationsByMonth: formatMonthData(data.applicationsByMonth),
+          opportunitiesByCategory: formattedOppsByCategory,
+          topNGOs: formattedTopNgos
+        });
       } catch (error) {
         toast.error('Failed to load analytics');
       } finally {

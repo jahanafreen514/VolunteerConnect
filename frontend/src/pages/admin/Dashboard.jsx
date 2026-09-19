@@ -27,9 +27,9 @@ const AdminDashboard = () => {
           adminService.getAnalytics(),
           adminService.getNGOs({ verificationStatus: 'pending', limit: 5 })
         ]);
-        setStats(statsData);
-        setAnalytics(analyticsData);
-        setPendingNGOs(ngosData.ngos || ngosData);
+        setStats(statsData?.data || statsData);
+        setAnalytics(analyticsData?.data || analyticsData);
+        setPendingNGOs(ngosData?.data?.ngos || ngosData?.ngos || (Array.isArray(ngosData?.data) ? ngosData.data : []));
       } catch (error) {
         toast.error('Failed to load admin dashboard');
       } finally {

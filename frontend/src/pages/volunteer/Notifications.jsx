@@ -20,8 +20,9 @@ const Notifications = () => {
 
   const fetchNotifications = async () => {
     try {
-      const data = await notificationService.getNotifications({ limit: 50 });
-      setNotifications(data);
+      const res = await notificationService.getNotifications({ limit: 50 });
+      const list = res?.data?.notifications || res?.notifications || (Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []));
+      setNotifications(list);
     } catch (error) {
       toast.error('Failed to load notifications');
     } finally {
@@ -32,7 +33,7 @@ const Notifications = () => {
   const markAsRead = async (id) => {
     try {
       await notificationService.markAsRead(id);
-      setNotifications(notifications.map(n => n._id === id ? { ...n, isRead: true } : n));
+      setNotifications(prev => (Array.isArray(prev) ? prev.map(n => n._id === id ? { ...n, isRead: true } : n) : []));
     } catch (error) {
       console.error(error);
     }
@@ -41,7 +42,7 @@ const Notifications = () => {
   const markAllAsRead = async () => {
     try {
       await notificationService.markAllAsRead();
-      setNotifications(notifications.map(n => ({ ...n, isRead: true })));
+      setNotifications(prev => (Array.isArray(prev) ? prev.map(n => ({ ...n, isRead: true })) : []));
       toast.success('All marked as read');
     } catch (error) {
       toast.error('Failed to mark all as read');
@@ -57,7 +58,7 @@ const Notifications = () => {
     }
   };
 
-  const unreadCount = notifications.filter(n => !n.isRead).length;
+  const unreadCount = Array.isArray(notifications) ? notifications.filter(n => !n.isRead).length : 0;
 
   return (
     <DashboardLayout sidebar={<VolunteerSidebar />}>

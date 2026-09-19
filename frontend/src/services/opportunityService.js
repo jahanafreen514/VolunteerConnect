@@ -3,6 +3,7 @@ import api from './api';
 export const getOpportunities = (params) => api.get('/opportunities', { params }).then(res => res.data);
 export const getOpportunity = (id) => api.get(`/opportunities/${id}`).then(res => res.data);
 export const getOpportunityById = (id) => api.get(`/opportunities/${id}`).then(res => res.data);
+export const getPublicStats = () => api.get('/opportunities/public-stats').then(res => res.data);
 export const createOpportunity = (data) => {
   const isFormData = data instanceof FormData;
   return api.post('/opportunities', data, {
@@ -25,6 +26,7 @@ export const opportunityService = {
   getOpportunities,
   getOpportunity,
   getOpportunityById,
+  getPublicStats,
   createOpportunity,
   updateOpportunity,
   deleteOpportunity,

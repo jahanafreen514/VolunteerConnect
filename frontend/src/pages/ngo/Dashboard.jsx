@@ -32,9 +32,9 @@ const NGODashboard = () => {
         ngoService.getMyProfile(),
         applicationService.getNGOApplications({ limit: 5, status: 'pending' })
       ]);
-      setStats(statsData);
-      setProfile(profileData);
-      setRecentApps(appsData.applications || []);
+      setStats(statsData?.data || statsData);
+      setProfile(profileData?.data || profileData);
+      setRecentApps(appsData?.data?.applications || appsData?.applications || (Array.isArray(appsData?.data) ? appsData.data : []));
     } catch (error) {
       console.error(error);
     } finally {

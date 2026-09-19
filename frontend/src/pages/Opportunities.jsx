@@ -5,6 +5,7 @@ import PublicLayout from '../layouts/PublicLayout';
 import OpportunityCard from '../components/ui/OpportunityCard';
 import SkeletonCard from '../components/ui/SkeletonCard';
 import EmptyState from '../components/ui/EmptyState';
+import AnimatedBackground from '../components/ui/AnimatedBackground';
 import { opportunityService } from '../services/opportunityService';
 import { useDebounce } from '../hooks/useDebounce'; // Assuming this exists or create it
 
@@ -59,10 +60,12 @@ const Opportunities = () => {
       if (city) query.city = city;
 
       const res = await opportunityService.getOpportunities(query);
-      setOpportunities(res.data.opportunities || []);
-      setTotal(res.data.totalDocs || res.data.total || 0);
+      const list = res?.data?.opportunities || res?.opportunities || (Array.isArray(res?.data) ? res.data : []);
+      setOpportunities(list);
+      setTotal(res?.data?.totalDocs || res?.data?.total || res?.total || list.length);
     } catch (error) {
       console.error('Error fetching opportunities:', error);
+      setOpportunities([]);
     } finally {
       setLoading(false);
     }
@@ -80,8 +83,9 @@ const Opportunities = () => {
 
   return (
     <PublicLayout>
-      <div className="bg-gray-950 min-h-screen pt-24 pb-12">
-        <div className="container mx-auto px-6">
+      <div className="bg-gray-950 min-h-screen pt-24 pb-12 relative overflow-hidden">
+        <AnimatedBackground />
+        <div className="container mx-auto px-6 relative z-10">
           
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Sidebar Filters (Desktop) */}

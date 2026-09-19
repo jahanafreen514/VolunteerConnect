@@ -25,8 +25,9 @@ const Reports = () => {
   const fetchReports = async () => {
     setLoading(true);
     try {
-      const data = await adminService.getReports({ status: filter, limit: 50 });
-      setReports(data.reports || data);
+      const res = await adminService.getReports({ status: filter, limit: 50 });
+      const list = res?.data?.reports || res?.reports || (Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []));
+      setReports(list);
     } catch (error) {
       toast.error('Failed to load reports');
     } finally {

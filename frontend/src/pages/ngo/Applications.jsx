@@ -26,8 +26,9 @@ const NGOApplications = () => {
   useEffect(() => {
     const fetchOpportunities = async () => {
       try {
-        const data = await opportunityService.getOpportunities({ isNgo: true, limit: 100 });
-        setOpportunities(data.opportunities || data);
+        const res = await opportunityService.getOpportunities({ isNgo: true, limit: 100 });
+        const list = res?.data?.opportunities || res?.opportunities || (Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []));
+        setOpportunities(list);
       } catch (error) {
         toast.error('Failed to load opportunities');
       }
@@ -38,12 +39,13 @@ const NGOApplications = () => {
   const fetchApplications = async () => {
     setLoading(true);
     try {
-      const data = await applicationService.getNGOApplications({
+      const res = await applicationService.getNGOApplications({
         opportunityId: selectedOpp || undefined,
         status: filter !== 'all' ? filter : undefined,
         limit: 100
       });
-      setApplications(data.applications || data);
+      const list = res?.data?.applications || res?.applications || (Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []));
+      setApplications(list);
     } catch (error) {
       toast.error('Failed to load applications');
     } finally {
@@ -135,45 +137,55 @@ const NGOApplications = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
-                  {applications.map((app) => (
-                    <tr key={app._id} className="hover:bg-white/[0.02]">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <Avatar src={app.user?.profileImage} alt={app.user?.name} size="sm" />
-                          <div>
-                            <p className="font-medium text-white">{app.user?.name}</p>
-                            <p className="text-xs text-gray-500">{app.user?.email}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <p className="font-medium text-white line-clamp-1">{app.opportunity?.title}</p>
-                        {app.coverMessage && (
-                          <div className="mt-1 text-xs text-gray-400 flex items-start gap-1 group relative cursor-help">
-                            <MessageSquare className="w-3 h-3 mt-0.5 flex-shrink-0" />
-                            <span className="line-clamp-1">View message</span>
-                            <div className="hidden group-hover:block absolute left-0 top-full mt-2 w-64 p-3 bg-gray-800 border border-white/10 rounded-lg shadow-xl z-20 text-white whitespace-normal">
-                              {app.coverMessage}
+                  {applications.map((app) => {
+                    const vol = app.volunteerId || app.user || {};
+                    const opp = app.opportunityId || app.opportunity || {};
+                    const volName = vol.name || 'Anonymous Volunteer';
+                    const volEmail = vol.email || 'No email provided';
+                    const oppTitle = opp.title || 'Volunteer Opportunity';
+                    const dateStr = app.appliedAt || app.createdAt;
+                    const message = app.message || app.coverMessage;
+
+                    return (
+                      <tr key={app._id} className="hover:bg-white/[0.02]">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <Avatar src={vol.profileImage} alt={volName} size="sm" />
+                            <div>
+                              <p className="font-medium text-white">{volName}</p>
+                              <p className="text-xs text-gray-500">{volEmail}</p>
                             </div>
                           </div>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">{format(new Date(app.createdAt), 'MMM d, yyyy')}</td>
-                      <td className="px-6 py-4">{getStatusBadge(app.status)}</td>
-                      <td className="px-6 py-4 text-right space-x-2">
-                        {app.status === 'pending' && (
-                          <>
-                            <Button size="sm" variant="outline" className="border-green-500/30 text-green-400 hover:bg-green-500/10" onClick={() => setActionDialog({ isOpen: true, id: app._id, action: 'accepted' })}>
-                              <CheckCircle className="w-4 h-4" />
-                            </Button>
-                            <Button size="sm" variant="outline" className="border-red-500/30 text-red-400 hover:bg-red-500/10" onClick={() => setActionDialog({ isOpen: true, id: app._id, action: 'rejected' })}>
-                              <XCircle className="w-4 h-4" />
-                            </Button>
-                          </>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
+                        </td>
+                        <td className="px-6 py-4">
+                          <p className="font-medium text-white line-clamp-1">{oppTitle}</p>
+                          {message && (
+                            <div className="mt-1 text-xs text-gray-400 flex items-start gap-1 group relative cursor-help">
+                              <MessageSquare className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                              <span className="line-clamp-1">View message</span>
+                              <div className="hidden group-hover:block absolute left-0 top-full mt-2 w-64 p-3 bg-gray-800 border border-white/10 rounded-lg shadow-xl z-20 text-white whitespace-normal">
+                                {message}
+                              </div>
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">{dateStr ? format(new Date(dateStr), 'MMM d, yyyy') : 'Recent'}</td>
+                        <td className="px-6 py-4">{getStatusBadge(app.status)}</td>
+                        <td className="px-6 py-4 text-right space-x-2">
+                          {app.status === 'pending' && (
+                            <>
+                              <Button size="sm" variant="outline" className="border-green-500/30 text-green-400 hover:bg-green-500/10" onClick={() => setActionDialog({ isOpen: true, id: app._id, action: 'accepted' })}>
+                                <CheckCircle className="w-4 h-4" />
+                              </Button>
+                              <Button size="sm" variant="outline" className="border-red-500/30 text-red-400 hover:bg-red-500/10" onClick={() => setActionDialog({ isOpen: true, id: app._id, action: 'rejected' })}>
+                                <XCircle className="w-4 h-4" />
+                              </Button>
+                            </>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

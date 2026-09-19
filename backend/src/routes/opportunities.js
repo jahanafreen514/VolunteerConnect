@@ -1,6 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const { getOpportunities, getOpportunity, createOpportunity, updateOpportunity, deleteOpportunity, updateOpportunityStatus, uploadOpportunityImage } = require('../controllers/opportunityController');
+const { 
+    getOpportunities, 
+    getOpportunity, 
+    getPublicStats,
+    createOpportunity, 
+    updateOpportunity, 
+    deleteOpportunity, 
+    updateOpportunityStatus, 
+    uploadOpportunityImage 
+} = require('../controllers/opportunityController');
 const { authenticateUser, requireRole } = require('../middleware/auth');
 const { uploadOpportunityImage: uploadImage } = require('../middleware/upload');
 
@@ -24,6 +33,7 @@ const optionalAuth = (req, res, next) => {
     }
 };
 
+router.get('/public-stats', getPublicStats);
 router.get('/', optionalAuth, getOpportunities);
 router.get('/:id', getOpportunity);
 

@@ -82,8 +82,10 @@ exports.getParticipationHistory = async (req, res) => {
     }).populate('opportunityId');
 
     const attendances = await Attendance.find({ 
-        volunteerId: req.user.id,
-        status: 'present'
+        volunteerId: req.user.id
+    }).populate({
+        path: 'opportunityId',
+        populate: { path: 'ngoId', select: 'name organizationName' }
     });
 
     return success(res, { applications, attendances }, 'History retrieved successfully');

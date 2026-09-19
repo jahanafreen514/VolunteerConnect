@@ -1,7 +1,22 @@
 const Opportunity = require('../models/Opportunity');
 const NGOProfile = require('../models/NGOProfile');
+const User = require('../models/User');
 const { success, error } = require('../utils/apiResponse');
 const createNotification = require('../utils/createNotification');
+
+exports.getPublicStats = async (req, res) => {
+    const activeOpportunities = await Opportunity.countDocuments({ status: { $in: ['published', 'ongoing'] } });
+    const verifiedNGOs = await NGOProfile.countDocuments({ verificationStatus: 'approved' });
+    const completedEvents = await Opportunity.countDocuments({ status: 'completed' });
+    const totalVolunteers = await User.countDocuments({ role: 'volunteer' });
+
+    return success(res, {
+        activeOpportunities,
+        verifiedNGOs,
+        completedEvents,
+        totalVolunteers
+    }, 'Public platform stats retrieved');
+};
 
 exports.getOpportunities = async (req, res) => {
     const { search, category, city, skills, status, sort, page = 1, limit = 10, ngoId, mine } = req.query;
