@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Flag, Eye } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { format } from 'date-fns';
+import { formatDateSafe } from '../../utils/date';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import AdminSidebar from '../../components/layouts/AdminSidebar';
 import { adminService } from '../../services/adminService';
@@ -111,7 +112,7 @@ const Reports = () => {
                         <Badge variant="default" className="uppercase text-xs">{report.targetType}</Badge>
                       </td>
                       <td className="px-6 py-4 truncate max-w-[200px]">{report.reason}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{format(new Date(report.createdAt), 'MMM d, yyyy')}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-gray-400">{formatDateSafe(report.createdAt, 'MMM d, yyyy')}</td>
                       <td className="px-6 py-4 text-right">
                         <Button 
                           size="sm" 

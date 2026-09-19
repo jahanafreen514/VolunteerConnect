@@ -1,5 +1,5 @@
 import React from 'react';
-import { format } from 'date-fns';
+import { formatDateSafe } from '../utils/date';
 import { Download, Share2 } from 'lucide-react';
 import Button from './ui/Button';
 
@@ -39,7 +39,7 @@ const CertificateCard = ({ certificate }) => {
         <div className="w-full flex justify-between items-end mt-4 pt-8 border-t border-white/10">
           <div className="text-left">
             <p className="text-sm text-gray-400 mb-1">Date</p>
-            <p className="text-white font-medium">{format(new Date(issueDate || Date.now()), 'MMMM do, yyyy')}</p>
+            <p className="text-white font-medium">{formatDateSafe(issueDate, 'MMMM do, yyyy')}</p>
           </div>
           <div className="text-right">
             <p className="text-sm text-gray-400 mb-1">Certificate ID</p>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import { formatDateSafe } from '../../utils/date';
 import { Plus, Edit2, Trash2, Eye, Calendar, Users, MapPin } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
@@ -107,7 +108,7 @@ const NGOOpportunities = () => {
                         <div className="text-xs text-gray-500 mt-1">{opp.category}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-primary-400"/> {format(new Date(opp.date), 'MMM d, yyyy')}</div>
+                        <div className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-primary-400"/> {formatDateSafe(opp.eventDate || opp.date, 'MMM d, yyyy')}</div>
                       </td>
                       <td className="px-6 py-4 truncate max-w-[150px]">
                         <div className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-gray-400"/> {opp.location?.city || 'Online'}</div>

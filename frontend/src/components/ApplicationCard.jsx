@@ -1,5 +1,5 @@
 import React from 'react';
-import { format } from 'date-fns';
+import { formatDateSafe } from '../utils/date';
 import { Trash2 } from 'lucide-react';
 import Badge from './ui/Badge';
 import Button from './ui/Button';
@@ -13,9 +13,9 @@ const statusConfig = {
 };
 
 const ApplicationCard = ({ application, onCancel }) => {
-  const opp = application?.opportunity || {};
-  const ngoName = opp?.ngo?.name || 'Unknown NGO';
-  const status = statusConfig[application.status] || statusConfig.pending;
+  const opp = application?.opportunity || application?.opportunityId || {};
+  const ngoName = opp?.ngo?.name || opp?.ngo?.organizationName || opp?.ngoId?.name || 'NGO Partner';
+  const status = statusConfig[application?.status] || statusConfig.pending;
 
   return (
     <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row gap-4 items-start sm:items-center hover:bg-white/8 transition-colors">
@@ -30,11 +30,11 @@ const ApplicationCard = ({ application, onCancel }) => {
       </div>
 
       <div className="flex-1">
-        <h4 className="text-lg font-semibold text-white mb-1 line-clamp-1">{opp.title}</h4>
+        <h4 className="text-lg font-semibold text-white mb-1 line-clamp-1">{opp.title || 'Volunteer Opportunity'}</h4>
         <p className="text-sm text-gray-400 mb-2">{ngoName}</p>
         <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs text-gray-500">
-          <span>Applied: {format(new Date(application.createdAt), 'MMM d, yyyy')}</span>
-          <span>Event: {opp.date ? format(new Date(opp.date), 'MMM d, yyyy') : 'TBA'}</span>
+          <span>Applied: {formatDateSafe(application?.appliedAt || application?.createdAt, 'MMM d, yyyy')}</span>
+          <span>Event: {formatDateSafe(opp.eventDate || opp.date, 'MMM d, yyyy')}</span>
         </div>
       </div>
 

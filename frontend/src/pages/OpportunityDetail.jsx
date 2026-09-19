@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import PublicLayout from '../layouts/PublicLayout';
 import SkeletonCard from '../components/ui/SkeletonCard'; // Reuse skeleton for loading
 import { format } from 'date-fns';
+import { formatDateSafe } from '../utils/date';
 
 const OpportunityDetail = () => {
   const { id } = useParams();
@@ -186,7 +187,7 @@ const OpportunityDetail = () => {
                     <Calendar className="w-5 h-5 text-primary-400 mt-1 mr-3" />
                     <div>
                       <p className="text-gray-400 text-sm">Date</p>
-                      <p className="text-white font-medium">{format(new Date(opportunity.date), 'MMMM d, yyyy')}</p>
+                      <p className="text-white font-medium">{formatDateSafe(opportunity.eventDate || opportunity.date, 'MMMM d, yyyy')}</p>
                     </div>
                   </div>
                   <div className="flex items-start">

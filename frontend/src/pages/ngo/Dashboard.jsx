@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Calendar, Users, Briefcase, CheckCircle, Award, AlertTriangle, UserCheck, XCircle } from 'lucide-react';
 import { format } from 'date-fns';
+import { formatDateSafe } from '../../utils/date';
 import { toast } from 'react-hot-toast';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import NGOSidebar from '../../components/layouts/NGOSidebar';
@@ -127,29 +128,38 @@ const NGODashboard = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
-                    {recentApps.map((app) => (
-                      <tr key={app._id} className="hover:bg-white/[0.02]">
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            <Avatar src={app.user?.profileImage} alt={app.user?.name} size="sm" />
-                            <div>
-                              <p className="font-medium text-white">{app.user?.name}</p>
-                              <p className="text-xs text-gray-500">{app.user?.email}</p>
+                    {recentApps.map((app) => {
+                      const vol = app.volunteerId || app.user || {};
+                      const opp = app.opportunityId || app.opportunity || {};
+                      const volName = vol.name || 'Volunteer';
+                      const volEmail = vol.email || '';
+                      const oppTitle = opp.title || 'Volunteer Opportunity';
+                      const appDate = app.appliedAt || app.createdAt;
+
+                      return (
+                        <tr key={app._id} className="hover:bg-white/[0.02]">
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-3">
+                              <Avatar src={vol.profileImage} alt={volName} size="sm" />
+                              <div>
+                                <p className="font-medium text-white">{volName}</p>
+                                <p className="text-xs text-gray-500">{volEmail}</p>
+                              </div>
                             </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">{app.opportunity?.title}</td>
-                        <td className="px-6 py-4">{format(new Date(app.createdAt), 'MMM d, yyyy')}</td>
-                        <td className="px-6 py-4 text-right space-x-2">
-                          <Button size="sm" variant="outline" className="border-green-500/30 text-green-400 hover:bg-green-500/10" onClick={() => setActionDialog({ isOpen: true, id: app._id, action: 'accepted' })}>
-                            <CheckCircle className="w-4 h-4 mr-1" /> Accept
-                          </Button>
-                          <Button size="sm" variant="outline" className="border-red-500/30 text-red-400 hover:bg-red-500/10" onClick={() => setActionDialog({ isOpen: true, id: app._id, action: 'rejected' })}>
-                            <XCircle className="w-4 h-4 mr-1" /> Reject
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
+                          </td>
+                          <td className="px-6 py-4 text-white font-medium">{oppTitle}</td>
+                          <td className="px-6 py-4 text-gray-400">{formatDateSafe(appDate, 'MMM d, yyyy')}</td>
+                          <td className="px-6 py-4 text-right space-x-2">
+                            <Button size="sm" variant="outline" className="border-green-500/30 text-green-400 hover:bg-green-500/10" onClick={() => setActionDialog({ isOpen: true, id: app._id, action: 'accepted' })}>
+                              <CheckCircle className="w-4 h-4 mr-1" /> Accept
+                            </Button>
+                            <Button size="sm" variant="outline" className="border-red-500/30 text-red-400 hover:bg-red-500/10" onClick={() => setActionDialog({ isOpen: true, id: app._id, action: 'rejected' })}>
+                              <XCircle className="w-4 h-4 mr-1" /> Reject
+                            </Button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

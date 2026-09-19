@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Search, Briefcase, Eye } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { format } from 'date-fns';
+import { formatDateSafe } from '../../utils/date';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import AdminSidebar from '../../components/layouts/AdminSidebar';
 import { adminService } from '../../services/adminService';
@@ -128,25 +129,30 @@ const AdminOpportunities = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
-                  {opportunities.map((opp) => (
-                    <tr key={opp._id} className="hover:bg-white/[0.02]">
-                      <td className="px-6 py-4">
-                        <div className="font-medium text-white line-clamp-1">{opp.title}</div>
-                        <div className="text-xs text-gray-500 mt-1 line-clamp-1">{opp.ngo?.organizationName}</div>
-                      </td>
-                      <td className="px-6 py-4"><Badge variant="default" className="text-xs">{opp.category}</Badge></td>
-                      <td className="px-6 py-4 whitespace-nowrap">{format(new Date(opp.date), 'MMM d, yyyy')}</td>
-                      <td className="px-6 py-4 text-purple-400 font-medium">{opp.applicationsCount || 0} / {opp.volunteerCapacity}</td>
-                      <td className="px-6 py-4">{getStatusBadge(opp.status)}</td>
-                      <td className="px-6 py-4 text-right">
-                        <Link to={`/opportunities/${opp._id}`}>
-                          <Button size="sm" variant="outline" className="flex items-center gap-1 ml-auto">
-                            <Eye className="w-4 h-4" /> View
-                          </Button>
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
+                  {opportunities.map((opp) => {
+                    const ngoName = opp.ngoId?.name || opp.ngo?.organizationName || opp.ngoName || 'NGO Partner';
+                    const eventDate = opp.eventDate || opp.date;
+
+                    return (
+                      <tr key={opp._id} className="hover:bg-white/[0.02]">
+                        <td className="px-6 py-4">
+                          <div className="font-medium text-white line-clamp-1">{opp.title}</div>
+                          <div className="text-xs text-gray-500 mt-1 line-clamp-1">{ngoName}</div>
+                        </td>
+                        <td className="px-6 py-4"><Badge variant="default" className="text-xs">{opp.category}</Badge></td>
+                        <td className="px-6 py-4 whitespace-nowrap">{formatDateSafe(eventDate, 'MMM d, yyyy')}</td>
+                        <td className="px-6 py-4 text-purple-400 font-medium">{opp.applicationsCount || 0} / {opp.volunteerCapacity}</td>
+                        <td className="px-6 py-4">{getStatusBadge(opp.status)}</td>
+                        <td className="px-6 py-4 text-right">
+                          <Link to={`/opportunities/${opp._id}`}>
+                            <Button size="sm" variant="outline" className="flex items-center gap-1 ml-auto">
+                              <Eye className="w-4 h-4" /> View
+                            </Button>
+                          </Link>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

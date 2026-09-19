@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Calendar, Clock, CheckCircle, Timer, Award } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import { formatDateSafe } from '../../utils/date';
 import { useAuth } from '../../context/AuthContext';
 import { userService } from '../../services/userService';
 import { applicationService } from '../../services/applicationService';
@@ -18,8 +19,8 @@ import AnimatedBackground from '../../components/ui/AnimatedBackground';
 const VolunteerDashboard = () => {
   const { user } = useAuth();
   const [stats, setStats] = useState(null);
-  const [events, setEvents] = useState(null);
-  const [applications, setApplications] = useState(null);
+  const [events, setEvents] = useState([]);
+  const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,8 +32,8 @@ const VolunteerDashboard = () => {
           applicationService.getMyApplications({ limit: 5 })
         ]);
         setStats(statsData?.data || statsData);
-        setEvents(eventsData?.data || eventsData);
-        setApplications(appsData?.data?.applications || appsData?.applications || (Array.isArray(appsData?.data) ? appsData.data : []));
+        setEvents(Array.isArray(eventsData?.data) ? eventsData.data : (Array.isArray(eventsData) ? eventsData : []));
+        setApplications(appsData?.data?.applications || appsData?.applications || (Array.isArray(appsData?.data) ? appsData.data : (Array.isArray(appsData) ? appsData : [])));
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
       } finally {
@@ -89,21 +90,32 @@ const VolunteerDashboard = () => {
               </div>
             ) : events?.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {events.map((event) => (
-                  <Card key={event._id} className="overflow-hidden hover:border-primary-500/50 transition-colors">
-                    <div className="h-32 bg-gradient-to-br from-primary-900/50 to-purple-900/50 p-4 relative">
-                      {event.image && <img src={event.image} alt={event.title} className="absolute inset-0 w-full h-full object-cover opacity-50" />}
-                      <div className="relative z-10 flex flex-col justify-end h-full">
-                        <h3 className="font-semibold text-white truncate text-lg">{event.title}</h3>
-                        <p className="text-sm text-gray-300 truncate">{event.ngoName}</p>
+                {events.map((event) => {
+                  const opp = event.opportunityId && typeof event.opportunityId === 'object' ? event.opportunityId : (event.opportunity || event);
+                  const oppId = opp._id || (typeof event.opportunityId === 'string' ? event.opportunityId : event._id);
+                  const title = opp.title || event.title || 'Volunteering Event';
+                  const ngoName = opp.ngoId?.name || opp.ngo?.organizationName || event.ngoName || 'NGO Partner';
+                  const eventDate = opp.eventDate || opp.date || event.date || event.createdAt;
+                  const image = opp.image || event.image;
+
+                  return (
+                    <Card key={event._id} className="overflow-hidden hover:border-primary-500/50 transition-colors">
+                      <div className="h-32 bg-gradient-to-br from-primary-900/50 to-purple-900/50 p-4 relative">
+                        {image && <img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover opacity-50" />}
+                        <div className="relative z-10 flex flex-col justify-end h-full">
+                          <h3 className="font-semibold text-white truncate text-lg">{title}</h3>
+                          <p className="text-sm text-gray-300 truncate">{ngoName}</p>
+                        </div>
                       </div>
-                    </div>
-                    <div className="p-4 bg-gray-900/50 flex justify-between items-center">
-                      <span className="text-sm text-gray-400">{format(new Date(event.date), 'MMM d, yyyy h:mm a')}</span>
-                      <Link to={`/opportunities/${event.opportunityId}`} className="text-primary-400 hover:text-primary-300 text-sm font-medium">View</Link>
-                    </div>
-                  </Card>
-                ))}
+                      <div className="p-4 bg-gray-900/50 flex justify-between items-center">
+                        <span className="text-sm text-gray-400">{formatDateSafe(eventDate, 'MMM d, yyyy h:mm a')}</span>
+                        {oppId && (
+                          <Link to={`/opportunities/${oppId}`} className="text-primary-400 hover:text-primary-300 text-sm font-medium">View</Link>
+                        )}
+                      </div>
+                    </Card>
+                  );
+                })}
               </div>
             ) : (
               <EmptyState title="No upcoming events" description="You don't have any upcoming events scheduled." icon={Calendar} action={{ label: 'Find Events', onClick: () => window.location.href = '/opportunities' }} />
@@ -122,25 +134,33 @@ const VolunteerDashboard = () => {
               </div>
             ) : applications?.length > 0 ? (
               <div className="space-y-3">
-                {applications.map((app) => (
-                  <Card key={app._id} className="p-4 hover:bg-white/[0.07] transition-colors">
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-medium text-white truncate pr-2">{app.opportunity.title}</h3>
-                      <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${
-                        app.status === 'accepted' ? 'bg-green-500/10 text-green-400 border border-green-500/20' :
-                        app.status === 'rejected' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
-                        'bg-orange-500/10 text-orange-400 border border-orange-500/20'
-                      }`}>
-                        {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-400 truncate mb-2">{app.opportunity.ngo.organizationName}</p>
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-gray-500">Applied {format(new Date(app.createdAt), 'MMM d')}</span>
-                      <Link to="/volunteer/applications" className="text-primary-400 hover:text-primary-300">Details</Link>
-                    </div>
-                  </Card>
-                ))}
+                {applications.map((app) => {
+                  const opp = app.opportunityId || app.opportunity || {};
+                  const oppTitle = opp.title || 'Volunteer Opportunity';
+                  const ngoName = opp.ngo?.organizationName || opp.ngoId?.name || opp.ngoName || 'NGO Partner';
+                  const appDate = app.appliedAt || app.createdAt;
+                  const status = app.status || 'pending';
+
+                  return (
+                    <Card key={app._id} className="p-4 hover:bg-white/[0.07] transition-colors">
+                      <div className="flex justify-between items-start mb-2">
+                        <h3 className="font-medium text-white truncate pr-2">{oppTitle}</h3>
+                        <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${
+                          status === 'accepted' ? 'bg-green-500/10 text-green-400 border border-green-500/20' :
+                          status === 'rejected' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
+                          'bg-orange-500/10 text-orange-400 border border-orange-500/20'
+                        }`}>
+                          {status.charAt(0).toUpperCase() + status.slice(1)}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-400 truncate mb-2">{ngoName}</p>
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-gray-500">Applied {formatDateSafe(appDate, 'MMM d')}</span>
+                        <Link to="/volunteer/applications" className="text-primary-400 hover:text-primary-300">Details</Link>
+                      </div>
+                    </Card>
+                  );
+                })}
               </div>
             ) : (
               <EmptyState title="No recent applications" description="You haven't applied to any opportunities recently." icon={Clock} />

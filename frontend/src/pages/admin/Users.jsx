@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Search, UserCheck, UserX, User } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { format } from 'date-fns';
+import { formatDateSafe } from '../../utils/date';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import AdminSidebar from '../../components/layouts/AdminSidebar';
 import { adminService } from '../../services/adminService';
@@ -128,7 +129,7 @@ const Users = () => {
                           {user.role}
                         </Badge>
                       </td>
-                      <td className="px-6 py-4">{format(new Date(user.createdAt), 'MMM d, yyyy')}</td>
+                      <td className="px-6 py-4 text-gray-400">{formatDateSafe(user.createdAt, 'MMM d, yyyy')}</td>
                       <td className="px-6 py-4">
                         <Badge variant={user.isActive !== false ? 'success' : 'error'}>
                           {user.isActive !== false ? 'Active' : 'Inactive'}
