@@ -98,42 +98,42 @@ const Opportunities = () => {
                   </button>
                 </div>
 
-                <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                <div className="glass-card p-5 border border-white/10">
                   <h3 className="font-semibold text-white mb-4">Category</h3>
                   <div className="space-y-2 max-h-60 overflow-y-auto custom-scrollbar">
                     <label className="flex items-center space-x-3 text-gray-300 hover:text-white cursor-pointer">
-                      <input type="radio" name="category" checked={category === ''} onChange={() => {setCategory(''); setPage(1);}} className="form-radio text-primary-500 bg-gray-800 border-gray-700 focus:ring-primary-500" />
+                      <input type="radio" name="category" checked={category === ''} onChange={() => {setCategory(''); setPage(1);}} className="form-radio text-primary-500 bg-white/10 border-white/20 focus:ring-primary-500" />
                       <span>All Categories</span>
                     </label>
                     {categories.map(c => (
                       <label key={c} className="flex items-center space-x-3 text-gray-300 hover:text-white cursor-pointer capitalize">
-                        <input type="radio" name="category" checked={category === c} onChange={() => {setCategory(c); setPage(1);}} className="form-radio text-primary-500 bg-gray-800 border-gray-700 focus:ring-primary-500" />
+                        <input type="radio" name="category" checked={category === c} onChange={() => {setCategory(c); setPage(1);}} className="form-radio text-primary-500 bg-white/10 border-white/20 focus:ring-primary-500" />
                         <span>{c.replace('-', ' ')}</span>
                       </label>
                     ))}
                   </div>
                 </div>
 
-                <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                <div className="glass-card p-5 border border-white/10">
                   <h3 className="font-semibold text-white mb-4">Location</h3>
                   <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4" />
+                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <input 
                       type="text" 
                       placeholder="City..." 
                       value={city}
                       onChange={(e) => {setCity(e.target.value); setPage(1);}}
-                      className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg pl-9 pr-4 py-2 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none transition-colors"
+                      className="w-full bg-white/[0.05] border border-white/10 text-white placeholder-gray-400 rounded-xl pl-9 pr-4 py-2.5 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
                     />
                   </div>
                 </div>
 
-                <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                <div className="glass-card p-5 border border-white/10">
                   <h3 className="font-semibold text-white mb-4">Sort By</h3>
                   <select 
                     value={sort}
                     onChange={(e) => setSort(e.target.value)}
-                    className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none transition-colors appearance-none"
+                    className="w-full bg-gray-900/80 backdrop-blur-lg border border-white/10 text-white rounded-xl px-4 py-2.5 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all appearance-none cursor-pointer"
                   >
                     <option value="-createdAt">Newest First</option>
                     <option value="date">Event Date (Ascending)</option>
@@ -143,13 +143,13 @@ const Opportunities = () => {
 
                 <button 
                   onClick={clearFilters}
-                  className="w-full py-2 border border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors"
+                  className="w-full py-2.5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white rounded-xl transition-all font-medium text-sm backdrop-blur-md"
                 >
                   Clear All Filters
                 </button>
 
                 {showMobileFilters && (
-                  <button onClick={() => setShowMobileFilters(false)} className="w-full py-3 bg-primary-600 text-white rounded-lg mt-4 font-medium lg:hidden">
+                  <button onClick={() => setShowMobileFilters(false)} className="w-full py-3 bg-primary-600 hover:bg-primary-500 text-white rounded-xl mt-4 font-medium lg:hidden transition-all shadow-glow-sm">
                     Apply Filters
                   </button>
                 )}
@@ -167,12 +167,12 @@ const Opportunities = () => {
                     placeholder="Search opportunities by title or skills..." 
                     value={search}
                     onChange={(e) => {setSearch(e.target.value); setPage(1);}}
-                    className="w-full bg-gray-900 border border-gray-800 text-white rounded-xl pl-12 pr-4 py-4 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none transition-colors shadow-lg"
+                    className="w-full bg-white/[0.04] backdrop-blur-2xl border border-white/10 text-white placeholder-gray-400 rounded-2xl pl-12 pr-4 py-4 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all shadow-glass"
                   />
                 </div>
                 <button 
                   onClick={() => setShowMobileFilters(true)}
-                  className="lg:hidden flex items-center justify-center bg-gray-900 border border-gray-800 text-white rounded-xl px-4 py-4 hover:bg-gray-800 transition-colors"
+                  className="lg:hidden flex items-center justify-center bg-white/[0.05] border border-white/10 text-white rounded-2xl px-4 py-4 hover:bg-white/10 transition-colors backdrop-blur-xl"
                 >
                   <Filter className="w-5 h-5" />
                 </button>
@@ -202,17 +202,17 @@ const Opportunities = () => {
                       <button 
                         disabled={page === 1}
                         onClick={() => setPage(p => Math.max(1, p - 1))}
-                        className="px-4 py-2 rounded-lg bg-gray-900 border border-gray-800 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-800 transition-colors"
+                        className="px-4 py-2 rounded-xl bg-white/[0.05] border border-white/10 text-white disabled:opacity-40 disabled:cursor-not-allowed hover:bg-white/10 transition-all backdrop-blur-md text-sm font-medium"
                       >
                         Prev
                       </button>
-                      <span className="text-gray-400 px-4">
+                      <span className="text-gray-300 text-sm px-4">
                         Page {page} of {totalPages}
                       </span>
                       <button 
                         disabled={page === totalPages}
                         onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                        className="px-4 py-2 rounded-lg bg-gray-900 border border-gray-800 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-800 transition-colors"
+                        className="px-4 py-2 rounded-xl bg-white/[0.05] border border-white/10 text-white disabled:opacity-40 disabled:cursor-not-allowed hover:bg-white/10 transition-all backdrop-blur-md text-sm font-medium"
                       >
                         Next
                       </button>

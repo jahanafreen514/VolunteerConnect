@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
+import RisingParticles from './RisingParticles';
 
-const AnimatedBackground = ({ variant = 'default', showGrid = true }) => {
+const AnimatedBackground = ({ variant = 'default', showGrid = true, showParticles = true }) => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -21,17 +22,17 @@ const AnimatedBackground = ({ variant = 'default', showGrid = true }) => {
     window.addEventListener('resize', handleResize);
 
     // Particle nodes count scaled to screen size
-    const particleCount = Math.min(Math.floor(width / 35), 45);
+    const particleCount = Math.min(Math.floor(width / 30), 50);
     const particles = [];
 
     for (let i = 0; i < particleCount; i++) {
       particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        radius: Math.random() * 1.8 + 1,
-        color: i % 3 === 0 ? 'rgba(99, 102, 241, 0.45)' : i % 3 === 1 ? 'rgba(14, 165, 233, 0.4)' : 'rgba(16, 185, 129, 0.35)'
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        radius: Math.random() * 2 + 1,
+        color: i % 3 === 0 ? 'rgba(99, 102, 241, 0.6)' : i % 3 === 1 ? 'rgba(14, 165, 233, 0.55)' : 'rgba(168, 85, 247, 0.5)'
       });
     }
 
@@ -45,12 +46,12 @@ const AnimatedBackground = ({ variant = 'default', showGrid = true }) => {
           const dy = particles[i].y - particles[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
 
-          if (dist < 130) {
+          if (dist < 140) {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(99, 102, 241, ${(1 - dist / 130) * 0.15})`;
-            ctx.lineWidth = 0.8;
+            ctx.strokeStyle = `rgba(99, 102, 241, ${(1 - dist / 140) * 0.22})`;
+            ctx.lineWidth = 0.9;
             ctx.stroke();
           }
         }
@@ -95,33 +96,42 @@ const AnimatedBackground = ({ variant = 'default', showGrid = true }) => {
   return (
     <div className={containerClass}>
       {/* Deep dark base background */}
-      <div className="absolute inset-0 bg-gray-950" />
+      <div className="absolute inset-0 bg-[#070913]" />
 
-      {/* Floating ambient glow blobs */}
-      <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-primary-600/15 rounded-full blur-[120px] animate-blob" />
+      {/* Floating ambient glow blobs - highlighted and vibrant */}
+      <div className="absolute -top-32 -left-32 w-[650px] h-[650px] bg-primary-600/25 rounded-full blur-[150px] animate-blob" />
       <div 
-        className="absolute top-1/3 -right-32 w-[450px] h-[450px] bg-secondary-500/15 rounded-full blur-[130px] animate-blob" 
+        className="absolute top-1/4 -right-32 w-[600px] h-[600px] bg-cyan-500/20 rounded-full blur-[150px] animate-blob" 
         style={{ animationDelay: '3s' }} 
       />
       <div 
-        className="absolute -bottom-32 left-1/4 w-[400px] h-[400px] bg-accent-500/10 rounded-full blur-[120px] animate-blob" 
+        className="absolute -bottom-32 left-1/4 w-[550px] h-[550px] bg-purple-600/22 rounded-full blur-[150px] animate-blob" 
         style={{ animationDelay: '6s' }} 
       />
+      <div 
+        className="absolute top-2/3 -left-20 w-[450px] h-[450px] bg-indigo-500/20 rounded-full blur-[140px] animate-blob" 
+        style={{ animationDelay: '4.5s' }} 
+      />
+
+      {/* Rising Particles Layer */}
+      {showParticles && (
+        <RisingParticles count={55} speed={0.75} glow={true} />
+      )}
 
       {/* Subtle Dot Grid pattern */}
       {showGrid && (
         <div 
-          className="absolute inset-0 opacity-[0.14] bg-[radial-gradient(#818cf8_1px,transparent_1px)] [background-size:24px_24px]" 
+          className="absolute inset-0 opacity-[0.15] bg-[radial-gradient(#818cf8_1px,transparent_1px)] [background-size:24px_24px]" 
         />
       )}
 
-      {/* Optional Interactive Particle Canvas for Hero */}
+      {/* Interactive Particle Canvas for Hero */}
       {variant === 'hero' && (
         <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />
       )}
 
       {/* Subtle top ambient radial highlight */}
-      <div className="absolute top-0 inset-x-0 h-96 bg-gradient-to-b from-primary-950/20 via-transparent to-transparent pointer-events-none" />
+      <div className="absolute top-0 inset-x-0 h-96 bg-gradient-to-b from-primary-950/30 via-transparent to-transparent pointer-events-none" />
     </div>
   );
 };

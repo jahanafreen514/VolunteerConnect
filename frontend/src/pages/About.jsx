@@ -21,7 +21,7 @@ import AnimatedBackground from '../components/ui/AnimatedBackground';
 const About = () => {
   return (
     <PublicLayout>
-      <div className="relative overflow-hidden bg-gray-950 text-white">
+      <div className="relative overflow-hidden text-white">
         <AnimatedBackground />
 
         {/* Hero Section */}
@@ -57,7 +57,7 @@ const About = () => {
         </section>
 
         {/* The Challenge & Solution */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 relative z-10 border-t border-white/5 bg-gray-900/40 backdrop-blur-sm">
+        <section className="py-20 px-4 sm:px-6 lg:px-8 relative z-10 border-t border-white/5 bg-white/[0.02] backdrop-blur-sm">
           <div className="max-w-7xl mx-auto">
             <div className="grid md:grid-cols-2 gap-8">
               <motion.div 
@@ -139,7 +139,7 @@ const About = () => {
         </section>
 
         {/* Benefits for Both Sides */}
-        <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-900/30 border-t border-white/5 relative z-10">
+        <section className="py-24 px-4 sm:px-6 lg:px-8 border-t border-white/5 relative z-10">
           <div className="max-w-7xl mx-auto">
             {/* Volunteers */}
             <div className="mb-20">

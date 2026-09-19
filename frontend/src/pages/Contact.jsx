@@ -171,7 +171,7 @@ const Contact = () => {
                           type="text"
                           {...register('name')}
                           placeholder="Jane Doe"
-                          className={`w-full px-4 py-3 bg-gray-950/80 border ${errors.name ? 'border-red-500' : 'border-gray-800 focus:border-primary-500'} rounded-xl text-white placeholder-gray-500 text-sm outline-none transition-all`}
+                          className={`w-full px-4 py-3 bg-white/[0.05] border ${errors.name ? 'border-red-500' : 'border-white/10 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20'} rounded-xl text-white placeholder-gray-400 text-sm outline-none transition-all`}
                         />
                         {errors.name && <p className="mt-1 text-xs text-red-400">{errors.name.message}</p>}
                       </div>
@@ -182,7 +182,7 @@ const Contact = () => {
                           type="email"
                           {...register('email')}
                           placeholder="jane@example.com"
-                          className={`w-full px-4 py-3 bg-gray-950/80 border ${errors.email ? 'border-red-500' : 'border-gray-800 focus:border-primary-500'} rounded-xl text-white placeholder-gray-500 text-sm outline-none transition-all`}
+                          className={`w-full px-4 py-3 bg-white/[0.05] border ${errors.email ? 'border-red-500' : 'border-white/10 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20'} rounded-xl text-white placeholder-gray-400 text-sm outline-none transition-all`}
                         />
                         {errors.email && <p className="mt-1 text-xs text-red-400">{errors.email.message}</p>}
                       </div>
@@ -194,7 +194,7 @@ const Contact = () => {
                         type="text"
                         {...register('subject')}
                         placeholder="Inquiry about NGO verification / volunteering..."
-                        className={`w-full px-4 py-3 bg-gray-950/80 border ${errors.subject ? 'border-red-500' : 'border-gray-800 focus:border-primary-500'} rounded-xl text-white placeholder-gray-500 text-sm outline-none transition-all`}
+                        className={`w-full px-4 py-3 bg-white/[0.05] border ${errors.subject ? 'border-red-500' : 'border-white/10 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20'} rounded-xl text-white placeholder-gray-400 text-sm outline-none transition-all`}
                       />
                       {errors.subject && <p className="mt-1 text-xs text-red-400">{errors.subject.message}</p>}
                     </div>
@@ -205,7 +205,7 @@ const Contact = () => {
                         rows={5}
                         {...register('message')}
                         placeholder="How can we help your volunteering or organization goals? Share details here..."
-                        className={`w-full px-4 py-3 bg-gray-950/80 border ${errors.message ? 'border-red-500' : 'border-gray-800 focus:border-primary-500'} rounded-xl text-white placeholder-gray-500 text-sm outline-none transition-all resize-none`}
+                        className={`w-full px-4 py-3 bg-white/[0.05] border ${errors.message ? 'border-red-500' : 'border-white/10 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20'} rounded-xl text-white placeholder-gray-400 text-sm outline-none transition-all resize-none`}
                       />
                       {errors.message && <p className="mt-1 text-xs text-red-400">{errors.message.message}</p>}
                     </div>

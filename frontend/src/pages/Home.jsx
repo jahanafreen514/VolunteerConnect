@@ -27,6 +27,7 @@ import AnimatedBackground from '../components/ui/AnimatedBackground';
 import OpportunityCard from '../components/ui/OpportunityCard';
 import SkeletonCard from '../components/ui/SkeletonCard';
 import EmptyState from '../components/ui/EmptyState';
+import DepthText from '../components/ui/DepthText';
 import { opportunityService } from '../services/opportunityService';
 
 const CATEGORIES = [
@@ -94,16 +95,33 @@ const Home = () => {
               <span>The Next Generation Social Impact Platform</span>
             </motion.div>
 
-            {/* Headline */}
-            <motion.h1
+            {/* Headline with DepthText */}
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-[1.1] mb-6"
+              className="mb-8 flex flex-col items-center justify-center"
             >
-              Connect. Volunteer. <br />
-              <span className="gradient-text">Make an Impact.</span>
-            </motion.h1>
+              <DepthText
+                text="Connect Volunteer"
+                layers={34}
+                depth={2.4}
+                faceColor="#f8fafc"
+                depthColor="#7c3aed"
+                tilt={7.5}
+                pointerTracking
+                smoothing={0.14}
+                perspective={900}
+                autoOrbit
+                orbitSpeed={0.35}
+                fontSize="clamp(2.8rem, 8.5vw, 6rem)"
+                fontWeight={900}
+                shadow
+              />
+              <span className="block gradient-text text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight mt-2">
+                Make an Impact.
+              </span>
+            </motion.div>
 
             {/* Subheading */}
             <motion.p
@@ -154,41 +172,41 @@ const Home = () => {
         </section>
 
         {/* 2. REAL IMPACT SUMMARY (Atlas Backed) */}
-        <section className="relative z-10 py-12 px-4 sm:px-6 lg:px-8 border-y border-white/10 bg-gray-900/40 backdrop-blur-md">
+        <section className="relative z-10 py-12 px-4 sm:px-6 lg:px-8 border-y border-white/10 bg-white/[0.02] backdrop-blur-xl">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-              <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+              <div className="p-6 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/10 shadow-glass hover:bg-white/[0.06] transition-all">
                 <p className="text-3xl sm:text-4xl font-extrabold text-primary-400 mb-1">
                   {stats.activeOpportunities}
                 </p>
-                <p className="text-xs sm:text-sm font-medium text-gray-400 uppercase tracking-wider">
+                <p className="text-xs sm:text-sm font-medium text-gray-300 uppercase tracking-wider">
                   Active Opportunities
                 </p>
               </div>
 
-              <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+              <div className="p-6 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/10 shadow-glass hover:bg-white/[0.06] transition-all">
                 <p className="text-3xl sm:text-4xl font-extrabold text-secondary-400 mb-1">
                   {stats.verifiedNGOs}
                 </p>
-                <p className="text-xs sm:text-sm font-medium text-gray-400 uppercase tracking-wider">
+                <p className="text-xs sm:text-sm font-medium text-gray-300 uppercase tracking-wider">
                   Verified NGOs
                 </p>
               </div>
 
-              <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+              <div className="p-6 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/10 shadow-glass hover:bg-white/[0.06] transition-all">
                 <p className="text-3xl sm:text-4xl font-extrabold text-accent-400 mb-1">
                   {stats.totalVolunteers}
                 </p>
-                <p className="text-xs sm:text-sm font-medium text-gray-400 uppercase tracking-wider">
+                <p className="text-xs sm:text-sm font-medium text-gray-300 uppercase tracking-wider">
                   Registered Volunteers
                 </p>
               </div>
 
-              <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+              <div className="p-6 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/10 shadow-glass hover:bg-white/[0.06] transition-all">
                 <p className="text-3xl sm:text-4xl font-extrabold text-purple-400 mb-1">
                   {stats.completedEvents}
                 </p>
-                <p className="text-xs sm:text-sm font-medium text-gray-400 uppercase tracking-wider">
+                <p className="text-xs sm:text-sm font-medium text-gray-300 uppercase tracking-wider">
                   Completed Events
                 </p>
               </div>
@@ -230,7 +248,7 @@ const Home = () => {
         </section>
 
         {/* 4 & 5. VOLUNTEER & NGO JOURNEYS */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-900/30 border-t border-white/5 relative z-10">
+        <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-white/5 relative z-10">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Volunteer Card */}
@@ -320,7 +338,7 @@ const Home = () => {
                   to={`/opportunities?category=${cat.id}`}
                   className={`group p-6 rounded-2xl bg-gradient-to-br ${cat.color} border ${cat.border} hover:scale-[1.03] transition-all duration-300 flex flex-col items-center text-center`}
                 >
-                  <div className={`p-4 rounded-xl bg-gray-950/60 ${cat.text} mb-4 shadow-sm group-hover:rotate-6 transition-transform`}>
+                  <div className={`p-4 rounded-xl bg-white/10 backdrop-blur-md ${cat.text} mb-4 shadow-sm group-hover:rotate-6 transition-transform`}>
                     <cat.icon className="w-7 h-7" />
                   </div>
                   <h3 className="text-base font-bold text-white mb-1">{cat.name}</h3>
@@ -334,7 +352,7 @@ const Home = () => {
         </section>
 
         {/* 7. LIVE OPPORTUNITIES PREVIEW (Real Atlas Data) */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-900/30 border-t border-white/5 relative z-10">
+        <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-white/5 relative z-10">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-12">
               <div>
@@ -460,7 +478,7 @@ const Home = () => {
 
         {/* 9. GLOBAL IMPACT CALL TO ACTION */}
         <section className="py-24 px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-5xl mx-auto rounded-3xl p-10 sm:p-16 relative overflow-hidden bg-gradient-to-br from-primary-950 via-gray-900 to-gray-950 border border-primary-500/30 shadow-glow-lg text-center">
+          <div className="max-w-5xl mx-auto rounded-3xl p-10 sm:p-16 relative overflow-hidden bg-gradient-to-br from-primary-950/40 via-purple-950/30 to-gray-950/40 backdrop-blur-2xl border border-primary-500/30 shadow-glass text-center">
             <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary-600/20 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent-600/15 rounded-full blur-3xl pointer-events-none" />
 
