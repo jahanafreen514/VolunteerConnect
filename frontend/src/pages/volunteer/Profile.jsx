@@ -13,6 +13,7 @@ import Avatar from '../../components/ui/Avatar';
 import Badge from '../../components/ui/Badge';
 import AnimatedBackground from '../../components/ui/AnimatedBackground';
 import { useAuth } from '../../context/AuthContext';
+import ChangePasswordCard from '../../components/ChangePasswordCard';
 
 const VolunteerProfile = () => {
   const { user, setUser } = useAuth();
@@ -200,6 +201,10 @@ const VolunteerProfile = () => {
               </div>
             </form>
           </Card>
+
+          <div className="md:col-span-2 md:col-start-2">
+            <ChangePasswordCard />
+          </div>
         </div>
       </div>
     </DashboardLayout>

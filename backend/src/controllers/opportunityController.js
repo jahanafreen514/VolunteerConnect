@@ -75,14 +75,64 @@ exports.getOpportunity = async (req, res) => {
     return success(res, opportunity, 'Opportunity retrieved successfully');
 };
 
+const parseOpportunityData = (req) => {
+    const data = { ...req.body };
+
+    if (req.body.date && !data.eventDate) {
+        data.eventDate = req.body.date;
+    }
+    if (req.body.time && !data.startTime) {
+        data.startTime = req.body.time;
+    }
+    if (req.body.volunteerCapacity) {
+        data.volunteerCapacity = Number(req.body.volunteerCapacity);
+    }
+    if (req.file) {
+        data.image = req.file.path;
+    }
+
+    // Parse location if nested or flattened
+    let location = req.body.location;
+    if (typeof location === 'string') {
+        try { location = JSON.parse(location); } catch (e) {}
+    }
+    if (!location || typeof location !== 'object') {
+        location = {
+            address: req.body['location[address]'] || req.body.address || '',
+            city: req.body['location[city]'] || req.body.city || '',
+            state: req.body['location[state]'] || req.body.state || '',
+            country: req.body['location[country]'] || req.body.country || ''
+        };
+    }
+    data.location = location;
+
+    // Parse requiredSkills
+    let skills = req.body.requiredSkills || req.body['requiredSkills[]'];
+    if (typeof skills === 'string') {
+        try { 
+            skills = JSON.parse(skills); 
+        } catch (e) { 
+            skills = skills.split(',').map(s => s.trim()).filter(Boolean); 
+        }
+    } else if (skills && !Array.isArray(skills)) {
+        skills = [skills];
+    }
+    if (skills) {
+        data.requiredSkills = skills;
+    }
+
+    return data;
+};
+
 exports.createOpportunity = async (req, res) => {
     const ngoProfile = await NGOProfile.findOne({ userId: req.user.id });
     if (!ngoProfile || ngoProfile.verificationStatus !== 'approved') {
         return error(res, 'Only verified NGOs can create opportunities', 403);
     }
 
+    const parsedData = parseOpportunityData(req);
     const opportunityData = {
-        ...req.body,
+        ...parsedData,
         ngoId: req.user.id,
         ngoProfileId: ngoProfile._id
     };
@@ -101,7 +151,8 @@ exports.updateOpportunity = async (req, res) => {
         return error(res, 'Not authorized to update this opportunity', 403);
     }
 
-    opportunity = await Opportunity.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    const parsedData = parseOpportunityData(req);
+    opportunity = await Opportunity.findByIdAndUpdate(req.params.id, parsedData, { new: true, runValidators: true });
     return success(res, opportunity, 'Opportunity updated successfully');
 };
 

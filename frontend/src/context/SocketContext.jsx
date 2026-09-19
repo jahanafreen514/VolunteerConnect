@@ -10,7 +10,8 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (user) {
-      const newSocket = io(import.meta.env.VITE_SOCKET_URL);
+      const socketUrl = import.meta.env.VITE_SOCKET_URL || 'https://volunteerconnect-api-wiyc.onrender.com';
+      const newSocket = io(socketUrl);
       
       newSocket.on('connect', () => {
         newSocket.emit('join', user.id);

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: import.meta.env.VITE_API_URL || 'https://volunteerconnect-api-wiyc.onrender.com/api',
 });
 
 api.interceptors.request.use(
@@ -21,7 +21,16 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('vc_token');
       const currentPath = window.location.pathname;
-      const isPublic = ['/', '/login', '/register', '/about', '/opportunities'].includes(currentPath) || currentPath.startsWith('/opportunities/');
+      const isPublic = [
+        '/', 
+        '/login', 
+        '/register', 
+        '/about', 
+        '/opportunities', 
+        '/forgot-password'
+      ].includes(currentPath) || 
+      currentPath.startsWith('/opportunities/') || 
+      currentPath.startsWith('/reset-password/');
       if (!isPublic) {
         window.location.href = '/login';
       }

@@ -12,6 +12,8 @@ const Opportunities = lazy(() => import('./pages/Opportunities'));
 const OpportunityDetail = lazy(() => import('./pages/OpportunityDetail'));
 const Login = lazy(() => import('./pages/auth/Login'));
 const Register = lazy(() => import('./pages/auth/Register'));
+const ForgotPassword = lazy(() => import('./pages/auth/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/auth/ResetPassword'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Volunteer Pages
@@ -69,6 +71,8 @@ function App() {
                 <Route path="/opportunities/:id" element={<OpportunityDetail />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password/:token" element={<ResetPassword />} />
                 
                 {/* Volunteer Routes */}
                 <Route path="/volunteer" element={<ProtectedRoute role="volunteer" />}>

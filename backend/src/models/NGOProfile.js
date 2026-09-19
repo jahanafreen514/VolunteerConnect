@@ -18,7 +18,6 @@ const ngoProfileSchema = new mongoose.Schema({
     logo: { type: String }
 }, { timestamps: true });
 
-ngoProfileSchema.index({ userId: 1 });
 ngoProfileSchema.index({ verificationStatus: 1 });
 
 module.exports = mongoose.model('NGOProfile', ngoProfileSchema);

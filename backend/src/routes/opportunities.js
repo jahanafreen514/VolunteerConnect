@@ -30,8 +30,8 @@ router.get('/:id', getOpportunity);
 router.use(authenticateUser);
 router.use(requireRole('ngo'));
 
-router.post('/', createOpportunity);
-router.put('/:id', updateOpportunity);
+router.post('/', uploadImage, createOpportunity);
+router.put('/:id', uploadImage, updateOpportunity);
 router.delete('/:id', deleteOpportunity);
 router.patch('/:id/status', updateOpportunityStatus);
 router.post('/:id/image', uploadImage, uploadOpportunityImage);

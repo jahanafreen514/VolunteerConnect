@@ -11,9 +11,13 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       getMe()
-        .then(data => setUser(data))
+        .then(res => {
+          const userData = res?.data !== undefined ? res.data : res;
+          setUser(userData);
+        })
         .catch(() => {
           setToken(null);
+          setUser(null);
           localStorage.removeItem('vc_token');
         })
         .finally(() => setIsLoading(false));
@@ -22,11 +26,19 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token]);
 
-  const login = async (data) => {
-    const res = await loginService(data);
-    setToken(res.token);
-    setUser(res.user);
-    localStorage.setItem('vc_token', res.token);
+  const login = async (emailOrData, password) => {
+    const payload = typeof emailOrData === 'object' ? emailOrData : { email: emailOrData, password };
+    const res = await loginService(payload);
+    const authData = res?.data !== undefined ? res.data : res;
+    const newToken = authData?.token;
+    const newUser = authData?.user;
+
+    setToken(newToken);
+    setUser(newUser);
+    if (newToken) {
+      localStorage.setItem('vc_token', newToken);
+    }
+    return newUser;
   };
 
   const logout = () => {
@@ -36,7 +48,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const updateUser = (data) => {
-    setUser({ ...user, ...data });
+    setUser(prev => ({ ...prev, ...data }));
   };
 
   return (

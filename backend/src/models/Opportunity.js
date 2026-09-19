@@ -7,7 +7,10 @@ const opportunitySchema = new mongoose.Schema({
     description: { type: String, required: true },
     category: { 
         type: String, 
-        enum: ['environment', 'education', 'health', 'community', 'animals', 'disaster-relief', 'arts', 'sports', 'technology', 'other'] 
+        enum: [
+            'environment', 'education', 'health', 'community', 'animals', 'disaster-relief', 'arts', 'sports', 'technology', 'other',
+            'Environment', 'Education', 'Healthcare', 'Health', 'Animal Welfare', 'Animals', 'Community Service', 'Community', 'Disaster Relief', 'Arts & Culture', 'Arts', 'Sports', 'Technology', 'Other'
+        ] 
     },
     requiredSkills: [{ type: String }],
     location: {

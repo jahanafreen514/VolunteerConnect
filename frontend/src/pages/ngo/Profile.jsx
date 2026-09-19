@@ -11,6 +11,7 @@ import Textarea from '../../components/ui/Textarea';
 import Button from '../../components/ui/Button';
 import Badge from '../../components/ui/Badge';
 import AnimatedBackground from '../../components/ui/AnimatedBackground';
+import ChangePasswordCard from '../../components/ChangePasswordCard';
 
 const NGOProfile = () => {
   const [profile, setProfile] = useState(null);
@@ -199,6 +200,10 @@ const NGOProfile = () => {
               )}
             </Card>
           </div>
+        </div>
+
+        <div className="max-w-2xl mt-8">
+          <ChangePasswordCard />
         </div>
       </div>
     </DashboardLayout>

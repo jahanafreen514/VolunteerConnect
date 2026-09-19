@@ -8,6 +8,7 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const { Server } = require('socket.io');
 
+const path = require('path');
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -64,19 +65,30 @@ io.on('connection', (socket) => {
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(helmet());
+app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(cors({
     origin: isOriginAllowed,
     credentials: true
 }));
 app.use(morgan('dev'));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-// Health Check Routes for Render / Cloud Monitors
-app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'ok', uptime: process.uptime(), timestamp: new Date().toISOString() });
+// Root & Health Check Routes
+app.get('/', (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "VolunteerConnect API is running"
+    });
 });
-app.get('/api/health', (req, res) => {
-    res.status(200).json({ status: 'ok', uptime: process.uptime(), timestamp: new Date().toISOString() });
+
+const mongoose = require('mongoose');
+app.get(['/health', '/api/health'], (req, res) => {
+    const isDbConnected = mongoose.connection.readyState === 1;
+    res.status(200).json({
+        success: true,
+        message: "VolunteerConnect API is running",
+        database: isDbConnected ? "connected" : "disconnected"
+    });
 });
 
 // Routes
