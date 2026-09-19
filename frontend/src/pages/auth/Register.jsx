@@ -4,10 +4,13 @@ import { useForm as useHookForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, User, Building, ArrowLeft, Loader2, Info } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, User, Building, ArrowLeft, Loader2, Info, Sparkles, ShieldCheck, Award } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import { authService } from '../../services/authService';
+import FloatingCard from '../../components/visual/FloatingCard';
+import Floating from '../../components/animations/Floating';
+import FadeUp from '../../components/animations/FadeUp';
 
 // Helper for password strength
 const checkPasswordStrength = (password) => {
@@ -103,13 +106,14 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center p-6 relative overflow-hidden pt-20 pb-12 bg-transparent">
+    <div className="min-h-screen flex flex-col justify-center items-center p-6 relative overflow-hidden pt-16 pb-12 bg-transparent">
       <div className="relative z-10 w-full max-w-4xl">
         <div className="text-center mb-8">
           <Link to="/" className="inline-block text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-purple-400 to-cyan-400 tracking-tight">
             VolunteerConnect
           </Link>
-          <h2 className="text-2xl font-bold text-white mt-3">Create your account</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mt-2">Create your account</h2>
+          <p className="text-sm text-gray-400 mt-1">Join a global network of changemakers and verified organizations</p>
         </div>
 
         <AnimatePresence mode="wait">
@@ -123,29 +127,71 @@ const Register = () => {
             >
               <button 
                 onClick={() => handleRoleSelect('volunteer')}
-                className="bg-[#0a0f28]/45 backdrop-blur-[20px] border border-white/[0.12] p-8 rounded-3xl hover:border-primary-500/50 hover:bg-[#0a0f28]/60 transition-all group text-left shadow-glass"
+                className="bg-[#0a0f28]/45 backdrop-blur-[20px] border border-white/[0.12] p-8 rounded-3xl hover:border-primary-500/50 hover:bg-[#0a0f28]/65 transition-all group text-left shadow-glass hover:shadow-[0_12px_40px_rgba(99,102,241,0.25)] relative overflow-hidden"
               >
-                <div className="w-16 h-16 rounded-2xl bg-primary-500/20 border border-primary-500/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <User className="w-8 h-8 text-primary-400" />
+                <div className="flex items-center justify-between mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-primary-500/20 border border-primary-500/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <User className="w-7 h-7 text-primary-400" />
+                  </div>
+                  <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-primary-500/15 text-primary-300 border border-primary-500/25">
+                    Individual
+                  </span>
                 </div>
+
                 <h3 className="text-2xl font-bold text-white mb-2">I want to Volunteer</h3>
-                <p className="text-gray-300 text-sm mb-6 leading-relaxed">Find opportunities, track your impact, and earn certificates for your contributions.</p>
+                <p className="text-gray-300 text-sm mb-6 leading-relaxed">Discover causes, track your hours, and earn verifiable certificates for your civic resume.</p>
+
+                {/* Mini Visual Preview */}
+                <div className="relative aspect-[16/9] rounded-xl overflow-hidden mb-5 bg-gray-900 border border-white/10">
+                  <img
+                    src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600&auto=format&fit=crop&q=80"
+                    alt="Volunteer"
+                    loading="lazy"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                  <span className="absolute bottom-2 left-3 text-xs font-semibold text-white">
+                    🌱 12,000+ Active Drives
+                  </span>
+                </div>
+
                 <span className="inline-flex items-center text-primary-400 font-semibold group-hover:translate-x-1 transition-transform text-sm">
-                  Select <ArrowLeft className="w-4 h-4 ml-2 rotate-180" />
+                  Continue as Volunteer <ArrowLeft className="w-4 h-4 ml-2 rotate-180" />
                 </span>
               </button>
 
               <button 
                 onClick={() => handleRoleSelect('ngo')}
-                className="bg-[#0a0f28]/45 backdrop-blur-[20px] border border-white/[0.12] p-8 rounded-3xl hover:border-accent-500/50 hover:bg-[#0a0f28]/60 transition-all group text-left shadow-glass"
+                className="bg-[#0a0f28]/45 backdrop-blur-[20px] border border-white/[0.12] p-8 rounded-3xl hover:border-accent-500/50 hover:bg-[#0a0f28]/65 transition-all group text-left shadow-glass hover:shadow-[0_12px_40px_rgba(16,185,129,0.25)] relative overflow-hidden"
               >
-                <div className="w-16 h-16 rounded-2xl bg-accent-500/20 border border-accent-500/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Building className="w-8 h-8 text-accent-400" />
+                <div className="flex items-center justify-between mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-accent-500/20 border border-accent-500/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Building className="w-7 h-7 text-accent-400" />
+                  </div>
+                  <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-accent-500/15 text-accent-300 border border-accent-500/25">
+                    Non-Profit
+                  </span>
                 </div>
+
                 <h3 className="text-2xl font-bold text-white mb-2">I represent an NGO</h3>
-                <p className="text-gray-300 text-sm mb-6 leading-relaxed">Post opportunities, manage volunteers, and track your organization's events.</p>
+                <p className="text-gray-300 text-sm mb-6 leading-relaxed">Publish initiatives, approve volunteers in bulk, and issue automated certificates.</p>
+
+                {/* Mini Visual Preview */}
+                <div className="relative aspect-[16/9] rounded-xl overflow-hidden mb-5 bg-gray-900 border border-white/10">
+                  <img
+                    src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=600&auto=format&fit=crop&q=80"
+                    alt="NGO"
+                    loading="lazy"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                  <span className="absolute bottom-2 left-3 text-xs font-semibold text-white">
+                    🛡️ Official Verification
+                  </span>
+                </div>
+
                 <span className="inline-flex items-center text-accent-400 font-semibold group-hover:translate-x-1 transition-transform text-sm">
-                  Select <ArrowLeft className="w-4 h-4 ml-2 rotate-180" />
+                  Continue as NGO <ArrowLeft className="w-4 h-4 ml-2 rotate-180" />
                 </span>
               </button>
             </motion.div>

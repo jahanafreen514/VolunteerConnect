@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, Sparkles, ArrowRight } from 'lucide-react';
+import { Heart, Sparkles, ArrowRight, ShieldCheck, Users } from 'lucide-react';
 import FoldText from './FoldText';
 import RisingParticles from './RisingParticles';
+import Floating from '../animations/Floating';
 
 const SplashScreen = ({ onFinish, duration = 5000 }) => {
   const [progress, setProgress] = useState(0);
@@ -39,9 +40,10 @@ const SplashScreen = ({ onFinish, duration = 5000 }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 1 }}
-      exit={{ opacity: 0, scale: 1.05 }}
-      transition={{ duration: 0.6, ease: 'easeInOut' }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0, scale: 1.05, filter: 'blur(8px)' }}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#050816] text-white select-none overflow-hidden"
     >
       {/* Soft Rising Particles Background */}
@@ -55,6 +57,35 @@ const SplashScreen = ({ onFinish, duration = 5000 }) => {
       {/* Dot Grid */}
       <div className="absolute inset-0 opacity-[0.12] bg-[radial-gradient(#818cf8_1px,transparent_1px)] [background-size:28px_28px]" />
 
+      {/* Subtle Floating Ambient Cards in background */}
+      <div className="hidden lg:block absolute left-12 top-1/3 pointer-events-none opacity-40 hover:opacity-80 transition-opacity">
+        <Floating distance={12} duration={6} delay={0.3} rotate={-3}>
+          <div className="p-3 bg-white/[0.05] backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl flex items-center gap-3 w-56">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-white">Vetted Non-Profits</p>
+              <p className="text-[10px] text-gray-400">Authentic Impact</p>
+            </div>
+          </div>
+        </Floating>
+      </div>
+
+      <div className="hidden lg:block absolute right-12 bottom-1/3 pointer-events-none opacity-40 hover:opacity-80 transition-opacity">
+        <Floating distance={10} duration={5.5} delay={0.8} rotate={3}>
+          <div className="p-3 bg-white/[0.05] backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl flex items-center gap-3 w-56">
+            <div className="w-10 h-10 rounded-xl bg-primary-500/20 text-primary-400 flex items-center justify-center border border-primary-500/30">
+              <Users className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-white">Community Driven</p>
+              <p className="text-[10px] text-gray-400">Verified Service Hours</p>
+            </div>
+          </div>
+        </Floating>
+      </div>
+
       {/* Skip Button */}
       <button
         onClick={handleSkip}
@@ -63,6 +94,7 @@ const SplashScreen = ({ onFinish, duration = 5000 }) => {
         <span>Skip</span>
         <ArrowRight className="w-3.5 h-3.5" />
       </button>
+
 
       {/* Center Reveal Content */}
       <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-2xl">

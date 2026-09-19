@@ -3,9 +3,14 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Mail, Lock, Eye, EyeOff, Loader2, ShieldCheck, Award } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
+import PolaroidCard from '../../components/visual/PolaroidCard';
+import FloatingCard from '../../components/visual/FloatingCard';
+import Floating from '../../components/animations/Floating';
+import FadeUp from '../../components/animations/FadeUp';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -59,24 +64,57 @@ const Login = () => {
       {/* Left Panel - Hidden on mobile */}
       <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-center items-center p-12 overflow-hidden z-10">
         <div className="relative z-10 w-full max-w-lg">
-          <Link to="/" className="inline-block mb-10 text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-purple-400 to-cyan-400 tracking-tight">
+          <Link to="/" className="inline-block mb-8 text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-purple-400 to-cyan-400 tracking-tight">
             VolunteerConnect
           </Link>
-          <h1 className="text-4xl font-bold text-white mb-4 leading-tight">Welcome back</h1>
-          <p className="text-lg text-gray-300 mb-8 leading-relaxed">Continue your journey of making a difference in communities worldwide.</p>
+          <h1 className="text-4xl font-bold text-white mb-3 leading-tight">Welcome back</h1>
+          <p className="text-base text-gray-300 mb-8 leading-relaxed">Continue your journey of making a difference in communities worldwide.</p>
           
-          <div className="space-y-3.5">
-            <div className="flex items-center space-x-3.5 text-gray-200 bg-white/[0.03] backdrop-blur-xl p-4 rounded-xl border border-white/10 shadow-glass">
-              <div className="w-8 h-8 rounded-full bg-primary-500/20 border border-primary-500/30 flex items-center justify-center text-primary-300 font-bold">✓</div>
-              <span className="font-medium text-sm">Verified NGOs & Safe Opportunities</span>
+          {/* Layered Community Visuals */}
+          <div className="relative mb-8 flex items-center gap-6">
+            <Floating distance={8} duration={6} rotate={-2}>
+              <PolaroidCard
+                image="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=600&auto=format&fit=crop&q=80"
+                caption="Local Park Revitalization Initiative"
+                tag="Community"
+                date="2026"
+                badge="🌱 Vetted"
+                rotation={-3}
+                width="w-60"
+              />
+            </Floating>
+
+            <div className="flex flex-col gap-3">
+              <Floating distance={6} duration={5} delay={0.8}>
+                <FloatingCard
+                  icon={ShieldCheck}
+                  iconColor="text-emerald-400 bg-emerald-500/20 border-emerald-500/30"
+                  title="Verified NGOs"
+                  subtitle="Safety guaranteed"
+                  badge="Audited"
+                />
+              </Floating>
+
+              <Floating distance={7} duration={5.5} delay={1.4}>
+                <FloatingCard
+                  icon={Award}
+                  iconColor="text-primary-400 bg-primary-500/20 border-primary-500/30"
+                  title="Official Proof"
+                  subtitle="Verifiable certificates"
+                  badge="Active"
+                />
+              </Floating>
             </div>
-            <div className="flex items-center space-x-3.5 text-gray-200 bg-white/[0.03] backdrop-blur-xl p-4 rounded-xl border border-white/10 shadow-glass">
-              <div className="w-8 h-8 rounded-full bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-300 font-bold">✓</div>
-              <span className="font-medium text-sm">Track Progress & Impact</span>
+          </div>
+
+          <div className="space-y-3">
+            <div className="flex items-center space-x-3 text-gray-200 bg-white/[0.03] backdrop-blur-xl p-3.5 rounded-xl border border-white/10 shadow-glass">
+              <div className="w-7 h-7 rounded-full bg-primary-500/20 border border-primary-500/30 flex items-center justify-center text-primary-300 text-xs font-bold">✓</div>
+              <span className="font-medium text-xs sm:text-sm">Verified NGOs & Safe Opportunities</span>
             </div>
-            <div className="flex items-center space-x-3.5 text-gray-200 bg-white/[0.03] backdrop-blur-xl p-4 rounded-xl border border-white/10 shadow-glass">
-              <div className="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-300 font-bold">✓</div>
-              <span className="font-medium text-sm">Earn Recognition & Certificates</span>
+            <div className="flex items-center space-x-3 text-gray-200 bg-white/[0.03] backdrop-blur-xl p-3.5 rounded-xl border border-white/10 shadow-glass">
+              <div className="w-7 h-7 rounded-full bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-300 text-xs font-bold">✓</div>
+              <span className="font-medium text-xs sm:text-sm">Track Hours & Real-World Impact</span>
             </div>
           </div>
         </div>
@@ -84,14 +122,15 @@ const Login = () => {
 
       {/* Right Panel - Glassmorphic Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 z-10">
-        <div className="w-full max-w-md">
+        <FadeUp trigger="mount" delay={0.15} className="w-full max-w-md">
           <div className="lg:hidden mb-8 text-center">
             <Link to="/" className="inline-block text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-purple-400 to-cyan-400 tracking-tight">
               VolunteerConnect
             </Link>
           </div>
           
-          <div className="bg-[#0a0f28]/45 backdrop-blur-[20px] border border-white/[0.12] p-8 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.35)]">
+          <div className="bg-[#0a0f28]/45 backdrop-blur-[20px] border border-white/[0.12] p-8 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.35)] hover:border-white/20 transition-all">
+
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-white mb-2">Sign in to your account</h2>
               <p className="text-gray-400 text-sm">Enter your email and password to access your dashboard.</p>
@@ -164,7 +203,7 @@ const Login = () => {
               </p>
             </div>
           </div>
-        </div>
+        </FadeUp>
       </div>
     </div>
   );

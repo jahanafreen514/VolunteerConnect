@@ -3,10 +3,14 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { motion } from 'framer-motion';
-import { Mail, MessageSquare, Send, CheckCircle2, MapPin, Phone, Clock, HelpCircle, ShieldCheck } from 'lucide-react';
+import { Mail, MessageSquare, Send, CheckCircle2, MapPin, Phone, Clock, HelpCircle, ShieldCheck, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
 import PublicLayout from '../layouts/PublicLayout';
 import { contactService } from '../services/contactService';
+import FloatingCard from '../components/visual/FloatingCard';
+import Floating from '../components/animations/Floating';
+import FadeUp from '../components/animations/FadeUp';
+import Parallax from '../components/animations/Parallax';
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -48,10 +52,10 @@ const Contact = () => {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-300 text-xs font-semibold uppercase tracking-wider mb-4"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/10 border border-primary-500/25 text-primary-300 text-xs sm:text-sm font-semibold uppercase tracking-wider mb-4 shadow-glow-sm"
             >
-              <MessageSquare className="w-3.5 h-3.5" />
-              Get In Touch
+              <MessageSquare className="w-4 h-4 text-primary-400" />
+              <span>Get In Touch</span>
             </motion.div>
 
             <motion.h1
@@ -67,7 +71,7 @@ const Contact = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="mt-4 text-lg text-gray-400"
+              className="mt-4 text-lg text-gray-300 leading-relaxed max-w-2xl mx-auto"
             >
               Have a question about volunteering, NGO onboarding, or platform features? Our dedicated team is here to support your mission.
             </motion.p>
@@ -122,17 +126,20 @@ const Contact = () => {
                   </div>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-white/10">
-                  <h4 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">
-                    <HelpCircle className="w-4 h-4 text-primary-400" />
-                    Quick Answers
-                  </h4>
-                  <p className="text-xs text-gray-400 leading-relaxed">
-                    Check our <a href="/about" className="text-primary-400 hover:underline">About & FAQ page</a> to learn more about automated certificates, application reviews, and safety policies.
-                  </p>
+                <div className="mt-8 pt-6 border-t border-white/10 flex items-center justify-between">
+                  <Floating distance={6} duration={5}>
+                    <FloatingCard
+                      icon={Sparkles}
+                      iconColor="text-primary-400 bg-primary-500/20 border-primary-500/30"
+                      title="Direct Support"
+                      subtitle="Community-first service"
+                      badge="Active"
+                    />
+                  </Floating>
                 </div>
               </div>
             </motion.div>
+
 
             {/* Right Column: Contact Form */}
             <motion.div

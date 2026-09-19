@@ -21,13 +21,22 @@ import {
   Laptop, 
   Compass,
   Clock,
-  CalendarCheck
+  CalendarCheck,
+  UserCheck,
+  FileCheck2
 } from 'lucide-react';
 import PublicLayout from '../layouts/PublicLayout';
 import OpportunityCard from '../components/ui/OpportunityCard';
 import SkeletonCard from '../components/ui/SkeletonCard';
 import EmptyState from '../components/ui/EmptyState';
 import DepthText from '../components/ui/DepthText';
+import PolaroidCard from '../components/visual/PolaroidCard';
+import MotionVideoCard from '../components/visual/MotionVideoCard';
+import FloatingCard from '../components/visual/FloatingCard';
+import Floating from '../components/animations/Floating';
+import FadeUp from '../components/animations/FadeUp';
+import Parallax from '../components/animations/Parallax';
+import ScrollReveal from '../components/animations/ScrollReveal';
 import { opportunityService } from '../services/opportunityService';
 
 const SEARCH_PROMPTS = [
@@ -58,6 +67,49 @@ const CATEGORIES = [
   { id: 'disaster-relief', name: 'Disaster Relief', icon: Flame, color: 'from-red-500/20 to-amber-500/20', border: 'border-red-500/30', text: 'text-red-400' },
   { id: 'arts', name: 'Arts & Culture', icon: Palette, color: 'from-violet-500/20 to-purple-500/20', border: 'border-violet-500/30', text: 'text-violet-400' },
   { id: 'technology', name: 'Technology', icon: Laptop, color: 'from-cyan-500/20 to-sky-500/20', border: 'border-cyan-500/30', text: 'text-cyan-400' }
+];
+
+const HOW_IT_WORKS_STEPS = [
+  {
+    num: '01',
+    title: 'Discover',
+    tag: 'Explore Causes',
+    desc: 'Browse verified social causes by category, location, and required skills to find initiatives that inspire you.',
+    icon: Compass,
+    image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600&auto=format&fit=crop&q=80'
+  },
+  {
+    num: '02',
+    title: 'Register',
+    tag: 'Instant Onboarding',
+    desc: 'Create your profile in 60 seconds as an individual changemaker or apply for verified non-profit credentials.',
+    icon: UserCheck,
+    image: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=600&auto=format&fit=crop&q=80'
+  },
+  {
+    num: '03',
+    title: 'Find Opportunities',
+    tag: 'Smart Matching',
+    desc: 'Filter opportunities matching your schedule. One-click application with instant status updates and organizer chat.',
+    icon: Search,
+    image: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600&auto=format&fit=crop&q=80'
+  },
+  {
+    num: '04',
+    title: 'Volunteer',
+    tag: 'Ground Impact',
+    desc: 'Participate in on-site or virtual events. Organizers verify presence with digital attendance auditing.',
+    icon: Users,
+    image: 'https://images.unsplash.com/photo-1618477461853-cf6ed80faba5?w=600&auto=format&fit=crop&q=80'
+  },
+  {
+    num: '05',
+    title: 'Make an Impact',
+    tag: 'Certified Proof',
+    desc: 'Receive tamper-proof, serialized digital certificates with hours completed for your civic resume and LinkedIn.',
+    icon: Award,
+    image: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?w=600&auto=format&fit=crop&q=80'
+  }
 ];
 
 const Home = () => {
@@ -123,9 +175,72 @@ const Home = () => {
   return (
     <PublicLayout>
       <div className="relative overflow-hidden text-white bg-transparent">
-        {/* 1. HERO SECTION */}
-        <section className="relative min-h-[80vh] flex items-center justify-center pt-8 pb-16 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-5xl mx-auto text-center relative z-10">
+        {/* 1. HERO SECTION WITH LAYERED POLAROID & MOTION CARDS */}
+        <section className="relative min-h-[85vh] flex items-center justify-center pt-8 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
+          
+          {/* Desktop Left-Flank Layered Cards */}
+          <div className="hidden xl:block absolute left-4 2xl:left-12 top-1/2 -translate-y-1/2 pointer-events-auto z-10">
+            <div className="flex flex-col gap-6 items-start">
+              {/* Top Left: Polaroid Card */}
+              <Floating distance={10} duration={6} delay={0.2} rotate={-1}>
+                <PolaroidCard
+                  image="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600&auto=format&fit=crop&q=80"
+                  caption="Urban Forest Drive · 1,200 saplings planted"
+                  tag="Environment"
+                  date="Spring 2026"
+                  badge="🌱 ECO"
+                  rotation={-5}
+                  width="w-64"
+                />
+              </Floating>
+
+              {/* Middle Left: Floating Stat Badge */}
+              <Floating distance={8} duration={5} delay={1}>
+                <FloatingCard
+                  icon={ShieldCheck}
+                  iconColor="text-emerald-400 bg-emerald-500/20 border-emerald-500/30"
+                  title="100% Vetted NGOs"
+                  subtitle="Verified registration docs"
+                  badge="Audited"
+                  className="-ml-3"
+                />
+              </Floating>
+            </div>
+          </div>
+
+          {/* Desktop Right-Flank Layered Cards */}
+          <div className="hidden xl:block absolute right-4 2xl:right-12 top-1/2 -translate-y-1/2 pointer-events-auto z-10">
+            <div className="flex flex-col gap-6 items-end">
+              {/* Top Right: Polaroid Card */}
+              <Floating distance={12} duration={5.5} delay={0.5} rotate={1.5}>
+                <PolaroidCard
+                  image="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600&auto=format&fit=crop&q=80"
+                  caption="NextGen Code Camp · 60+ kids mentored"
+                  tag="Education"
+                  date="Active"
+                  badge="💻 TECH"
+                  rotation={4}
+                  width="w-64"
+                />
+              </Floating>
+
+              {/* Bottom Right: Floating Stat Badge */}
+              <Floating distance={9} duration={6.2} delay={1.2}>
+                <FloatingCard
+                  icon={Award}
+                  iconColor="text-purple-400 bg-purple-500/20 border-purple-500/30"
+                  value="35,000+ Hrs"
+                  title="Service Hours"
+                  subtitle="Tamper-proof certificates"
+                  badge="Certified"
+                  className="-mr-3"
+                />
+              </Floating>
+            </div>
+          </div>
+
+          {/* Center Hero Content */}
+          <div className="max-w-4xl mx-auto text-center relative z-20">
             {/* Top pill badge */}
             <motion.div
               initial={{ opacity: 0, y: -15 }}
@@ -243,7 +358,7 @@ const Home = () => {
             >
               <Link
                 to="/opportunities"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-semibold text-white bg-primary-600 hover:bg-primary-500 btn-glow transition-all group"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-semibold text-white bg-primary-600 hover:bg-primary-500 btn-glow transition-all group shadow-glow-sm"
               >
                 <span>Find Opportunities</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -272,8 +387,65 @@ const Home = () => {
           </div>
         </section>
 
+        {/* 1.5 COMMUNITY IN MOTION SHOWCASE (Polaroid & Video Carousel) */}
+        <section className="py-12 px-4 sm:px-6 lg:px-8 relative z-10 border-b border-white/5 bg-white/[0.01]">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-widest text-primary-400">Real Moments</span>
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">Community in Motion</h3>
+              </div>
+              <Link to="/about" className="text-xs sm:text-sm font-semibold text-gray-400 hover:text-primary-300 flex items-center gap-1">
+                <span>Our Story</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-center justify-items-center">
+              <PolaroidCard
+                image="https://images.unsplash.com/photo-1618477461853-cf6ed80faba5?w=600&auto=format&fit=crop&q=80"
+                caption="Coastal Cleanup Crew · 450kg plastic removed"
+                tag="Ocean Care"
+                date="March 2026"
+                badge="🌊 Vetted"
+                rotation={-2}
+                width="w-full max-w-[280px]"
+              />
+
+              <MotionVideoCard
+                poster="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=600&auto=format&fit=crop&q=80"
+                title="Community Park Renewal & Gardening"
+                category="Eco Volunteer"
+                badge="LIVE"
+                rotation={2}
+                width="w-full max-w-[280px]"
+              />
+
+              <PolaroidCard
+                image="https://images.unsplash.com/photo-1593113598332-cd288d649433?w=600&auto=format&fit=crop&q=80"
+                caption="Nutrition Kit Packing · 2,400 meals distributed"
+                tag="Food Drive"
+                date="Feb 2026"
+                badge="🍲 Relief"
+                rotation={-3}
+                width="w-full max-w-[280px]"
+              />
+
+              <PolaroidCard
+                image="https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=600&auto=format&fit=crop&q=80"
+                caption="Shelter Pet Rescue & Medical Checkups"
+                tag="Animal Care"
+                date="Ongoing"
+                badge="🐾 Rescue"
+                rotation={3}
+                width="w-full max-w-[280px]"
+              />
+            </div>
+          </div>
+        </section>
+
         {/* 2. REAL IMPACT SUMMARY (Atlas Backed) */}
-        <section className="relative z-10 py-12 px-4 sm:px-6 lg:px-8 border-y border-white/10 bg-white/[0.02] backdrop-blur-xl">
+        <section className="relative z-10 py-12 px-4 sm:px-6 lg:px-8 border-b border-white/10 bg-white/[0.02] backdrop-blur-xl">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
               <div className="p-6 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/10 shadow-glass hover:bg-white/[0.06] transition-all">
@@ -315,38 +487,73 @@ const Home = () => {
           </div>
         </section>
 
-        {/* 3. HOW IT WORKS */}
+        {/* 3. HOW IT WORKS (ANIMATED 5-STEP WORKFLOW) */}
         <section id="how-it-works" className="py-24 px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center max-w-3xl mx-auto mb-16">
-              <span className="text-xs font-bold uppercase tracking-widest text-primary-400">Simple 4-Step Process</span>
+            <div className="text-center max-w-3xl mx-auto mb-20">
+              <span className="text-xs font-bold uppercase tracking-widest text-primary-400">Step-by-Step Pathway</span>
               <h2 className="text-3xl sm:text-5xl font-extrabold text-white mt-2">
                 How VolunteerConnect Works
               </h2>
               <p className="text-gray-400 text-base sm:text-lg mt-4">
-                From finding an initiative that inspires you to receiving certified proof of service, we make volunteering effortless and transparent.
+                From finding an initiative that inspires you to receiving certified proof of service, we make volunteering effortless, transparent, and rewarding.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {[
-                { step: '01', title: 'Discover Causes', desc: 'Filter by category, city, date, and required skills to find projects matching your passions.', icon: Compass },
-                { step: '02', title: 'Apply in 1-Click', desc: 'Submit your interest directly. Verified NGOs review applications with instant notifications.', icon: CheckCircle2 },
-                { step: '03', title: 'Make an Impact', desc: 'Participate on the ground or virtually. Attendance is tracked digitally by organizers.', icon: CalendarCheck },
-                { step: '04', title: 'Earn Recognition', desc: 'Receive official, verifiable digital certificates with hours completed for your civic resume.', icon: Award }
-              ].map((item, idx) => (
-                <div key={idx} className="glass-card p-8 relative border border-white/10 hover:border-primary-500/40 transition-all hover:-translate-y-1">
-                  <span className="text-4xl font-black text-white/10 absolute top-6 right-6 font-mono">{item.step}</span>
-                  <div className="p-3.5 rounded-xl bg-primary-500/10 text-primary-400 w-fit mb-6 border border-primary-500/20">
-                    <item.icon className="w-6 h-6" />
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-2.5">{item.title}</h3>
-                  <p className="text-sm text-gray-400 leading-relaxed">{item.desc}</p>
-                </div>
-              ))}
+            {/* 5-Step Cards Grid with Connecting Visual Flow */}
+            <div className="relative">
+              {/* Progressive Connector Line on Desktop */}
+              <div className="hidden lg:block absolute top-1/2 left-8 right-8 h-0.5 bg-gradient-to-r from-primary-500/20 via-purple-500/40 to-cyan-500/20 -translate-y-12 pointer-events-none z-0" />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 relative z-10">
+                {HOW_IT_WORKS_STEPS.map((step, idx) => (
+                  <FadeUp key={step.num} delay={idx * 0.12} className="h-full">
+                    <div className="glass-card p-6 h-full flex flex-col justify-between border border-white/10 hover:border-primary-500/40 transition-all hover:-translate-y-2 group">
+                      <div>
+                        {/* Step Header */}
+                        <div className="flex items-center justify-between mb-4">
+                          <span className="text-3xl font-black font-mono text-primary-400/30 group-hover:text-primary-400 transition-colors">
+                            {step.num}
+                          </span>
+                          <div className="p-3 rounded-xl bg-primary-500/10 text-primary-400 border border-primary-500/20 group-hover:scale-110 transition-transform">
+                            <step.icon className="w-5 h-5" />
+                          </div>
+                        </div>
+
+                        {/* Thumbnail image */}
+                        <div className="relative aspect-[16/9] w-full rounded-xl overflow-hidden mb-4 bg-gray-900 border border-white/5">
+                          <img
+                            src={step.image}
+                            alt={step.title}
+                            loading="lazy"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                          <span className="absolute bottom-1.5 left-2 text-[10px] font-bold text-white/90 uppercase tracking-wider">
+                            {step.tag}
+                          </span>
+                        </div>
+
+                        <h3 className="text-lg font-bold text-white mb-2 group-hover:text-primary-300 transition-colors">
+                          {step.title}
+                        </h3>
+                        <p className="text-xs sm:text-sm text-gray-400 leading-relaxed">
+                          {step.desc}
+                        </p>
+                      </div>
+
+                      <div className="mt-4 pt-3 border-t border-white/5 flex items-center text-[11px] font-semibold text-primary-400/80 group-hover:text-primary-300">
+                        <span>Step {idx + 1} of 5</span>
+                        <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </div>
+                  </FadeUp>
+                ))}
+              </div>
             </div>
           </div>
         </section>
+
 
         {/* 4 & 5. VOLUNTEER & NGO JOURNEYS */}
         <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-white/5 relative z-10">
