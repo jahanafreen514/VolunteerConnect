@@ -1,12 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import RisingParticles from './RisingParticles';
 
-const AnimatedBackground = ({ variant = 'default', showGrid = true, showParticles = true }) => {
+const AnimatedBackground = ({ showGrid = true, showParticles = true, showNodes = true }) => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
-    // Only render interactive particle nodes for 'hero' variant
-    if (variant !== 'hero' || !canvasRef.current) return;
+    if (!showNodes || !canvasRef.current) return;
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
@@ -21,43 +20,44 @@ const AnimatedBackground = ({ variant = 'default', showGrid = true, showParticle
     };
     window.addEventListener('resize', handleResize);
 
-    // Particle nodes count scaled to screen size
-    const particleCount = Math.min(Math.floor(width / 30), 50);
+    // Subtle ambient connected nodes
+    const particleCount = Math.min(Math.floor(width / 32), 48);
     const particles = [];
+    const colors = ['rgba(99, 102, 241, 0.6)', 'rgba(56, 189, 248, 0.55)', 'rgba(168, 85, 247, 0.5)', 'rgba(45, 212, 191, 0.5)'];
 
     for (let i = 0; i < particleCount; i++) {
       particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
+        vx: (Math.random() - 0.5) * 0.45,
+        vy: (Math.random() - 0.5) * 0.45,
         radius: Math.random() * 2 + 1,
-        color: i % 3 === 0 ? 'rgba(99, 102, 241, 0.6)' : i % 3 === 1 ? 'rgba(14, 165, 233, 0.55)' : 'rgba(168, 85, 247, 0.5)'
+        color: colors[i % colors.length]
       });
     }
 
     const animate = () => {
       ctx.clearRect(0, 0, width, height);
 
-      // Connect close particles with subtle glowing lines
+      // Subtle network connection filaments
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
 
-          if (dist < 140) {
+          if (dist < 130) {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(99, 102, 241, ${(1 - dist / 140) * 0.22})`;
-            ctx.lineWidth = 0.9;
+            ctx.strokeStyle = `rgba(99, 102, 241, ${(1 - dist / 130) * 0.18})`;
+            ctx.lineWidth = 0.8;
             ctx.stroke();
           }
         }
       }
 
-      // Draw and move particles
+      // Draw and move nodes
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
         p.x += p.vx;
@@ -71,13 +71,15 @@ const AnimatedBackground = ({ variant = 'default', showGrid = true, showParticle
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = p.color;
         ctx.fill();
+        ctx.shadowBlur = 0;
       }
 
       animationFrameId = requestAnimationFrame(animate);
     };
 
-    // Check reduced motion
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!prefersReducedMotion) {
       animate();
@@ -87,51 +89,49 @@ const AnimatedBackground = ({ variant = 'default', showGrid = true, showParticle
       window.removeEventListener('resize', handleResize);
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
     };
-  }, [variant]);
-
-  const containerClass = variant === 'subtle' || variant === 'card'
-    ? "absolute inset-0 -z-10 overflow-hidden pointer-events-none"
-    : "fixed inset-0 -z-10 overflow-hidden pointer-events-none";
+  }, [showNodes]);
 
   return (
-    <div className={containerClass}>
-      {/* Deep dark base background */}
-      <div className="absolute inset-0 bg-[#070913]" />
+    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none select-none">
+      {/* Layer 1: Deep navy / indigo atmospheric base gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#050816] via-[#070d28] to-[#030614]" />
 
-      {/* Floating ambient glow blobs - highlighted and vibrant */}
-      <div className="absolute -top-32 -left-32 w-[650px] h-[650px] bg-primary-600/25 rounded-full blur-[150px] animate-blob" />
+      {/* Layer 2: Slow moving ambient radial glow orbs */}
       <div 
-        className="absolute top-1/4 -right-32 w-[600px] h-[600px] bg-cyan-500/20 rounded-full blur-[150px] animate-blob" 
-        style={{ animationDelay: '3s' }} 
+        className="absolute -top-32 -left-32 w-[720px] h-[720px] bg-primary-600/22 rounded-full blur-[160px] animate-blob" 
       />
       <div 
-        className="absolute -bottom-32 left-1/4 w-[550px] h-[550px] bg-purple-600/22 rounded-full blur-[150px] animate-blob" 
-        style={{ animationDelay: '6s' }} 
+        className="absolute top-1/4 -right-32 w-[650px] h-[650px] bg-cyan-500/20 rounded-full blur-[160px] animate-blob" 
+        style={{ animationDelay: '3.5s' }} 
       />
       <div 
-        className="absolute top-2/3 -left-20 w-[450px] h-[450px] bg-indigo-500/20 rounded-full blur-[140px] animate-blob" 
-        style={{ animationDelay: '4.5s' }} 
+        className="absolute -bottom-32 left-1/4 w-[600px] h-[600px] bg-purple-600/22 rounded-full blur-[160px] animate-blob" 
+        style={{ animationDelay: '7s' }} 
+      />
+      <div 
+        className="absolute top-2/3 -left-20 w-[500px] h-[500px] bg-teal-500/18 rounded-full blur-[150px] animate-blob" 
+        style={{ animationDelay: '5s' }} 
       />
 
-      {/* Rising Particles Layer */}
+      {/* Layer 3: Rising Particles field */}
       {showParticles && (
-        <RisingParticles count={55} speed={0.75} glow={true} />
+        <RisingParticles count={55} speed={0.7} glow={true} />
       )}
 
-      {/* Subtle Dot Grid pattern */}
-      {showGrid && (
-        <div 
-          className="absolute inset-0 opacity-[0.15] bg-[radial-gradient(#818cf8_1px,transparent_1px)] [background-size:24px_24px]" 
-        />
-      )}
-
-      {/* Interactive Particle Canvas for Hero */}
-      {variant === 'hero' && (
+      {/* Layer 4: Soft glowing nodes & subtle connection network */}
+      {showNodes && (
         <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />
       )}
 
-      {/* Subtle top ambient radial highlight */}
-      <div className="absolute top-0 inset-x-0 h-96 bg-gradient-to-b from-primary-950/30 via-transparent to-transparent pointer-events-none" />
+      {/* Layer 5: Subtle dot matrix & cyan/violet ambient highlights */}
+      {showGrid && (
+        <div 
+          className="absolute inset-0 opacity-[0.14] bg-[radial-gradient(#818cf8_1px,transparent_1px)] [background-size:26px_26px]" 
+        />
+      )}
+
+      {/* Top subtle ambient glow */}
+      <div className="absolute top-0 inset-x-0 h-96 bg-gradient-to-b from-primary-600/10 via-transparent to-transparent pointer-events-none" />
     </div>
   );
 };

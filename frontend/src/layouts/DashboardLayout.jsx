@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, X } from 'lucide-react';
-import AnimatedBackground from '../components/ui/AnimatedBackground';
+import { Menu } from 'lucide-react';
 
 const DashboardLayout = ({ children, sidebar }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -18,9 +17,7 @@ const DashboardLayout = ({ children, sidebar }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 flex relative">
-      <AnimatedBackground />
-      
+    <div className="min-h-screen bg-transparent flex relative z-1">
       {/* Mobile overlay */}
       {isSidebarOpen && (
         <div 
@@ -40,7 +37,7 @@ const DashboardLayout = ({ children, sidebar }) => {
 
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative z-10">
-        <div className="lg:hidden p-4 border-b border-white/10 bg-gray-900/50 backdrop-blur-md flex items-center">
+        <div className="lg:hidden p-4 border-b border-white/10 bg-[#050a1e]/60 backdrop-blur-md flex items-center">
           <button 
             onClick={() => setIsSidebarOpen(true)}
             className="p-2 -ml-2 text-gray-400 hover:text-white rounded-lg hover:bg-white/5"

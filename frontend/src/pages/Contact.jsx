@@ -6,7 +6,6 @@ import { motion } from 'framer-motion';
 import { Mail, MessageSquare, Send, CheckCircle2, MapPin, Phone, Clock, HelpCircle, ShieldCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
 import PublicLayout from '../layouts/PublicLayout';
-import AnimatedBackground from '../components/ui/AnimatedBackground';
 import { contactService } from '../services/contactService';
 
 const contactSchema = z.object({
@@ -27,12 +26,12 @@ const Contact = () => {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      await contactService.submitContact(data);
+      await contactService.sendMessage(data);
       setSubmitted(true);
       toast.success('Your message has been sent successfully!');
       reset();
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to send your message. Please try again.');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to send message. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -40,8 +39,7 @@ const Contact = () => {
 
   return (
     <PublicLayout>
-      <div className="relative min-h-screen pt-28 pb-20 overflow-hidden">
-        <AnimatedBackground />
+      <div className="relative min-h-screen pt-8 pb-20 overflow-hidden bg-transparent">
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Header */}

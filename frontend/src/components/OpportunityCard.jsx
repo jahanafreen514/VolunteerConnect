@@ -69,7 +69,7 @@ const OpportunityCard = ({ opportunity = {}, onApply, showNGOActions = false }) 
             <span className="text-white/50 font-semibold capitalize">{category}</span>
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050816]/80 via-transparent to-transparent" />
         {category && (
           <div className="absolute top-4 left-4">
             <Badge className={categoryColors[category] || categoryColors.Default}>{category}</Badge>

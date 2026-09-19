@@ -1,19 +1,15 @@
 import React from 'react';
 import Navbar from './Navbar';
 import Footer from '../components/Footer';
-import AnimatedBackground from '../components/ui/AnimatedBackground';
 
 const PublicLayout = ({ children }) => {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-950 relative">
-      <AnimatedBackground />
+    <div className="min-h-screen flex flex-col bg-transparent relative z-1">
       <Navbar />
-      <main className="flex-grow pt-24 pb-12 z-10">
+      <main className="flex-grow pt-24 pb-12">
         {children}
       </main>
-      <div className="z-10">
-        <Footer />
-      </div>
+      <Footer />
     </div>
   );
 };

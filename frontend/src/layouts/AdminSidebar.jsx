@@ -16,7 +16,7 @@ const AdminSidebar = ({ onNavigate }) => {
   const { user, logout } = useAuth();
 
   return (
-    <div className="h-full flex flex-col w-64 bg-gray-950/85 backdrop-blur-2xl border-r border-white/10">
+    <div className="h-full flex flex-col w-64 bg-[#050a1e]/65 backdrop-blur-xl border-r border-white/10">
       <div className="p-6 border-b border-white/10">
         <div className="flex items-center gap-2.5">
           <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">

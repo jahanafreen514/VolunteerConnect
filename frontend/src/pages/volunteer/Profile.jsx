@@ -11,7 +11,6 @@ import Textarea from '../../components/ui/Textarea';
 import Button from '../../components/ui/Button';
 import Avatar from '../../components/ui/Avatar';
 import Badge from '../../components/ui/Badge';
-import AnimatedBackground from '../../components/ui/AnimatedBackground';
 import { useAuth } from '../../context/AuthContext';
 import ChangePasswordCard from '../../components/ChangePasswordCard';
 
@@ -121,7 +120,6 @@ const VolunteerProfile = () => {
 
   return (
     <DashboardLayout sidebar={<VolunteerSidebar />}>
-      <AnimatedBackground />
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         <h1 className="text-2xl font-bold text-white mb-6">My Profile</h1>
         

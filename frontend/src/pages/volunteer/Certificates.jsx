@@ -9,7 +9,6 @@ import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import EmptyState from '../../components/ui/EmptyState';
 import SkeletonCard from '../../components/ui/SkeletonCard';
-import AnimatedBackground from '../../components/ui/AnimatedBackground';
 
 const Certificates = () => {
   const [certificates, setCertificates] = useState([]);
@@ -36,7 +35,6 @@ const Certificates = () => {
 
   return (
     <DashboardLayout sidebar={<VolunteerSidebar />}>
-      <AnimatedBackground />
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>

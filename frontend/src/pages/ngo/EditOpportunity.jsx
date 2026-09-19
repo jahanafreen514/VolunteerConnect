@@ -10,7 +10,6 @@ import Card from '../../components/ui/Card';
 import Input from '../../components/ui/Input';
 import Textarea from '../../components/ui/Textarea';
 import Button from '../../components/ui/Button';
-import AnimatedBackground from '../../components/ui/AnimatedBackground';
 
 const CATEGORIES = [
   'Education', 'Environment', 'Healthcare', 'Animal Welfare', 
@@ -114,7 +113,6 @@ const EditOpportunity = () => {
 
   return (
     <DashboardLayout sidebar={<NGOSidebar />}>
-      <AnimatedBackground />
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         <div className="flex items-center gap-4 mb-6">
           <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="text-gray-400 hover:text-white">

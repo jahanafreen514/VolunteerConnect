@@ -13,7 +13,6 @@ import Modal from '../../components/ui/Modal';
 import Textarea from '../../components/ui/Textarea';
 import SkeletonTable from '../../components/ui/SkeletonTable';
 import EmptyState from '../../components/ui/EmptyState';
-import AnimatedBackground from '../../components/ui/AnimatedBackground';
 
 const Reports = () => {
   const [reports, setReports] = useState([]);
@@ -63,7 +62,6 @@ const Reports = () => {
 
   return (
     <DashboardLayout sidebar={<AdminSidebar />}>
-      <AnimatedBackground />
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>

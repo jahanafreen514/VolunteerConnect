@@ -6,7 +6,6 @@ import * as z from 'zod';
 import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
-import AnimatedBackground from '../../components/ui/AnimatedBackground';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -56,10 +55,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex relative overflow-hidden">
-      {/* Motion Background */}
-      <AnimatedBackground showParticles={true} />
-
+    <div className="min-h-screen flex relative overflow-hidden bg-transparent">
       {/* Left Panel - Hidden on mobile */}
       <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-center items-center p-12 overflow-hidden z-10">
         <div className="relative z-10 w-full max-w-lg">
@@ -95,7 +91,7 @@ const Login = () => {
             </Link>
           </div>
           
-          <div className="bg-white/[0.04] backdrop-blur-2xl p-8 rounded-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.4)]">
+          <div className="bg-[#0a0f28]/45 backdrop-blur-[20px] border border-white/[0.12] p-8 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.35)]">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-white mb-2">Sign in to your account</h2>
               <p className="text-gray-400 text-sm">Enter your email and password to access your dashboard.</p>

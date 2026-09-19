@@ -17,7 +17,6 @@ import Badge from '../../components/ui/Badge';
 import Avatar from '../../components/ui/Avatar';
 import EmptyState from '../../components/ui/EmptyState';
 import ConfirmDialog from '../../components/ui/ConfirmDialog';
-import AnimatedBackground from '../../components/ui/AnimatedBackground';
 
 const NGODashboard = () => {
   const [stats, setStats] = useState(null);
@@ -61,7 +60,6 @@ const NGODashboard = () => {
 
   return (
     <DashboardLayout sidebar={<NGOSidebar />}>
-      <AnimatedBackground />
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         
         {profile?.verificationStatus === 'pending' && (

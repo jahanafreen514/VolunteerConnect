@@ -8,7 +8,6 @@ import { Mail, Lock, Eye, EyeOff, User, Building, ArrowLeft, Loader2, Info } fro
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import { authService } from '../../services/authService';
-import AnimatedBackground from '../../components/ui/AnimatedBackground';
 
 // Helper for password strength
 const checkPasswordStrength = (password) => {
@@ -104,9 +103,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center p-6 relative overflow-hidden pt-20 pb-12">
-      <AnimatedBackground showParticles={true} />
-
+    <div className="min-h-screen flex flex-col justify-center items-center p-6 relative overflow-hidden pt-20 pb-12 bg-transparent">
       <div className="relative z-10 w-full max-w-4xl">
         <div className="text-center mb-8">
           <Link to="/" className="inline-block text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-purple-400 to-cyan-400 tracking-tight">
@@ -126,7 +123,7 @@ const Register = () => {
             >
               <button 
                 onClick={() => handleRoleSelect('volunteer')}
-                className="bg-white/[0.04] backdrop-blur-2xl border border-white/10 p-8 rounded-3xl hover:border-primary-500/50 hover:bg-white/[0.07] transition-all group text-left shadow-glass"
+                className="bg-[#0a0f28]/45 backdrop-blur-[20px] border border-white/[0.12] p-8 rounded-3xl hover:border-primary-500/50 hover:bg-[#0a0f28]/60 transition-all group text-left shadow-glass"
               >
                 <div className="w-16 h-16 rounded-2xl bg-primary-500/20 border border-primary-500/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                   <User className="w-8 h-8 text-primary-400" />
@@ -140,7 +137,7 @@ const Register = () => {
 
               <button 
                 onClick={() => handleRoleSelect('ngo')}
-                className="bg-white/[0.04] backdrop-blur-2xl border border-white/10 p-8 rounded-3xl hover:border-accent-500/50 hover:bg-white/[0.07] transition-all group text-left shadow-glass"
+                className="bg-[#0a0f28]/45 backdrop-blur-[20px] border border-white/[0.12] p-8 rounded-3xl hover:border-accent-500/50 hover:bg-[#0a0f28]/60 transition-all group text-left shadow-glass"
               >
                 <div className="w-16 h-16 rounded-2xl bg-accent-500/20 border border-accent-500/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                   <Building className="w-8 h-8 text-accent-400" />
@@ -160,7 +157,7 @@ const Register = () => {
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -50 }}
-              className="bg-white/[0.04] backdrop-blur-2xl border border-white/10 p-8 rounded-3xl max-w-lg mx-auto w-full shadow-[0_8px_32px_0_rgba(0,0,0,0.4)]"
+              className="bg-[#0a0f28]/45 backdrop-blur-[20px] border border-white/[0.12] p-8 rounded-3xl max-w-lg mx-auto w-full shadow-[0_8px_32px_0_rgba(0,0,0,0.35)]"
             >
               <button 
                 onClick={() => setStep(1)}

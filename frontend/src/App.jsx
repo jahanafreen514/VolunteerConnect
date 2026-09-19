@@ -7,6 +7,7 @@ import { SocketProvider } from './context/SocketContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 import SplashScreen from './components/ui/SplashScreen';
+import AnimatedBackground from './components/ui/AnimatedBackground';
 
 const Home = lazy(() => import('./pages/Home'));
 const About = lazy(() => import('./pages/About'));
@@ -45,7 +46,7 @@ const AdminReports = lazy(() => import('./pages/admin/Reports'));
 const Analytics = lazy(() => import('./pages/admin/Analytics'));
 
 const PageLoader = () => (
-  <div className="min-h-screen bg-gray-950 flex items-center justify-center">
+  <div className="min-h-screen bg-transparent flex items-center justify-center">
     <div className="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
   </div>
 );
@@ -59,6 +60,9 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <SocketProvider>
+          {/* Global Animated Background fixed behind all content */}
+          <AnimatedBackground />
+
           <AnimatePresence>
             {showSplash && (
               <SplashScreen 

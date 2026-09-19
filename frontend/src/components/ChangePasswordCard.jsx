@@ -62,7 +62,7 @@ const ChangePasswordCard = () => {
             <input
               type={showCurrent ? 'text' : 'password'}
               {...register('currentPassword')}
-              className={`block w-full pl-9 pr-10 py-2.5 bg-gray-950 border ${errors.currentPassword ? 'border-red-500' : 'border-gray-800 focus:border-primary-500'} rounded-xl text-white placeholder-gray-500 text-sm outline-none transition-colors`}
+              className={`block w-full pl-9 pr-10 py-2.5 bg-white/[0.05] border ${errors.currentPassword ? 'border-red-500' : 'border-white/10 focus:border-primary-500'} rounded-xl text-white placeholder-gray-500 text-sm outline-none transition-colors`}
               placeholder="••••••••"
             />
             <button
@@ -85,7 +85,7 @@ const ChangePasswordCard = () => {
             <input
               type={showNew ? 'text' : 'password'}
               {...register('newPassword')}
-              className={`block w-full pl-9 pr-10 py-2.5 bg-gray-950 border ${errors.newPassword ? 'border-red-500' : 'border-gray-800 focus:border-primary-500'} rounded-xl text-white placeholder-gray-500 text-sm outline-none transition-colors`}
+              className={`block w-full pl-9 pr-10 py-2.5 bg-white/[0.05] border ${errors.newPassword ? 'border-red-500' : 'border-white/10 focus:border-primary-500'} rounded-xl text-white placeholder-gray-500 text-sm outline-none transition-colors`}
               placeholder="At least 6 characters"
             />
             <button
@@ -108,7 +108,7 @@ const ChangePasswordCard = () => {
             <input
               type={showConfirm ? 'text' : 'password'}
               {...register('confirmPassword')}
-              className={`block w-full pl-9 pr-10 py-2.5 bg-gray-950 border ${errors.confirmPassword ? 'border-red-500' : 'border-gray-800 focus:border-primary-500'} rounded-xl text-white placeholder-gray-500 text-sm outline-none transition-colors`}
+              className={`block w-full pl-9 pr-10 py-2.5 bg-white/[0.05] border ${errors.confirmPassword ? 'border-red-500' : 'border-white/10 focus:border-primary-500'} rounded-xl text-white placeholder-gray-500 text-sm outline-none transition-colors`}
               placeholder="Confirm new password"
             />
             <button

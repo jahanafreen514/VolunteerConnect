@@ -18,7 +18,7 @@ const VolunteerSidebar = ({ onNavigate }) => {
   const { user, logout } = useAuth();
 
   return (
-    <div className="h-full flex flex-col w-64 bg-gray-950/80 backdrop-blur-2xl border-r border-white/10">
+    <div className="h-full flex flex-col w-64 bg-[#050a1e]/65 backdrop-blur-xl border-r border-white/10">
       <div className="p-6 border-b border-white/10">
         <div className="flex items-center gap-3">
           <Avatar name={user?.name} size="md" />

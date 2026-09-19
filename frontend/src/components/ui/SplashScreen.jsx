@@ -42,7 +42,7 @@ const SplashScreen = ({ onFinish, duration = 5000 }) => {
       initial={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 1.05 }}
       transition={{ duration: 0.6, ease: 'easeInOut' }}
-      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-gray-950 text-white select-none overflow-hidden"
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#050816] text-white select-none overflow-hidden"
     >
       {/* Soft Rising Particles Background */}
       <RisingParticles count={70} speed={0.9} glow={true} />
@@ -81,7 +81,7 @@ const SplashScreen = ({ onFinish, duration = 5000 }) => {
           />
 
           <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-tr from-primary-500 via-indigo-500 to-cyan-400 p-0.5 shadow-2xl flex items-center justify-center">
-            <div className="w-full h-full bg-gray-950/80 backdrop-blur-xl rounded-[22px] flex items-center justify-center relative overflow-hidden">
+            <div className="w-full h-full bg-[#050816]/80 backdrop-blur-xl rounded-[22px] flex items-center justify-center relative overflow-hidden">
               <motion.div
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}

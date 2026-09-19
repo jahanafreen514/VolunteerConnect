@@ -8,7 +8,6 @@ import DashboardLayout from '../../components/layouts/DashboardLayout';
 import AdminSidebar from '../../components/layouts/AdminSidebar';
 import { adminService } from '../../services/adminService';
 import Card from '../../components/ui/Card';
-import AnimatedBackground from '../../components/ui/AnimatedBackground';
 
 const Analytics = () => {
   const [analytics, setAnalytics] = useState(null);
@@ -81,7 +80,6 @@ const Analytics = () => {
 
   return (
     <DashboardLayout sidebar={<AdminSidebar />}>
-      <AnimatedBackground />
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-white">Analytics & Reports</h1>

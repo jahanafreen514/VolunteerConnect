@@ -23,7 +23,6 @@ import {
   CalendarCheck
 } from 'lucide-react';
 import PublicLayout from '../layouts/PublicLayout';
-import AnimatedBackground from '../components/ui/AnimatedBackground';
 import OpportunityCard from '../components/ui/OpportunityCard';
 import SkeletonCard from '../components/ui/SkeletonCard';
 import EmptyState from '../components/ui/EmptyState';
@@ -78,11 +77,9 @@ const Home = () => {
 
   return (
     <PublicLayout>
-      <div className="relative overflow-hidden bg-gray-950 text-white">
-        <AnimatedBackground variant="hero" />
-
+      <div className="relative overflow-hidden text-white bg-transparent">
         {/* 1. HERO SECTION */}
-        <section className="relative min-h-[92vh] flex items-center justify-center pt-28 pb-16 px-4 sm:px-6 lg:px-8">
+        <section className="relative min-h-[80vh] flex items-center justify-center pt-8 pb-16 px-4 sm:px-6 lg:px-8">
           <div className="max-w-5xl mx-auto text-center relative z-10">
             {/* Top pill badge */}
             <motion.div

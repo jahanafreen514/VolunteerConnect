@@ -123,32 +123,32 @@ const OpportunityDetail = () => {
 
   return (
     <PublicLayout>
-      <div className="bg-gray-950 min-h-screen pb-20">
+      <div className="min-h-screen pb-20 bg-transparent">
         {/* Banner */}
-        <div className="h-64 md:h-80 w-full bg-gradient-to-r from-gray-900 to-gray-800 relative">
+        <div className="h-64 md:h-80 w-full bg-gradient-to-r from-primary-950/40 via-purple-950/30 to-indigo-950/40 relative">
           {opportunity.image && (
-            <img src={opportunity.image} alt={opportunity.title} className="w-full h-full object-cover opacity-50" />
+            <img src={opportunity.image} alt={opportunity.title} className="w-full h-full object-cover opacity-60" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-950 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#050816]/90 via-transparent to-transparent"></div>
         </div>
 
         <div className="container mx-auto px-6 -mt-20 relative z-10">
-          <button onClick={() => navigate(-1)} className="flex items-center text-gray-300 hover:text-white mb-6 bg-gray-900/80 backdrop-blur px-3 py-1.5 rounded-full border border-gray-700 w-fit">
+          <button onClick={() => navigate(-1)} className="flex items-center text-gray-200 hover:text-white mb-6 glass px-3.5 py-1.5 rounded-full border border-white/15 w-fit">
             <ChevronLeft className="w-4 h-4 mr-1" /> Back
           </button>
 
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Left Column - Details */}
             <div className="lg:w-2/3 space-y-8">
-              <div className="bg-gray-900 rounded-2xl border border-gray-800 p-6 md:p-8">
-                <span className="inline-block px-3 py-1 bg-primary-900/50 text-primary-400 rounded-full text-xs font-semibold tracking-wider uppercase mb-4">
+              <div className="glass-card p-6 md:p-8 border border-white/10">
+                <span className="inline-block px-3 py-1 bg-primary-500/15 text-primary-300 border border-primary-500/25 rounded-full text-xs font-semibold tracking-wider uppercase mb-4">
                   {opportunity.category?.replace('-', ' ')}
                 </span>
                 <h1 className="text-3xl md:text-4xl font-bold text-white mb-6">{opportunity.title}</h1>
                 
                 {/* NGO Info */}
-                <div className="flex items-center p-4 bg-gray-950 rounded-xl border border-gray-800 mb-8">
-                  <div className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center text-xl font-bold text-gray-400 mr-4">
+                <div className="flex items-center p-4 bg-white/[0.03] backdrop-blur-md rounded-xl border border-white/10 mb-8">
+                  <div className="w-12 h-12 bg-primary-500/20 text-primary-300 border border-primary-500/30 rounded-full flex items-center justify-center text-xl font-bold mr-4">
                     {opportunity.ngo?.organizationName?.charAt(0) || 'N'}
                   </div>
                   <div>
@@ -170,7 +170,7 @@ const OpportunityDetail = () => {
                     <h3 className="text-lg font-semibold text-white mb-3">Required Skills</h3>
                     <div className="flex flex-wrap gap-2">
                       {opportunity.skills.map((skill, idx) => (
-                        <span key={idx} className="px-3 py-1 bg-gray-800 text-gray-300 rounded-full text-sm border border-gray-700">
+                        <span key={idx} className="px-3 py-1 bg-white/5 text-gray-200 rounded-full text-sm border border-white/10">
                           {skill}
                         </span>
                       ))}
@@ -180,7 +180,7 @@ const OpportunityDetail = () => {
               </div>
 
               {/* Event Details Grid */}
-              <div className="bg-gray-900 rounded-2xl border border-gray-800 p-6 md:p-8">
+              <div className="glass-card p-6 md:p-8 border border-white/10">
                 <h3 className="text-xl font-semibold text-white mb-6">Event Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="flex items-start">
@@ -196,12 +196,11 @@ const OpportunityDetail = () => {
                       <p className="text-gray-400 text-sm">Time</p>
                       <p className="text-white font-medium">
                         {opportunity.time} 
-                        {/* If you have endTime, add it: - {opportunity.endTime} */}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-start">
-                    <MapPin className="w-5 h-5 text-green-400 mt-1 mr-3" />
+                    <MapPin className="w-5 h-5 text-emerald-400 mt-1 mr-3" />
                     <div>
                       <p className="text-gray-400 text-sm">Location</p>
                       <p className="text-white font-medium">{opportunity.location}, {opportunity.city}</p>
@@ -220,13 +219,13 @@ const OpportunityDetail = () => {
 
             {/* Right Column - Sticky Sidebar */}
             <div className="lg:w-1/3">
-              <div className="sticky top-24 bg-gray-900 rounded-2xl border border-gray-800 p-6">
+              <div className="sticky top-24 glass-card p-6 border border-white/10">
                 {/* Status Badges */}
                 <div className="mb-6 flex flex-wrap gap-2">
-                  {isCompleted && <span className="px-3 py-1 bg-green-900/50 text-green-400 rounded-full text-sm font-medium border border-green-800">Completed</span>}
-                  {isCancelled && <span className="px-3 py-1 bg-red-900/50 text-red-400 rounded-full text-sm font-medium border border-red-800">Cancelled</span>}
-                  {isOngoing && <span className="px-3 py-1 bg-blue-900/50 text-blue-400 rounded-full text-sm font-medium border border-blue-800">Ongoing</span>}
-                  {!isCompleted && !isCancelled && !isOngoing && <span className="px-3 py-1 bg-gray-800 text-gray-300 rounded-full text-sm font-medium">Published</span>}
+                  {isCompleted && <span className="px-3 py-1 bg-emerald-900/40 text-emerald-300 rounded-full text-sm font-medium border border-emerald-500/30">Completed</span>}
+                  {isCancelled && <span className="px-3 py-1 bg-red-900/40 text-red-300 rounded-full text-sm font-medium border border-red-500/30">Cancelled</span>}
+                  {isOngoing && <span className="px-3 py-1 bg-blue-900/40 text-blue-300 rounded-full text-sm font-medium border border-blue-500/30">Ongoing</span>}
+                  {!isCompleted && !isCancelled && !isOngoing && <span className="px-3 py-1 bg-white/10 text-gray-200 rounded-full text-sm font-medium border border-white/10">Published</span>}
                 </div>
 
                 {/* Capacity Bar */}
@@ -313,17 +312,17 @@ const OpportunityDetail = () => {
         {/* Apply Modal */}
         {isApplyModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-            <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 w-full max-w-md">
+            <div className="bg-[#070b24]/95 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 md:p-8 w-full max-w-md shadow-2xl">
               <h3 className="text-xl font-bold text-white mb-4">Apply for {opportunity.title}</h3>
               <form onSubmit={handleApply}>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-400 mb-2">Why do you want to join? (Optional)</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Why do you want to join? (Optional)</label>
                   <textarea
                     rows={4}
                     value={applyNotes}
                     onChange={(e) => setApplyNotes(e.target.value)}
                     placeholder="Briefly describe your interest or relevant experience..."
-                    className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none resize-none"
+                    className="w-full bg-white/[0.05] border border-white/10 rounded-xl p-3 text-white placeholder-gray-400 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20 outline-none resize-none transition-all"
                   ></textarea>
                 </div>
                 <div className="flex justify-end gap-3">

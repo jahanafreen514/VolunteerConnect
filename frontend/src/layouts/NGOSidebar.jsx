@@ -34,7 +34,7 @@ const NGOSidebar = ({ onNavigate }) => {
   const statusConfig = badgeConfig[verificationStatus] || badgeConfig.pending;
 
   return (
-    <div className="h-full flex flex-col w-64 bg-gray-950/80 backdrop-blur-2xl border-r border-white/10">
+    <div className="h-full flex flex-col w-64 bg-[#050a1e]/65 backdrop-blur-xl border-r border-white/10">
       <div className="p-6 border-b border-white/10 flex flex-col items-center text-center">
         <Avatar src={ngoData?.logo} name={user?.name} size="lg" className="mb-3 ring-2 ring-primary-500/30" />
         <h3 className="text-white font-semibold text-sm w-full truncate">{user?.name || 'NGO Partner'}</h3>

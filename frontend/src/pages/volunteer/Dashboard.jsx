@@ -14,7 +14,6 @@ import SkeletonStatCard from '../../components/ui/SkeletonStatCard';
 import SkeletonCard from '../../components/ui/SkeletonCard';
 import EmptyState from '../../components/ui/EmptyState';
 import Card from '../../components/ui/Card';
-import AnimatedBackground from '../../components/ui/AnimatedBackground';
 
 const VolunteerDashboard = () => {
   const navigate = useNavigate();
@@ -46,7 +45,6 @@ const VolunteerDashboard = () => {
 
   return (
     <DashboardLayout sidebar={<VolunteerSidebar />}>
-      <AnimatedBackground />
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         {/* Header */}
         <motion.div 
@@ -108,7 +106,7 @@ const VolunteerDashboard = () => {
                           <p className="text-sm text-gray-300 truncate">{ngoName}</p>
                         </div>
                       </div>
-                      <div className="p-4 bg-gray-900/50 flex justify-between items-center">
+                      <div className="p-4 bg-white/[0.02] border-t border-white/10 flex justify-between items-center">
                         <span className="text-sm text-gray-400">{formatDateSafe(eventDate, 'MMM d, yyyy h:mm a')}</span>
                         {oppId && (
                           <Link to={`/opportunities/${oppId}`} className="text-primary-400 hover:text-primary-300 text-sm font-medium">View</Link>

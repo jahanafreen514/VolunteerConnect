@@ -5,7 +5,6 @@ import PublicLayout from '../layouts/PublicLayout';
 import OpportunityCard from '../components/ui/OpportunityCard';
 import SkeletonCard from '../components/ui/SkeletonCard';
 import EmptyState from '../components/ui/EmptyState';
-import AnimatedBackground from '../components/ui/AnimatedBackground';
 import { opportunityService } from '../services/opportunityService';
 import { useDebounce } from '../hooks/useDebounce'; // Assuming this exists or create it
 
@@ -83,13 +82,12 @@ const Opportunities = () => {
 
   return (
     <PublicLayout>
-      <div className="bg-gray-950 min-h-screen pt-24 pb-12 relative overflow-hidden">
-        <AnimatedBackground />
+      <div className="min-h-screen pb-12 relative overflow-hidden bg-transparent">
         <div className="container mx-auto px-6 relative z-10">
           
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Sidebar Filters (Desktop) */}
-            <aside className={`lg:w-1/4 ${showMobileFilters ? 'fixed inset-0 z-50 bg-gray-950 p-6 overflow-y-auto' : 'hidden lg:block'}`}>
+            <aside className={`lg:w-1/4 ${showMobileFilters ? 'fixed inset-0 z-50 bg-[#050a1e]/95 backdrop-blur-2xl p-6 overflow-y-auto' : 'hidden lg:block'}`}>
               <div className="lg:sticky lg:top-24 space-y-6">
                 <div className="flex justify-between items-center lg:hidden mb-6">
                   <h2 className="text-xl font-bold text-white">Filters</h2>

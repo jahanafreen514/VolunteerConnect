@@ -6,7 +6,6 @@ import * as z from 'zod';
 import { Lock, Eye, EyeOff, Loader2, CheckCircle2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { authService } from '../../services/authService';
-import AnimatedBackground from '../../components/ui/AnimatedBackground';
 
 const resetPasswordSchema = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters'),
@@ -49,10 +48,7 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 flex flex-col justify-center items-center p-6 relative overflow-hidden">
-      <AnimatedBackground />
-      <div className="absolute inset-0 bg-gray-950/60 backdrop-blur-[2px] z-0"></div>
-
+    <div className="min-h-screen flex flex-col justify-center items-center p-6 relative overflow-hidden bg-transparent">
       <div className="relative z-10 w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="inline-block text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-accent-400 tracking-tight">
@@ -60,7 +56,7 @@ const ResetPassword = () => {
           </Link>
         </div>
 
-        <div className="bg-gray-900 p-8 rounded-2xl border border-gray-800 shadow-2xl">
+        <div className="bg-[#0a0f28]/45 backdrop-blur-[20px] border border-white/[0.12] p-8 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.35)]">
           {isSuccess ? (
             <div className="text-center space-y-4">
               <div className="w-12 h-12 rounded-full bg-green-900/40 text-green-400 flex items-center justify-center mx-auto">
@@ -96,49 +92,49 @@ const ResetPassword = () => {
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">New Password</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">New Password</label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Lock className="h-5 w-5 text-gray-500" />
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                      <Lock className="h-5 w-5 text-gray-400" />
                     </div>
                     <input
                       type={showPassword ? 'text' : 'password'}
                       {...register('password')}
-                      className={`block w-full pl-10 pr-10 py-3 bg-gray-950 border ${errors.password ? 'border-red-500 focus:border-red-500' : 'border-gray-800 focus:border-primary-500'} rounded-xl text-white placeholder-gray-500 outline-none transition-colors`}
+                      className={`block w-full pl-11 pr-10 py-3 bg-white/[0.05] border ${errors.password ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20'} rounded-xl text-white placeholder-gray-400 outline-none transition-all`}
                       placeholder="At least 6 characters"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-300"
+                      className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-200"
                     >
                       {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                     </button>
                   </div>
-                  {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>}
+                  {errors.password && <p className="mt-1 text-xs text-red-400">{errors.password.message}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Confirm New Password</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Confirm New Password</label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Lock className="h-5 w-5 text-gray-500" />
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                      <Lock className="h-5 w-5 text-gray-400" />
                     </div>
                     <input
                       type={showConfirmPassword ? 'text' : 'password'}
                       {...register('confirmPassword')}
-                      className={`block w-full pl-10 pr-10 py-3 bg-gray-950 border ${errors.confirmPassword ? 'border-red-500 focus:border-red-500' : 'border-gray-800 focus:border-primary-500'} rounded-xl text-white placeholder-gray-500 outline-none transition-colors`}
+                      className={`block w-full pl-11 pr-10 py-3 bg-white/[0.05] border ${errors.confirmPassword ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20'} rounded-xl text-white placeholder-gray-400 outline-none transition-all`}
                       placeholder="Repeat password"
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-300"
+                      className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-200"
                     >
                       {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                     </button>
                   </div>
-                  {errors.confirmPassword && <p className="mt-1 text-sm text-red-500">{errors.confirmPassword.message}</p>}
+                  {errors.confirmPassword && <p className="mt-1 text-xs text-red-400">{errors.confirmPassword.message}</p>}
                 </div>
 
                 <button

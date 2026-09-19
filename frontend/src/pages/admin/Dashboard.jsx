@@ -11,7 +11,6 @@ import SkeletonStatCard from '../../components/ui/SkeletonStatCard';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Badge from '../../components/ui/Badge';
-import AnimatedBackground from '../../components/ui/AnimatedBackground';
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
@@ -51,7 +50,6 @@ const AdminDashboard = () => {
 
   return (
     <DashboardLayout sidebar={<AdminSidebar />}>
-      <AnimatedBackground />
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         
         <div className="flex justify-between items-center bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">

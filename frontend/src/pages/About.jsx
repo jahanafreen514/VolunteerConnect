@@ -16,13 +16,11 @@ import {
   ArrowRight
 } from 'lucide-react';
 import PublicLayout from '../layouts/PublicLayout';
-import AnimatedBackground from '../components/ui/AnimatedBackground';
 
 const About = () => {
   return (
     <PublicLayout>
-      <div className="relative overflow-hidden text-white">
-        <AnimatedBackground />
+      <div className="relative overflow-hidden text-white bg-transparent">
 
         {/* Hero Section */}
         <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative z-10 text-center">

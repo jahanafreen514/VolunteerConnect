@@ -2,13 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Home } from 'lucide-react';
-import AnimatedBackground from '../components/ui/AnimatedBackground';
-
 const NotFound = () => {
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center relative overflow-hidden p-6 text-center">
-      <AnimatedBackground />
-      <div className="absolute inset-0 bg-gray-950/60 backdrop-blur-sm z-0"></div>
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden p-6 text-center bg-transparent">
       
       <motion.div 
         initial={{ opacity: 0, scale: 0.8 }}

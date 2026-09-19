@@ -74,7 +74,7 @@ const Navbar = () => {
     <nav 
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-gray-950/85 backdrop-blur-xl border-b border-white/10 py-3 shadow-glass' 
+          ? 'bg-[#050816]/75 backdrop-blur-xl border-b border-white/10 py-3 shadow-glass' 
           : 'bg-transparent py-4'
       }`}
     >
@@ -147,7 +147,7 @@ const Navbar = () => {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 8, scale: 0.96 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute right-0 mt-2 w-56 bg-gray-900 border border-white/10 rounded-2xl shadow-2xl py-2 z-50 overflow-hidden"
+                        className="absolute right-0 mt-2 w-56 bg-[#070b24]/90 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl py-2 z-50 overflow-hidden"
                       >
                         <div className="px-4 py-3 border-b border-white/10">
                           <p className="text-sm font-semibold text-white truncate">{user.name}</p>
@@ -231,7 +231,7 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-gray-950/95 backdrop-blur-2xl border-b border-white/10 px-4 pt-3 pb-6 space-y-3 overflow-hidden"
+            className="lg:hidden bg-[#050816]/90 backdrop-blur-2xl border-b border-white/10 px-4 pt-3 pb-6 space-y-3 overflow-hidden"
           >
             {user && (
               <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 mb-3">

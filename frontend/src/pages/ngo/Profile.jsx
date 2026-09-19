@@ -10,7 +10,6 @@ import Input from '../../components/ui/Input';
 import Textarea from '../../components/ui/Textarea';
 import Button from '../../components/ui/Button';
 import Badge from '../../components/ui/Badge';
-import AnimatedBackground from '../../components/ui/AnimatedBackground';
 import ChangePasswordCard from '../../components/ChangePasswordCard';
 
 const NGOProfile = () => {
@@ -110,7 +109,6 @@ const NGOProfile = () => {
 
   return (
     <DashboardLayout sidebar={<NGOSidebar />}>
-      <AnimatedBackground />
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         <h1 className="text-2xl font-bold text-white mb-6">NGO Profile</h1>
         

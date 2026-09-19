@@ -4,7 +4,7 @@ import { Heart, Globe, Shield, Sparkles, ArrowUpRight } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-950 border-t border-white/10 pt-16 pb-12 relative overflow-hidden">
+    <footer className="bg-[#050816]/70 backdrop-blur-xl border-t border-white/10 pt-16 pb-12 relative overflow-hidden">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-primary-500/50 to-transparent" />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

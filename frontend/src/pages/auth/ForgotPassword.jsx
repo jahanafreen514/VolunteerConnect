@@ -6,7 +6,6 @@ import * as z from 'zod';
 import { Mail, ArrowLeft, Loader2, CheckCircle2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { authService } from '../../services/authService';
-import AnimatedBackground from '../../components/ui/AnimatedBackground';
 
 const forgotPasswordSchema = z.object({
   email: z.string().email('Please enter a valid email address')
@@ -38,10 +37,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 flex flex-col justify-center items-center p-6 relative overflow-hidden">
-      <AnimatedBackground />
-      <div className="absolute inset-0 bg-gray-950/60 backdrop-blur-[2px] z-0"></div>
-
+    <div className="min-h-screen flex flex-col justify-center items-center p-6 relative overflow-hidden bg-transparent">
       <div className="relative z-10 w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="inline-block text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-accent-400 tracking-tight">
@@ -49,14 +45,14 @@ const ForgotPassword = () => {
           </Link>
         </div>
 
-        <div className="bg-gray-900 p-8 rounded-2xl border border-gray-800 shadow-2xl">
+        <div className="bg-[#0a0f28]/45 backdrop-blur-[20px] border border-white/[0.12] p-8 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.35)]">
           {isSubmitted ? (
             <div className="text-center space-y-4">
-              <div className="w-12 h-12 rounded-full bg-green-900/40 text-green-400 flex items-center justify-center mx-auto">
+              <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto border border-emerald-500/30">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
               <h2 className="text-2xl font-bold text-white">Check your email</h2>
-              <p className="text-gray-400 text-sm leading-relaxed">
+              <p className="text-gray-300 text-sm leading-relaxed">
                 If an account exists with that email address, we have sent instructions to reset your password.
               </p>
               <div className="pt-4">
@@ -79,22 +75,22 @@ const ForgotPassword = () => {
               </div>
 
               {apiError && (
-                <div className="mb-6 p-4 bg-red-900/30 border border-red-500/50 rounded-lg text-red-400 text-sm text-center">
+                <div className="mb-6 p-4 bg-red-900/30 border border-red-500/50 rounded-xl text-red-400 text-sm text-center">
                   {apiError}
                 </div>
               )}
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Email Address</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Email Address</label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Mail className="h-5 w-5 text-gray-500" />
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                      <Mail className="h-5 w-5 text-gray-400" />
                     </div>
                     <input
                       type="email"
                       {...register('email')}
-                      className={`block w-full pl-10 pr-3 py-3 bg-gray-950 border ${errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-800 focus:border-primary-500 focus:ring-primary-500'} rounded-xl text-white placeholder-gray-500 outline-none transition-colors`}
+                      className={`block w-full pl-11 pr-3 py-3 bg-white/[0.05] border ${errors.email ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20'} rounded-xl text-white placeholder-gray-400 outline-none transition-all`}
                       placeholder="you@example.com"
                     />
                   </div>

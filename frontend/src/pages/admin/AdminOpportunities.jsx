@@ -12,7 +12,6 @@ import Button from '../../components/ui/Button';
 import Badge from '../../components/ui/Badge';
 import SkeletonTable from '../../components/ui/SkeletonTable';
 import EmptyState from '../../components/ui/EmptyState';
-import AnimatedBackground from '../../components/ui/AnimatedBackground';
 
 function useDebounce(value, delay) {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -72,7 +71,6 @@ const AdminOpportunities = () => {
 
   return (
     <DashboardLayout sidebar={<AdminSidebar />}>
-      <AnimatedBackground />
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>

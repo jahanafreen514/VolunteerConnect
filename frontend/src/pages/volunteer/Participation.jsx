@@ -10,7 +10,6 @@ import Card from '../../components/ui/Card';
 import Badge from '../../components/ui/Badge';
 import EmptyState from '../../components/ui/EmptyState';
 import SkeletonCard from '../../components/ui/SkeletonCard';
-import AnimatedBackground from '../../components/ui/AnimatedBackground';
 
 const Participation = () => {
   const navigate = useNavigate();
@@ -49,7 +48,6 @@ const Participation = () => {
 
   return (
     <DashboardLayout sidebar={<VolunteerSidebar />}>
-      <AnimatedBackground />
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         <h1 className="text-2xl font-bold text-white mb-2">Participation History</h1>
         <p className="text-gray-400 mb-6">Track your volunteering hours and attendance.</p>
