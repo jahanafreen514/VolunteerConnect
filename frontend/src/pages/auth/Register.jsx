@@ -47,7 +47,8 @@ const Register = () => {
   const [searchParams] = useSearchParams();
   const { login } = useAuth();
   
-  const initialRole = searchParams.get('role') === 'ngo' ? 'ngo' : null;
+  const roleParam = searchParams.get('role');
+  const initialRole = roleParam === 'ngo' ? 'ngo' : roleParam === 'volunteer' ? 'volunteer' : null;
   const [step, setStep] = useState(initialRole ? 2 : 1);
   const [selectedRole, setSelectedRole] = useState(initialRole || 'volunteer');
   

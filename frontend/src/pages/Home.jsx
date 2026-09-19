@@ -131,7 +131,7 @@ const Home = () => {
               </Link>
 
               <Link
-                to="/register"
+                to="/register?role=volunteer"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-semibold text-white bg-white/5 hover:bg-white/10 border border-white/10 backdrop-blur-md transition-all"
               >
                 <span>Join as a Volunteer</span>

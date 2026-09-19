@@ -2,8 +2,20 @@ import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import AnimatedBackground from '../components/ui/AnimatedBackground';
 
-const DashboardLayout = ({ children, sidebar: Sidebar }) => {
+const DashboardLayout = ({ children, sidebar }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const renderSidebar = () => {
+    if (!sidebar) return null;
+    if (React.isValidElement(sidebar)) {
+      return React.cloneElement(sidebar, { onNavigate: () => setIsSidebarOpen(false) });
+    }
+    if (typeof sidebar === 'function') {
+      const SidebarComponent = sidebar;
+      return <SidebarComponent onNavigate={() => setIsSidebarOpen(false)} />;
+    }
+    return sidebar;
+  };
 
   return (
     <div className="min-h-screen bg-gray-950 flex relative">
@@ -23,7 +35,7 @@ const DashboardLayout = ({ children, sidebar: Sidebar }) => {
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <Sidebar onNavigate={() => setIsSidebarOpen(false)} />
+        {renderSidebar()}
       </div>
 
       {/* Main content */}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { format } from 'date-fns';
 import { Download, Award, Printer } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { formatDateSafe } from '../../utils/date';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import VolunteerSidebar from '../../components/layouts/VolunteerSidebar';
 import { certificateService } from '../../services/certificateService';
@@ -89,7 +89,7 @@ const Certificates = () => {
                     </div>
                     
                     <div className="pt-4 border-t border-white/10 flex justify-between items-center text-xs text-gray-500">
-                      <span>{issueDate ? format(new Date(issueDate), 'MMM d, yyyy') : 'Recent'}</span>
+                      <span>{formatDateSafe(issueDate, 'MMM d, yyyy', 'Recent')}</span>
                       <span>{hours} Hours</span>
                     </div>
                     <div className="text-xs text-gray-600 mt-2 font-mono">

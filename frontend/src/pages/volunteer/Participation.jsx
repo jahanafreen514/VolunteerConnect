@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { format } from 'date-fns';
 import { Award, Timer, Calendar, CheckCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { Link, useNavigate } from 'react-router-dom';
+import { formatDateSafe } from '../../utils/date';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import VolunteerSidebar from '../../components/layouts/VolunteerSidebar';
 import { userService } from '../../services/userService';
@@ -10,9 +11,9 @@ import Badge from '../../components/ui/Badge';
 import EmptyState from '../../components/ui/EmptyState';
 import SkeletonCard from '../../components/ui/SkeletonCard';
 import AnimatedBackground from '../../components/ui/AnimatedBackground';
-import { Link } from 'react-router-dom';
 
 const Participation = () => {
+  const navigate = useNavigate();
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -88,7 +89,7 @@ const Participation = () => {
                       {eventDate && (
                         <div className="flex items-center gap-2">
                           <Calendar className="w-4 h-4 text-primary-400" />
-                          <span>{format(new Date(eventDate), 'MMM d, yyyy')}</span>
+                          <span>{formatDateSafe(eventDate, 'MMM d, yyyy')}</span>
                         </div>
                       )}
                       {hours > 0 && (
@@ -120,7 +121,7 @@ const Participation = () => {
             title="No participation history yet" 
             description="You haven't attended any volunteer events yet. Start applying to make an impact!" 
             icon={CheckCircle}
-            action={{ label: 'Find Opportunities', onClick: () => window.location.href = '/opportunities' }}
+            action={{ label: 'Find Opportunities', onClick: () => navigate('/opportunities') }}
           />
         )}
       </div>

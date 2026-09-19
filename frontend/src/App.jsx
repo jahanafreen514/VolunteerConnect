@@ -1,10 +1,12 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { AnimatePresence } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
+import SplashScreen from './components/ui/SplashScreen';
 
 const Home = lazy(() => import('./pages/Home'));
 const About = lazy(() => import('./pages/About'));
@@ -49,10 +51,22 @@ const PageLoader = () => (
 );
 
 function App() {
+  const [showSplash, setShowSplash] = useState(() => {
+    return !sessionStorage.getItem('vc_splash_seen');
+  });
+
   return (
     <BrowserRouter>
       <AuthProvider>
         <SocketProvider>
+          <AnimatePresence>
+            {showSplash && (
+              <SplashScreen 
+                duration={5000} 
+                onFinish={() => setShowSplash(false)} 
+              />
+            )}
+          </AnimatePresence>
           <Toaster 
             position="top-right" 
             toastOptions={{ 

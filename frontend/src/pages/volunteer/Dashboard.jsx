@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, CheckCircle, Timer, Award } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { formatDateSafe } from '../../utils/date';
 import { useAuth } from '../../context/AuthContext';
@@ -17,6 +17,7 @@ import Card from '../../components/ui/Card';
 import AnimatedBackground from '../../components/ui/AnimatedBackground';
 
 const VolunteerDashboard = () => {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [events, setEvents] = useState([]);
@@ -118,7 +119,7 @@ const VolunteerDashboard = () => {
                 })}
               </div>
             ) : (
-              <EmptyState title="No upcoming events" description="You don't have any upcoming events scheduled." icon={Calendar} action={{ label: 'Find Events', onClick: () => window.location.href = '/opportunities' }} />
+              <EmptyState title="No upcoming events" description="You don't have any upcoming events scheduled." icon={Calendar} action={{ label: 'Find Events', onClick: () => navigate('/opportunities') }} />
             )}
           </div>
 

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { format } from 'date-fns';
 import { toast } from 'react-hot-toast';
 import { Search, Filter, XCircle, Eye } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { formatDateSafe } from '../../utils/date';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import VolunteerSidebar from '../../components/layouts/VolunteerSidebar';
 import { applicationService } from '../../services/applicationService';
@@ -14,6 +14,7 @@ import ConfirmDialog from '../../components/ui/ConfirmDialog';
 import AnimatedBackground from '../../components/ui/AnimatedBackground';
 
 const VolunteerApplications = () => {
+  const navigate = useNavigate();
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
@@ -127,7 +128,7 @@ const VolunteerApplications = () => {
                           </div>
                         </td>
                         <td className="px-6 py-4 truncate max-w-[150px]">{ngoName}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">{dateStr ? format(new Date(dateStr), 'MMM d, yyyy') : 'Recently'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{formatDateSafe(dateStr, 'MMM d, yyyy', 'Recently')}</td>
                         <td className="px-6 py-4">{getStatusBadge(app.status)}</td>
                         <td className="px-6 py-4 text-right space-x-3 whitespace-nowrap">
                           {oppId && (
@@ -155,7 +156,7 @@ const VolunteerApplications = () => {
               <EmptyState 
                 title="No applications found" 
                 description={filter === 'all' ? "You haven't applied to any opportunities yet." : `No ${filter} applications found.`}
-                action={{ label: 'Explore Opportunities', onClick: () => window.location.href = '/opportunities' }}
+                action={{ label: 'Explore Opportunities', onClick: () => navigate('/opportunities') }}
               />
             </div>
           )}

@@ -2,10 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Bell, Check, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNowSafe } from '../utils/date';
+import { useAuth } from '../context/AuthContext';
 import { getNotifications, markAsRead, markAllAsRead, getUnreadCount } from '../services/notificationService';
 
 const NotificationDropdown = () => {
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -32,8 +34,10 @@ const NotificationDropdown = () => {
         getUnreadCount(),
         getNotifications({ limit: 10 })
       ]);
-      setUnreadCount(countRes.count);
-      setNotifications(notifRes.notifications);
+      const count = countRes?.data?.count ?? countRes?.count ?? 0;
+      const notifs = notifRes?.data?.notifications ?? notifRes?.notifications ?? (Array.isArray(notifRes?.data) ? notifRes.data : []);
+      setUnreadCount(count);
+      setNotifications(Array.isArray(notifs) ? notifs : []);
     } catch (error) {
       console.error('Failed to fetch notifications', error);
     }
@@ -115,7 +119,7 @@ const NotificationDropdown = () => {
                       </p>
                       <div className="flex items-center text-xs text-gray-600">
                         <Clock className="w-3 h-3 mr-1" />
-                        {formatDistanceToNow(new Date(notif.createdAt), { addSuffix: true })}
+                        {formatDistanceToNowSafe(notif.createdAt)}
                       </div>
                     </div>
                   </div>
@@ -130,7 +134,7 @@ const NotificationDropdown = () => {
 
             <div className="p-3 border-t border-white/10 bg-white/5 text-center">
               <Link
-                to="/notifications"
+                to={user?.role === 'volunteer' ? '/volunteer/notifications' : (user?.role === 'ngo' ? '/ngo/dashboard' : '/admin/dashboard')}
                 onClick={() => setIsOpen(false)}
                 className="text-sm text-primary-400 hover:text-primary-300 font-medium"
               >

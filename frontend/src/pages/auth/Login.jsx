@@ -34,11 +34,15 @@ const Login = () => {
       const user = await login(data.email, data.password);
       toast.success('Successfully logged in!');
       
-      // Redirect based on role if no specific 'from' route
-      if (from === '/') {
-        if (user.role === 'admin') navigate('/admin/dashboard');
-        else if (user.role === 'ngo') navigate('/ngo/dashboard');
-        else navigate('/volunteer/dashboard');
+      // Redirect based on role
+      const isRoleMismatch = (user.role === 'volunteer' && (from.startsWith('/ngo') || from.startsWith('/admin'))) ||
+                             (user.role === 'ngo' && (from.startsWith('/volunteer') || from.startsWith('/admin'))) ||
+                             (user.role === 'admin' && (from.startsWith('/volunteer') || from.startsWith('/ngo')));
+
+      if (!from || from === '/' || from === '/login' || isRoleMismatch) {
+        if (user.role === 'admin') navigate('/admin/dashboard', { replace: true });
+        else if (user.role === 'ngo') navigate('/ngo/dashboard', { replace: true });
+        else navigate('/volunteer/dashboard', { replace: true });
       } else {
         navigate(from, { replace: true });
       }

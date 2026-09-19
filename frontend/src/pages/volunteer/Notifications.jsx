@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNowSafe } from '../../utils/date';
 import { Bell, Check, Info, AlertCircle, CheckCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
@@ -95,7 +95,7 @@ const Notifications = () => {
                 <div className="flex-1">
                   <h3 className={`text-sm font-medium ${!notif.isRead ? 'text-white' : 'text-gray-300'}`}>{notif.title}</h3>
                   <p className="text-sm text-gray-400 mt-1">{notif.message}</p>
-                  <p className="text-xs text-gray-500 mt-2">{formatDistanceToNow(new Date(notif.createdAt), { addSuffix: true })}</p>
+                  <p className="text-xs text-gray-500 mt-2">{formatDistanceToNowSafe(notif.createdAt)}</p>
                 </div>
                 {!notif.isRead && (
                   <div className="w-2 h-2 rounded-full bg-primary-500 mt-2 flex-shrink-0" />
