@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   Sparkles, 
   ArrowRight, 
   Search, 
+  RotateCcw,
   ShieldCheck, 
   Award, 
   Users, 
@@ -29,6 +30,25 @@ import EmptyState from '../components/ui/EmptyState';
 import DepthText from '../components/ui/DepthText';
 import { opportunityService } from '../services/opportunityService';
 
+const SEARCH_PROMPTS = [
+  'Beach cleanup & marine plastic removal',
+  'Teach coding & mathematics to children',
+  'Emergency disaster relief & food packaging',
+  'Rescue animal care & pet adoption drive',
+  'Planting 1,000 urban native trees',
+  'Youth mentorship & academic coaching',
+  'Healthcare kit distribution for seniors',
+];
+
+const POPULAR_TAGS = [
+  { label: 'Environment', category: 'environment', icon: '🌱' },
+  { label: 'Education', category: 'education', icon: '📚' },
+  { label: 'Healthcare', category: 'health', icon: '🏥' },
+  { label: 'Community', category: 'community', icon: '🤝' },
+  { label: 'Animal Care', category: 'animals', icon: '🐾' },
+  { label: 'Disaster Relief', category: 'disaster-relief', icon: '🚨' },
+];
+
 const CATEGORIES = [
   { id: 'environment', name: 'Environment', icon: TreePine, color: 'from-emerald-500/20 to-teal-500/20', border: 'border-emerald-500/30', text: 'text-emerald-400' },
   { id: 'education', name: 'Education', icon: GraduationCap, color: 'from-indigo-500/20 to-blue-500/20', border: 'border-indigo-500/30', text: 'text-indigo-400' },
@@ -41,6 +61,9 @@ const CATEGORIES = [
 ];
 
 const Home = () => {
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [promptIndex, setPromptIndex] = useState(0);
   const [opportunities, setOpportunities] = useState([]);
   const [stats, setStats] = useState({
     activeOpportunities: 0,
@@ -49,6 +72,28 @@ const Home = () => {
     totalVolunteers: 0
   });
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (searchQuery.length > 0) return;
+    const interval = setInterval(() => {
+      setPromptIndex((prev) => (prev + 1) % SEARCH_PROMPTS.length);
+    }, 3600);
+    return () => clearInterval(interval);
+  }, [searchQuery]);
+
+  const handleSearchSubmit = (e) => {
+    e?.preventDefault();
+    const query = searchQuery.trim() || SEARCH_PROMPTS[promptIndex];
+    navigate(`/opportunities?search=${encodeURIComponent(query)}`);
+  };
+
+  const handleTagClick = (cat) => {
+    navigate(`/opportunities?category=${cat}`);
+  };
+
+  const handleShufflePrompt = () => {
+    setPromptIndex((prev) => (prev + 1) % SEARCH_PROMPTS.length);
+  };
 
   useEffect(() => {
     const loadHomeData = async () => {
@@ -125,10 +170,69 @@ const Home = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto mb-10 leading-relaxed"
+              className="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed"
             >
               VolunteerConnect bridges passionate volunteers with verified non-profit organizations. Discover meaningful causes, track your volunteer hours, and receive tamper-proof digital certificates.
             </motion.p>
+
+            {/* Interactive Opportunity Prompt & Search Bar (Wegic-inspired floating glass bar) */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.25 }}
+              className="w-full max-w-2xl mx-auto mb-8 text-left"
+            >
+              <form 
+                onSubmit={handleSearchSubmit}
+                className="relative flex items-center p-2 rounded-2xl bg-white/[0.04] backdrop-blur-2xl border border-white/15 shadow-[0_12px_40px_0_rgba(0,0,0,0.45)] hover:border-primary-500/40 focus-within:border-primary-400 focus-within:ring-2 focus-within:ring-primary-500/20 transition-all group"
+              >
+                <div className="pl-3 pr-2 text-primary-400 flex items-center pointer-events-none">
+                  <Search className="w-5 h-5 group-focus-within:text-primary-300 transition-colors" />
+                </div>
+
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={`Try: "${SEARCH_PROMPTS[promptIndex]}"`}
+                  className="flex-1 bg-transparent text-white placeholder-gray-400/70 text-sm sm:text-base outline-none px-2 py-2 font-medium"
+                />
+
+                <div className="flex items-center gap-1.5 shrink-0 pr-1">
+                  <button
+                    type="button"
+                    onClick={handleShufflePrompt}
+                    title="Shuffle suggestion"
+                    className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-all"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="submit"
+                    className="inline-flex items-center gap-1.5 px-4 sm:px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary-600 via-indigo-600 to-purple-600 hover:from-primary-500 hover:to-purple-500 text-white font-semibold text-xs sm:text-sm shadow-glow-sm transition-all group/btn"
+                  >
+                    <span>Search</span>
+                    <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
+                  </button>
+                </div>
+              </form>
+
+              {/* Quick Cause Pill Tags */}
+              <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
+                <span className="text-xs text-gray-400 font-medium mr-1 hidden sm:inline">Popular:</span>
+                {POPULAR_TAGS.map((tag) => (
+                  <button
+                    key={tag.category}
+                    type="button"
+                    onClick={() => handleTagClick(tag.category)}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium text-gray-300 hover:text-white bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 hover:border-primary-500/40 backdrop-blur-md transition-all shadow-sm hover:scale-105 active:scale-95"
+                  >
+                    <span>{tag.icon}</span>
+                    <span>{tag.label}</span>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
 
             {/* Call to Actions */}
             <motion.div
