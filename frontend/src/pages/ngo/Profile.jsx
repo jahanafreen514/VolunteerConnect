@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
-import { ShieldCheck, ShieldAlert, FileText, UploadCloud, Link as LinkIcon, ExternalLink } from 'lucide-react';
+import { 
+  ShieldCheck, ShieldAlert, FileText, UploadCloud, Link as LinkIcon, 
+  ExternalLink, MapPin, Navigation, CheckCircle2, RefreshCw 
+} from 'lucide-react';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import NGOSidebar from '../../components/layouts/NGOSidebar';
 import { ngoService } from '../../services/ngoService';
+import { locationService } from '../../services/locationService';
+import LocationPickerMap from '../../components/map/LocationPickerMap';
 import Card from '../../components/ui/Card';
 import Input from '../../components/ui/Input';
 import Textarea from '../../components/ui/Textarea';
@@ -17,8 +22,15 @@ const NGOProfile = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [docsLoading, setDocsLoading] = useState(false);
+  
+  // Real coordinates & location state
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+  const [formattedAddress, setFormattedAddress] = useState('');
+  const [geocoding, setGeocoding] = useState(false);
+  const [locationConfirmed, setLocationConfirmed] = useState(false);
 
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, setValue, getValues } = useForm();
 
   const fetchProfile = async () => {
     try {
@@ -26,6 +38,12 @@ const NGOProfile = () => {
       const data = res?.data || res;
       if (data) {
         setProfile(data);
+        const street = data.address?.street || (typeof data.address === 'string' ? data.address : '');
+        const city = data.address?.city || data.city || '';
+        const state = data.address?.state || data.state || '';
+        const country = data.address?.country || data.country || 'India';
+        const postalCode = data.address?.postalCode || data.pincode || '';
+
         reset({
           organizationName: data.organizationName || '',
           description: data.description || '',
@@ -33,12 +51,19 @@ const NGOProfile = () => {
           phone: data.phone || '',
           website: data.website || '',
           registrationNumber: data.registrationNumber || '',
-          address: data.address?.street || '',
-          city: data.address?.city || '',
-          state: data.address?.state || '',
-          country: data.address?.country || '',
-          postalCode: data.address?.postalCode || '',
+          address: street,
+          city: city,
+          state: state,
+          country: country,
+          postalCode: postalCode,
         });
+
+        if (data.latitude && data.longitude) {
+          setLatitude(data.latitude);
+          setLongitude(data.longitude);
+          setFormattedAddress(data.formattedAddress || `${street}, ${city}`);
+          setLocationConfirmed(data.locationConfirmed !== false);
+        }
       }
     } catch (error) {
       console.error(error);
@@ -50,6 +75,61 @@ const NGOProfile = () => {
   useEffect(() => {
     fetchProfile();
   }, [reset]);
+
+  const handleGeocodeAddress = async () => {
+    const address = getValues('address');
+    const city = getValues('city');
+    const state = getValues('state');
+    const country = getValues('country') || 'India';
+    const pincode = getValues('postalCode');
+
+    if (!address && !city) {
+      toast.error('Please enter at least a Street Address or City to locate on the map.');
+      return;
+    }
+
+    setGeocoding(true);
+    try {
+      const res = await locationService.geocode({ address, city, state, country, pincode });
+      if (res?.data) {
+        const { latitude: lat, longitude: lng, formattedAddress: fmt, city: retCity, state: retState, pincode: retPin } = res.data;
+        setLatitude(lat);
+        setLongitude(lng);
+        setFormattedAddress(fmt || `${address}, ${city}`);
+        setLocationConfirmed(true);
+
+        if (retCity && !city) setValue('city', retCity);
+        if (retState && !state) setValue('state', retState);
+        if (retPin && !pincode) setValue('postalCode', retPin);
+
+        toast.success('Location found! Pinned on the map below.');
+      }
+    } catch (err) {
+      toast.error('Could not find location automatically. You can click on the map to set your pin.');
+    } finally {
+      setGeocoding(false);
+    }
+  };
+
+  const handleLocationSelect = async ({ lat, lng }) => {
+    setLatitude(lat);
+    setLongitude(lng);
+    setLocationConfirmed(true);
+
+    try {
+      const res = await locationService.reverseGeocode(lat, lng);
+      if (res?.data) {
+        const d = res.data;
+        if (d.formattedAddress) setFormattedAddress(d.formattedAddress);
+        if (d.city) setValue('city', d.city);
+        if (d.state) setValue('state', d.state);
+        if (d.country) setValue('country', d.country);
+        if (d.pincode) setValue('postalCode', d.pincode);
+      }
+    } catch (err) {
+      console.warn('Reverse geocode note:', err);
+    }
+  };
 
   const onSubmit = async (data) => {
     setSaving(true);
@@ -65,20 +145,28 @@ const NGOProfile = () => {
           street: data.address,
           city: data.city,
           state: data.state,
-          country: data.country,
+          country: data.country || 'India',
           postalCode: data.postalCode
-        }
+        },
+        city: data.city,
+        state: data.state,
+        country: data.country || 'India',
+        pincode: data.postalCode,
+        latitude: latitude || undefined,
+        longitude: longitude || undefined,
+        formattedAddress: formattedAddress || undefined,
+        locationConfirmed: locationConfirmed
       };
       
       let res;
       if (profile) {
         res = await ngoService.updateProfile(payload);
-        toast.success('Profile updated successfully');
+        toast.success('Profile and location updated successfully');
       } else {
         res = await ngoService.createProfile(payload);
-        toast.success('Profile created successfully');
+        toast.success('Profile and location registered successfully');
       }
-      setProfile(res);
+      setProfile(res?.data || res);
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to save profile');
     } finally {
@@ -110,7 +198,7 @@ const NGOProfile = () => {
   return (
     <DashboardLayout sidebar={<NGOSidebar />}>
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        <h1 className="text-2xl font-bold text-white mb-6">NGO Profile</h1>
+        <h1 className="text-2xl font-bold text-white mb-6">NGO Profile & Headquarters Location</h1>
         
         {profile && (
           <Card className={`p-4 border-l-4 ${profile.verificationStatus === 'approved' ? 'border-l-green-500 bg-green-500/5' : profile.verificationStatus === 'rejected' ? 'border-l-red-500 bg-red-500/5' : 'border-l-amber-500 bg-amber-500/5'}`}>
@@ -125,10 +213,10 @@ const NGOProfile = () => {
                 </h3>
                 <p className="text-sm text-gray-400 mt-1">
                   {profile.verificationStatus === 'approved' 
-                    ? 'Your organization is fully verified. You can create opportunities and accept volunteers.' 
+                    ? 'Your organization is verified on Volunteer Connect. You appear on the real-world discovery map.' 
                     : profile.verificationStatus === 'rejected' 
                     ? 'Your application was rejected. Please contact support or update your documents.' 
-                    : 'Your profile is under review by administrators. Please ensure all details and documents are provided.'}
+                    : 'Your profile is under review by administrators. Please ensure your location and documents are accurate.'}
                 </p>
               </div>
             </div>
@@ -152,17 +240,74 @@ const NGOProfile = () => {
                 <Input label="Registration Number" {...register('registrationNumber')} required />
               </div>
 
-              <h3 className="text-lg font-medium text-white pt-4 border-t border-white/10">Address</h3>
-              <Input label="Street Address" {...register('address')} required />
-              <div className="grid grid-cols-2 gap-4">
-                <Input label="City" {...register('city')} required />
-                <Input label="State/Province" {...register('state')} required />
-                <Input label="Country" {...register('country')} required />
-                <Input label="Postal Code" {...register('postalCode')} required />
+              {/* Real Location & Address Section */}
+              <div className="pt-6 border-t border-white/10 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <h3 className="text-lg font-medium text-white flex items-center gap-2">
+                      <MapPin className="w-5 h-5 text-emerald-400" />
+                      Physical Headquarters & Map Registration
+                    </h3>
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      Enter your address and we will automatically determine your coordinates for volunteer discovery.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleGeocodeAddress}
+                    disabled={geocoding}
+                    className="px-3.5 py-1.5 rounded-xl bg-primary-600/30 hover:bg-primary-600/50 text-primary-300 border border-primary-500/40 text-xs font-semibold flex items-center gap-1.5 transition-all self-start sm:self-auto"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${geocoding ? 'animate-spin text-primary-400' : ''}`} />
+                    <span>{geocoding ? 'Geocoding...' : 'Auto-Locate on Map'}</span>
+                  </button>
+                </div>
+
+                <Input label="Street Address" {...register('address')} placeholder="e.g. 4th Line, Arundelpet" required />
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <Input label="City" {...register('city')} placeholder="e.g. Guntur" required />
+                  <Input label="State/Province" {...register('state')} placeholder="e.g. Andhra Pradesh" required />
+                  <Input label="Country" {...register('country')} placeholder="India" required />
+                  <Input label="Postal Code / PIN" {...register('postalCode')} placeholder="e.g. 522002" required />
+                </div>
+
+                {/* Location Confirmation & Map Picker */}
+                <div className="mt-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium text-gray-300">
+                      Pinpoint Location (Drag marker to adjust):
+                    </span>
+                    {latitude && longitude && (
+                      <span className="text-xs text-emerald-400 flex items-center gap-1">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        Coordinates: {latitude.toFixed(4)}°, {longitude.toFixed(4)}°
+                      </span>
+                    )}
+                  </div>
+
+                  <LocationPickerMap
+                    initialLat={latitude || 16.3067}
+                    initialLng={longitude || 80.4365}
+                    onLocationSelect={handleLocationSelect}
+                    confirmPrompt="Is this your organization headquarters?"
+                  />
+
+                  {formattedAddress && (
+                    <div className="p-3 bg-white/5 border border-white/10 rounded-xl text-xs text-gray-300 flex items-start gap-2">
+                      <MapPin className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-white">Detected Address:</strong> {formattedAddress}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
-              <div className="pt-4 flex justify-end">
-                <Button type="submit" isLoading={saving}>{profile ? 'Update Profile' : 'Create Profile'}</Button>
+              <div className="pt-6 border-t border-white/10 flex justify-end">
+                <Button type="submit" isLoading={saving}>
+                  {profile ? 'Save & Update Location' : 'Register Organization Location'}
+                </Button>
               </div>
             </form>
           </Card>

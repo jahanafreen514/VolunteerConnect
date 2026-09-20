@@ -3,10 +3,14 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { opportunityService } from '../services/opportunityService';
 import { applicationService } from '../services/applicationService';
-import { Calendar, Clock, MapPin, Users, ChevronLeft, ShieldCheck, CheckCircle, XCircle } from 'lucide-react';
+import { 
+  Calendar, Clock, MapPin, Users, ChevronLeft, ShieldCheck, 
+  CheckCircle, XCircle, Navigation, ExternalLink, Globe, Newspaper, AlertCircle 
+} from 'lucide-react';
 import toast from 'react-hot-toast';
 import PublicLayout from '../layouts/PublicLayout';
-import SkeletonCard from '../components/ui/SkeletonCard'; // Reuse skeleton for loading
+import SkeletonCard from '../components/ui/SkeletonCard';
+import InteractiveMap from '../components/map/InteractiveMap';
 import { format } from 'date-fns';
 import { formatDateSafe } from '../utils/date';
 
@@ -18,6 +22,7 @@ const OpportunityDetail = () => {
   const [opportunity, setOpportunity] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [userCoords, setUserCoords] = useState(null);
   
   const [myApplication, setMyApplication] = useState(null);
   const [checkingApp, setCheckingApp] = useState(false);
@@ -25,6 +30,17 @@ const OpportunityDetail = () => {
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
   const [applyNotes, setApplyNotes] = useState('');
   const [applying, setApplying] = useState(false);
+
+  useEffect(() => {
+    // If volunteer has already granted location, try reading it locally for distance
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => setUserCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+        () => {},
+        { timeout: 5000 }
+      );
+    }
+  }, []);
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -121,6 +137,29 @@ const OpportunityDetail = () => {
   const isCancelled = opportunity.status === 'cancelled';
   const isOngoing = opportunity.status === 'ongoing';
 
+  const locationObj = typeof opportunity.location === 'object' ? (opportunity.location || {}) : {};
+  const addressText = locationObj.address || (typeof opportunity.location === 'string' ? opportunity.location : '');
+  const cityText = locationObj.city || opportunity.city || '';
+  const stateText = locationObj.state || opportunity.state || '';
+  const pincodeText = locationObj.pincode || '';
+  const fullAddress = [addressText, cityText, stateText, pincodeText].filter(Boolean).join(', ') || 'Location details provided upon registration';
+
+  const latitude = locationObj.latitude || opportunity.latitude;
+  const longitude = locationObj.longitude || opportunity.longitude;
+
+  // Calculate distance if user coords available
+  let distanceKm = null;
+  if (userCoords && latitude && longitude) {
+    const R = 6371;
+    const dLat = (latitude - userCoords.lat) * (Math.PI / 180);
+    const dLng = (longitude - userCoords.lng) * (Math.PI / 180);
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(userCoords.lat * (Math.PI / 180)) * Math.cos(latitude * (Math.PI / 180)) *
+              Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    distanceKm = Math.round(R * c * 10) / 10;
+  }
+
   return (
     <PublicLayout>
       <div className="min-h-screen pb-20 bg-transparent">
@@ -141,22 +180,64 @@ const OpportunityDetail = () => {
             {/* Left Column - Details */}
             <div className="lg:w-2/3 space-y-8">
               <div className="glass-card p-6 md:p-8 border border-white/10">
-                <span className="inline-block px-3 py-1 bg-primary-500/15 text-primary-300 border border-primary-500/25 rounded-full text-xs font-semibold tracking-wider uppercase mb-4">
-                  {opportunity.category?.replace('-', ' ')}
-                </span>
+                <div className="flex flex-wrap items-center gap-2 mb-4">
+                  <span className="inline-block px-3 py-1 bg-primary-500/15 text-primary-300 border border-primary-500/25 rounded-full text-xs font-semibold tracking-wider uppercase">
+                    {opportunity.category?.replace('-', ' ')}
+                  </span>
+                  {opportunity.source_type === 'news' && (
+                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase tracking-wider">
+                      NEWS-DERIVED
+                    </span>
+                  )}
+                  {distanceKm !== null && (
+                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                      <MapPin className="w-3 h-3 text-emerald-400" />
+                      {distanceKm} km away
+                    </span>
+                  )}
+                </div>
                 <h1 className="text-3xl md:text-4xl font-bold text-white mb-6">{opportunity.title}</h1>
                 
+                {/* News Attribution Notice if News-Derived */}
+                {opportunity.source_type === 'news' && (
+                  <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl mb-8 space-y-2">
+                    <div className="flex items-center gap-2 text-amber-300 font-semibold text-sm">
+                      <Newspaper className="w-4 h-4 text-amber-400" />
+                      <span>Potential Volunteer Opportunity (Based on Recent Public Reports)</span>
+                    </div>
+                    <p className="text-xs text-amber-200/90 leading-relaxed">
+                      This initiative was surfaced from authorized public news reports regarding local needs. 
+                      <strong> Verify with the organizing team or community leaders before participating.</strong>
+                    </p>
+                    {opportunity.source_name && (
+                      <div className="flex items-center gap-3 pt-1 text-xs">
+                        <span className="text-gray-400">Source: <strong className="text-white">{opportunity.source_name}</strong></span>
+                        {opportunity.source_url && (
+                          <a href={opportunity.source_url} target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:text-amber-300 underline inline-flex items-center gap-1">
+                            <span>View Original Article</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* NGO Info */}
                 <div className="flex items-center p-4 bg-white/[0.03] backdrop-blur-md rounded-xl border border-white/10 mb-8">
                   <div className="w-12 h-12 bg-primary-500/20 text-primary-300 border border-primary-500/30 rounded-full flex items-center justify-center text-xl font-bold mr-4">
-                    {opportunity.ngo?.organizationName?.charAt(0) || 'N'}
+                    {opportunity.ngo?.organizationName?.charAt(0) || opportunity.ngoProfileId?.organizationName?.charAt(0) || 'N'}
                   </div>
                   <div>
                     <h3 className="text-white font-medium flex items-center">
-                      {opportunity.ngo?.organizationName || 'Unknown NGO'}
-                      {opportunity.ngo?.isVerified && <ShieldCheck className="w-4 h-4 text-blue-400 ml-2" />}
+                      {opportunity.ngo?.organizationName || opportunity.ngoProfileId?.organizationName || (opportunity.source_type === 'news' ? 'Public Community Initiative' : 'Verified NGO')}
+                      {(opportunity.ngo?.isVerified || opportunity.ngoProfileId?.isVerified) && (
+                        <ShieldCheck className="w-4 h-4 text-emerald-400 ml-2" title="Verified NGO on Volunteer Connect" />
+                      )}
                     </h3>
-                    <p className="text-sm text-gray-400">Organizer</p>
+                    <p className="text-sm text-gray-400">
+                      {opportunity.source_type === 'news' ? 'Community Need / Public Alert' : 'Verified Organizer'}
+                    </p>
                   </div>
                 </div>
 
@@ -195,7 +276,7 @@ const OpportunityDetail = () => {
                     <div>
                       <p className="text-gray-400 text-sm">Time</p>
                       <p className="text-white font-medium">
-                        {opportunity.time} 
+                        {opportunity.time || 'Flexible / Full day'} 
                       </p>
                     </div>
                   </div>
@@ -203,17 +284,62 @@ const OpportunityDetail = () => {
                     <MapPin className="w-5 h-5 text-emerald-400 mt-1 mr-3" />
                     <div>
                       <p className="text-gray-400 text-sm">Location</p>
-                      <p className="text-white font-medium">{opportunity.location}, {opportunity.city}</p>
+                      <p className="text-white font-medium">{fullAddress}</p>
                     </div>
                   </div>
                   <div className="flex items-start">
                     <Users className="w-5 h-5 text-purple-400 mt-1 mr-3" />
                     <div>
                       <p className="text-gray-400 text-sm">Capacity</p>
-                      <p className="text-white font-medium">{opportunity.registeredCount || 0} / {opportunity.capacity} volunteers</p>
+                      <p className="text-white font-medium">{opportunity.registeredCount || 0} / {opportunity.capacity || 20} volunteers</p>
                     </div>
                   </div>
                 </div>
+              </div>
+
+              {/* Real Interactive Map Card */}
+              <div className="glass-card p-6 md:p-8 border border-white/10 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+                      <MapPin className="w-5 h-5 text-emerald-400" />
+                      Interactive Venue Map & Navigation
+                    </h3>
+                    <p className="text-sm text-gray-300 mt-1">{fullAddress}</p>
+                    {distanceKm !== null && (
+                      <span className="inline-block mt-2 text-xs font-medium px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                        📍 Approximately {distanceKm} km away from your location
+                      </span>
+                    )}
+                  </div>
+
+                  {latitude && longitude && (
+                    <a
+                      href={`https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary-600 hover:bg-primary-500 text-white rounded-xl text-sm font-medium transition-all shadow-md shrink-0"
+                    >
+                      <Navigation className="w-4 h-4" />
+                      <span>Get Directions</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  )}
+                </div>
+
+                {latitude && longitude ? (
+                  <div className="rounded-2xl overflow-hidden border border-white/10 mt-4">
+                    <InteractiveMap
+                      opportunities={[opportunity]}
+                      userLocation={userCoords}
+                      height="320px"
+                    />
+                  </div>
+                ) : (
+                  <div className="p-4 bg-white/5 rounded-xl border border-white/10 text-xs text-gray-400">
+                    Exact coordinates pending confirmation. Standard address: {fullAddress}
+                  </div>
+                )}
               </div>
             </div>
 

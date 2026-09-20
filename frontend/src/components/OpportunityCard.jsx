@@ -47,6 +47,8 @@ const OpportunityCard = ({ opportunity = {}, onApply, showNGOActions = false }) 
 
   const isFull = registeredCount >= capacity;
   const progress = Math.min(Math.round((registeredCount / Math.max(capacity, 1)) * 100), 100);
+  const isNewsDerived = opportunity.source_type === 'news';
+  const distanceKm = opportunity.distanceKm !== undefined && opportunity.distanceKm !== null ? opportunity.distanceKm : null;
 
   const handleAction = () => {
     if (onApply) {
@@ -70,16 +72,31 @@ const OpportunityCard = ({ opportunity = {}, onApply, showNGOActions = false }) 
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-[#050816]/80 via-transparent to-transparent" />
-        {category && (
-          <div className="absolute top-4 left-4">
+        
+        <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+          {category && (
             <Badge className={categoryColors[category] || categoryColors.Default}>{category}</Badge>
+          )}
+          {isNewsDerived && (
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase tracking-wider backdrop-blur-md">
+              News-Derived
+            </span>
+          )}
+        </div>
+
+        {distanceKm !== null && (
+          <div className="absolute top-4 right-4 px-2.5 py-1 rounded-full text-xs font-medium bg-black/60 backdrop-blur-md text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+            <MapPin className="w-3 h-3 text-emerald-400" />
+            <span>{distanceKm < 1 ? '< 1 km away' : `${distanceKm.toFixed(1)} km away`}</span>
           </div>
         )}
       </div>
 
       <div className="p-5 flex flex-col flex-1">
         <div className="flex items-center gap-1 mb-2">
-          <span className="text-xs text-gray-400">{ngoName}</span>
+          <span className="text-xs text-gray-400">
+            {isNewsDerived ? `Reported via ${opportunity.source_name || 'Public News'}` : ngoName}
+          </span>
           {isVerified && <CheckCircle className="w-3 h-3 text-emerald-400" />}
         </div>
         
@@ -87,11 +104,11 @@ const OpportunityCard = ({ opportunity = {}, onApply, showNGOActions = false }) 
         
         <div className="space-y-2 mb-4 text-sm text-gray-400 flex-1">
           <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 shrink-0" />
+            <MapPin className="w-4 h-4 shrink-0 text-gray-400" />
             <span className="truncate">{locationText}</span>
           </div>
           <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 shrink-0" />
+            <Calendar className="w-4 h-4 shrink-0 text-gray-400" />
             <span>{formattedDate}</span>
           </div>
         </div>

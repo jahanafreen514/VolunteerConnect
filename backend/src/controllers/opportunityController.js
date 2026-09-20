@@ -90,7 +90,9 @@ exports.getOpportunity = async (req, res) => {
     return success(res, opportunity, 'Opportunity retrieved successfully');
 };
 
-const parseOpportunityData = (req) => {
+const { geocodeAddress } = require('../services/geocodingService');
+
+const parseOpportunityData = async (req) => {
     const data = { ...req.body };
 
     if (req.body.date && !data.eventDate) {
@@ -116,9 +118,36 @@ const parseOpportunityData = (req) => {
             address: req.body['location[address]'] || req.body.address || '',
             city: req.body['location[city]'] || req.body.city || '',
             state: req.body['location[state]'] || req.body.state || '',
-            country: req.body['location[country]'] || req.body.country || ''
+            country: req.body['location[country]'] || req.body.country || 'India',
+            pincode: req.body['location[pincode]'] || req.body.pincode || '',
+            latitude: req.body['location[latitude]'] || req.body.latitude,
+            longitude: req.body['location[longitude]'] || req.body.longitude
         };
     }
+
+    // Auto-geocode if coordinates not provided
+    if ((!location.latitude || !location.longitude) && (location.address || location.city)) {
+        try {
+            const geo = await geocodeAddress(location);
+            location.latitude = geo.latitude;
+            location.longitude = geo.longitude;
+            location.formattedAddress = geo.formattedAddress;
+            if (!location.city && geo.city) location.city = geo.city;
+            if (!location.state && geo.state) location.state = geo.state;
+        } catch (err) {
+            console.warn('[OpportunityController] Auto-geocode notice:', err.message);
+        }
+    }
+
+    if (location.latitude && location.longitude) {
+        location.latitude = parseFloat(location.latitude);
+        location.longitude = parseFloat(location.longitude);
+        location.geo = {
+            type: 'Point',
+            coordinates: [location.longitude, location.latitude]
+        };
+    }
+
     data.location = location;
 
     // Parse requiredSkills
@@ -145,7 +174,7 @@ exports.createOpportunity = async (req, res) => {
         return error(res, 'Only verified NGOs can create opportunities', 403);
     }
 
-    const parsedData = parseOpportunityData(req);
+    const parsedData = await parseOpportunityData(req);
     const opportunityData = {
         ...parsedData,
         ngoId: req.user.id,
@@ -166,7 +195,7 @@ exports.updateOpportunity = async (req, res) => {
         return error(res, 'Not authorized to update this opportunity', 403);
     }
 
-    const parsedData = parseOpportunityData(req);
+    const parsedData = await parseOpportunityData(req);
     opportunity = await Opportunity.findByIdAndUpdate(req.params.id, parsedData, { new: true, runValidators: true });
     return success(res, opportunity, 'Opportunity updated successfully');
 };

@@ -104,6 +104,7 @@ app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/reports', require('./routes/reports'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/contact', require('./routes/contact'));
+app.use('/api/location', require('./routes/location'));
 
 // Error Handler
 app.use(errorHandler);
@@ -112,4 +113,17 @@ const PORT = process.env.PORT || 5000;
 
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+
+    // Initial background news detection sync
+    const { processNewsAndSyncOpportunities } = require('./services/newsService');
+    setTimeout(() => {
+        processNewsAndSyncOpportunities().then(res => {
+            console.log(`[NewsPipeline] Initial news sync completed: ${res.processedCount || 0} events.`);
+        }).catch(err => console.warn('[NewsPipeline] Initial sync notice:', err.message));
+    }, 5000);
+
+    // Periodic sync every 30 minutes
+    setInterval(() => {
+        processNewsAndSyncOpportunities().catch(err => console.warn('[NewsPipeline] Sync error:', err.message));
+    }, 30 * 60 * 1000);
 });

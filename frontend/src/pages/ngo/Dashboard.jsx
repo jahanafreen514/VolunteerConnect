@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Calendar, Users, Briefcase, CheckCircle, Award, AlertTriangle, UserCheck, XCircle } from 'lucide-react';
+import { 
+  Calendar, Users, Briefcase, CheckCircle, Award, AlertTriangle, 
+  UserCheck, XCircle, MapPin, Newspaper, ExternalLink, Sparkles, Navigation, ArrowRight 
+} from 'lucide-react';
 import { format } from 'date-fns';
 import { formatDateSafe } from '../../utils/date';
 import { toast } from 'react-hot-toast';
@@ -9,6 +12,7 @@ import DashboardLayout from '../../components/layouts/DashboardLayout';
 import NGOSidebar from '../../components/layouts/NGOSidebar';
 import { ngoService } from '../../services/ngoService';
 import { applicationService } from '../../services/applicationService';
+import { locationService } from '../../services/locationService';
 import StatCard from '../../components/ui/StatCard';
 import SkeletonStatCard from '../../components/ui/SkeletonStatCard';
 import Card from '../../components/ui/Card';
@@ -19,10 +23,13 @@ import EmptyState from '../../components/ui/EmptyState';
 import ConfirmDialog from '../../components/ui/ConfirmDialog';
 
 const NGODashboard = () => {
+  const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [profile, setProfile] = useState(null);
   const [recentApps, setRecentApps] = useState([]);
+  const [newsEvents, setNewsEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [adoptingId, setAdoptingId] = useState(null);
   const [actionDialog, setActionDialog] = useState({ isOpen: false, id: null, action: null });
 
   const fetchData = async () => {
@@ -32,9 +39,18 @@ const NGODashboard = () => {
         ngoService.getMyProfile(),
         applicationService.getNGOApplications({ limit: 5, status: 'pending' })
       ]);
+      const prof = profileData?.data || profileData;
       setStats(statsData?.data || statsData);
-      setProfile(profileData?.data || profileData);
+      setProfile(prof);
       setRecentApps(appsData?.data?.applications || appsData?.applications || (Array.isArray(appsData?.data) ? appsData.data : []));
+
+      // Fetch nearby real-world news events
+      try {
+        const newsRes = await locationService.getNewsEvents(prof?.latitude, prof?.longitude);
+        setNewsEvents(newsRes?.data || []);
+      } catch (err) {
+        console.warn('News events in dashboard:', err);
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -45,6 +61,24 @@ const NGODashboard = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const handleConfirmEvent = async (event) => {
+    setAdoptingId(event._id);
+    try {
+      await locationService.adoptEvent(event._id);
+      toast.success(`Event confirmed! You have officially adopted this initiative.`);
+      fetchData();
+    } catch (err) {
+      toast.error('Failed to adopt event');
+    } finally {
+      setAdoptingId(null);
+    }
+  };
+
+  const handleDismissEvent = (eventId) => {
+    setNewsEvents(prev => prev.filter(e => e._id !== eventId));
+    toast.success('Event dismissed from your immediate dashboard feed.');
+  };
 
   const handleApplicationAction = async () => {
     try {
@@ -99,6 +133,122 @@ const NGODashboard = () => {
               <StatCard title="Accepted Volunteers" value={stats?.acceptedVolunteers || 0} icon={UserCheck} color="green" />
               <StatCard title="Completed Events" value={stats?.completedEvents || 0} icon={CheckCircle} color="cyan" />
             </>
+          )}
+        </div>
+
+        {/* Section 19: Nearby Real-World Events & Potential Opportunities */}
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+                <Newspaper className="w-5 h-5 text-primary-400" />
+                Nearby Real-World Events & Community Needs
+              </h2>
+              <p className="text-xs text-gray-400 mt-0.5">
+                Real-time humanitarian reports and local situations detected in your region. Lead volunteer action or confirm community needs.
+              </p>
+            </div>
+            <span className="text-xs text-gray-400">
+              {newsEvents.length} event{newsEvents.length !== 1 ? 's' : ''} detected
+            </span>
+          </div>
+
+          {newsEvents.length > 0 ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {newsEvents.slice(0, 4).map((ev) => {
+                const isConfirmed = ev.status === 'confirmed';
+                return (
+                  <div
+                    key={ev._id}
+                    className="p-5 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl flex flex-col justify-between hover:border-white/20 transition-all space-y-4"
+                  >
+                    <div>
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-500/20 text-red-400 border border-red-500/30 uppercase tracking-wider">
+                          {ev.event_type?.replace('_', ' ') || 'Emergency Alert'}
+                        </span>
+                        {ev.distanceKm !== undefined && (
+                          <span className="text-xs text-emerald-400 font-medium flex items-center gap-1 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                            <Navigation className="w-3 h-3" />
+                            {ev.distanceKm < 1 ? '< 1 km from you' : `${ev.distanceKm.toFixed(1)} km from your organization`}
+                          </span>
+                        )}
+                      </div>
+
+                      <h3 className="text-base font-semibold text-white mb-1.5">{ev.title}</h3>
+                      <p className="text-xs text-gray-300 line-clamp-2 mb-3">{ev.summary}</p>
+
+                      <div className="flex flex-wrap items-center gap-4 text-xs text-gray-400 mb-3">
+                        <span className="flex items-center gap-1 text-gray-300">
+                          <MapPin className="w-3.5 h-3.5 text-gray-400" />
+                          {[ev.location?.city, ev.location?.state].filter(Boolean).join(', ') || 'Local Region'}
+                        </span>
+                        {ev.source_name && (
+                          <a
+                            href={ev.source_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 text-primary-400 hover:text-primary-300 underline"
+                          >
+                            <span>{ev.source_name}</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        )}
+                      </div>
+
+                      {ev.potential_activities && ev.potential_activities.length > 0 && (
+                        <div className="p-3 bg-white/[0.03] rounded-xl border border-white/5 text-xs text-gray-300">
+                          <strong className="text-gray-200 block mb-1">Potential volunteer support:</strong>
+                          <div className="flex flex-wrap gap-1.5">
+                            {ev.potential_activities.map((act, idx) => (
+                              <span key={idx} className="px-2 py-0.5 rounded-md bg-white/5 text-gray-300 border border-white/10 text-[11px]">
+                                {act}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex items-center justify-between gap-3 pt-3 border-t border-white/10">
+                      <div className="flex items-center gap-2">
+                        {isConfirmed ? (
+                          <span className="text-xs text-emerald-400 flex items-center gap-1 font-medium">
+                            <CheckCircle className="w-3.5 h-3.5" /> Confirmed / Adopted
+                          </span>
+                        ) : (
+                          <button
+                            onClick={() => handleConfirmEvent(ev)}
+                            disabled={adoptingId === ev._id}
+                            className="px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-medium transition-all"
+                          >
+                            {adoptingId === ev._id ? 'Confirming...' : 'Confirm Need'}
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDismissEvent(ev._id)}
+                          className="px-2.5 py-1.5 text-xs text-gray-400 hover:text-gray-200 transition-colors"
+                        >
+                          Dismiss
+                        </button>
+                      </div>
+
+                      <button
+                        onClick={() => navigate(`/ngo/opportunities/create?adoptEvent=${ev._id}&title=${encodeURIComponent(ev.title)}&description=${encodeURIComponent(ev.summary)}&category=Disaster Relief&city=${encodeURIComponent(ev.location?.city || '')}&lat=${ev.location?.latitude || ''}&lng=${ev.location?.longitude || ''}`)}
+                        className="px-3.5 py-1.5 rounded-lg bg-primary-600 hover:bg-primary-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-all shadow-glow-sm"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>Create Opportunity</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <Card className="p-6 text-center text-gray-400 text-xs">
+              No immediate disaster or community alerts within your organization's proximity. We automatically scan public feeds every 30 minutes.
+            </Card>
           )}
         </div>
 
