@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Newspaper, MapPin, Clock, ExternalLink, ShieldCheck, AlertCircle, Building2, BellRing, CheckCircle2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { locationService } from '../../services/locationService';
+import { getOpportunityImage } from '../../utils/categoryImages';
 import toast from 'react-hot-toast';
 
 const NewsOpportunityCard = ({
@@ -39,16 +40,27 @@ const NewsOpportunityCard = ({
       className="relative overflow-hidden rounded-3xl bg-[#0a0f28]/60 hover:bg-[#0a0f28]/80 backdrop-blur-2xl border border-amber-500/30 p-6 shadow-[0_16px_40px_rgba(0,0,0,0.45)] hover:border-amber-400/60 transition-all flex flex-col justify-between group"
     >
       <div>
-        {/* Top Header Bar */}
-        <div className="flex items-center justify-between gap-2 mb-4">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/30 text-amber-300 text-xs font-bold uppercase tracking-wider shadow-sm">
-            <Newspaper className="w-3.5 h-3.5" />
-            <span>NEWS-DERIVED</span>
-          </div>
+        {/* Category Image Banner with Gradient */}
+        <div className="relative h-44 -mx-6 -mt-6 mb-5 overflow-hidden bg-slate-900 border-b border-white/10">
+          <img
+            src={getOpportunityImage(event)}
+            alt={event.title}
+            loading="lazy"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f28] via-[#0a0f28]/30 to-black/40" />
 
-          <div className="flex items-center gap-1.5 text-xs text-gray-400 font-medium">
-            <Clock className="w-3.5 h-3.5 text-gray-500" />
-            <span>{timeAgo}</span>
+          {/* Top Header Overlay Badges */}
+          <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between pointer-events-none">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/90 text-slate-950 text-xs font-bold uppercase tracking-wider shadow-md backdrop-blur-md">
+              <Newspaper className="w-3.5 h-3.5" />
+              <span>NEWS-DERIVED</span>
+            </div>
+
+            <div className="flex items-center gap-1.5 text-xs text-white/95 font-medium px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10">
+              <Clock className="w-3.5 h-3.5 text-amber-400" />
+              <span>{timeAgo}</span>
+            </div>
           </div>
         </div>
 

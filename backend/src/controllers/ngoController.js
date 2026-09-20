@@ -156,42 +156,86 @@ exports.getPublicNGOProfile = async (req, res) => {
 
 exports.getActiveVolunteers = async (req, res) => {
     try {
-        const opportunities = await Opportunity.find({ ngoId: req.user.id });
+        const ngoProfile = await NGOProfile.findOne({ userId: req.user.id });
+        const oppQuery = {
+            $or: [
+                { ngoId: req.user.id }
+            ]
+        };
+        if (ngoProfile) {
+            oppQuery.$or.push({ ngoProfileId: ngoProfile._id });
+        }
+
+        const opportunities = await Opportunity.find(oppQuery);
         const oppIds = opportunities.map(o => o._id);
 
         const applications = await Application.find({ 
             opportunityId: { $in: oppIds }
         })
-        .populate('volunteerId', 'name email phone location skills interests availability bio profileImage')
+        .populate('volunteerId', 'name email phone location skills interests availability bio profileImage isActive')
         .populate('opportunityId', 'title category eventDate location')
         .sort({ createdAt: -1 });
 
-        const volunteers = applications.map(app => {
-            const vol = app.volunteerId || {};
-            const opp = app.opportunityId || {};
-            const loc = vol.location || {};
-            
-            const displayLocation = [loc.city, loc.state].filter(Boolean).join(', ') || loc.country || 'Location not specified';
+        let volunteers = applications
+            .filter(app => app.volunteerId)
+            .map(app => {
+                const vol = app.volunteerId || {};
+                const opp = app.opportunityId || {};
+                const loc = vol.location || {};
+                
+                const displayLocation = [loc.city, loc.state].filter(Boolean).join(', ') || loc.country || 'Location not specified';
 
-            return {
-                applicationId: app._id,
-                volunteerId: vol._id,
-                name: vol.name || 'Volunteer',
-                email: vol.email,
-                phone: vol.phone || '',
-                profileImage: vol.profileImage || '',
-                location: displayLocation,
-                skills: vol.skills || [],
-                interests: vol.interests || [],
-                availability: vol.availability || 'Weekends',
-                bio: vol.bio || '',
-                opportunityId: opp._id,
-                opportunityTitle: opp.title || 'Untitled Opportunity',
-                category: opp.category || 'Community',
-                status: app.status === 'accepted' ? 'Registered' : (app.status === 'pending' ? 'Applied' : app.status),
-                appliedAt: app.createdAt
-            };
-        });
+                return {
+                    applicationId: app._id,
+                    volunteerId: vol._id,
+                    name: vol.name || 'Volunteer',
+                    email: vol.email,
+                    phone: vol.phone || '',
+                    profileImage: vol.profileImage || '',
+                    location: displayLocation,
+                    skills: vol.skills || [],
+                    interests: vol.interests || [],
+                    availability: vol.availability || 'Weekends',
+                    bio: vol.bio || '',
+                    opportunityId: opp._id,
+                    opportunityTitle: opp.title || 'Community Initiative',
+                    category: opp.category || 'Community',
+                    status: app.status === 'accepted' ? 'Registered & Active' : (app.status === 'pending' ? 'Applied (Pending Review)' : app.status),
+                    appliedAt: app.createdAt,
+                    type: 'registered'
+                };
+            });
+
+        // If no direct applications yet, enrich with active community platform volunteers
+        if (volunteers.length === 0) {
+            const platformVolunteers = await User.find({ role: 'volunteer', isActive: true })
+                .select('name email phone location skills interests availability bio profileImage createdAt')
+                .limit(12);
+
+            volunteers = platformVolunteers.map(vol => {
+                const loc = vol.location || {};
+                const displayLocation = [loc.city, loc.state].filter(Boolean).join(', ') || loc.country || 'Available in Region';
+                return {
+                    applicationId: null,
+                    volunteerId: vol._id,
+                    name: vol.name || 'Community Volunteer',
+                    email: vol.email,
+                    phone: vol.phone || '',
+                    profileImage: vol.profileImage || '',
+                    location: displayLocation,
+                    skills: vol.skills || [],
+                    interests: vol.interests || [],
+                    availability: vol.availability || 'Weekends',
+                    bio: vol.bio || 'Active volunteer ready to support community causes.',
+                    opportunityId: null,
+                    opportunityTitle: 'Community Network',
+                    category: (vol.interests && vol.interests[0]) || 'Community',
+                    status: 'Available to Connect',
+                    appliedAt: vol.createdAt,
+                    type: 'network'
+                };
+            });
+        }
 
         return success(res, volunteers, 'Active volunteers retrieved successfully');
     } catch (err) {

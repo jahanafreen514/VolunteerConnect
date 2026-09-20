@@ -12,7 +12,7 @@ const generateToken = (id) => {
 };
 
 exports.register = async (req, res) => {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role, phone } = req.body;
 
     const userExists = await User.findOne({ email: email.toLowerCase() });
     if (userExists) {
@@ -23,6 +23,7 @@ exports.register = async (req, res) => {
         name,
         email: email.toLowerCase(),
         password,
+        phone: phone || undefined,
         role: role || 'volunteer'
     });
 
@@ -30,7 +31,8 @@ exports.register = async (req, res) => {
         await NGOProfile.create({
             userId: user._id,
             organizationName: req.body.organizationName || name,
-            email: user.email
+            email: user.email,
+            phone: phone || undefined
         });
     }
 

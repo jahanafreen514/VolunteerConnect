@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, User, Search, FileText, Award, Star, Bell, LogOut, Heart } from 'lucide-react';
+import { LayoutDashboard, User, Search, FileText, Award, Star, Bell, LogOut, Heart, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import Avatar from '../components/ui/Avatar';
 
@@ -14,13 +14,14 @@ const links = [
   { label: 'My Profile', path: '/volunteer/profile', icon: User },
 ];
 
-const VolunteerSidebar = ({ onNavigate }) => {
+const VolunteerSidebar = ({ onNavigate, onClose }) => {
   const { user, logout } = useAuth();
+  const handleClose = onClose || onNavigate;
 
   return (
     <div className="h-full flex flex-col w-56 sm:w-60 bg-[#050a1e]/85 backdrop-blur-2xl border-r border-white/10 shadow-2xl">
-      <div className="p-4 border-b border-white/10">
-        <div className="flex items-center gap-2.5">
+      <div className="p-4 border-b border-white/10 flex items-center justify-between">
+        <div className="flex items-center gap-2.5 overflow-hidden">
           <Avatar name={user?.name} size="sm" />
           <div className="overflow-hidden">
             <h3 className="text-white font-semibold text-xs sm:text-sm truncate">{user?.name || 'Volunteer'}</h3>
@@ -29,6 +30,16 @@ const VolunteerSidebar = ({ onNavigate }) => {
             </span>
           </div>
         </div>
+
+        {handleClose && (
+          <button
+            onClick={handleClose}
+            className="lg:hidden p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 shrink-0 ml-1"
+            aria-label="Close volunteer sidebar"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
       </div>
 
       <nav className="flex-1 overflow-y-auto py-3 px-2.5 space-y-1 custom-scrollbar">

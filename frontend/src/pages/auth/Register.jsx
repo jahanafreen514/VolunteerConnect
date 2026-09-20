@@ -4,7 +4,7 @@ import { useForm as useHookForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, User, Building, ArrowLeft, Loader2, Info, Sparkles, ShieldCheck, Award } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, User, Building, ArrowLeft, Loader2, Info, Sparkles, ShieldCheck, Award, Phone, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import { authService } from '../../services/authService';
@@ -27,6 +27,7 @@ const checkPasswordStrength = (password) => {
 const baseSchema = {
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email address'),
+  phone: z.string().optional(),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   confirmPassword: z.string()
 };
@@ -56,7 +57,12 @@ const Register = () => {
   
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [pendingPayload, setPendingPayload] = useState(null);
+  const [otpChannel, setOtpChannel] = useState('email');
+  const [otpCode, setOtpCode] = useState('');
+  const [cooldown, setCooldown] = useState(0);
+  const [otpSending, setOtpSending] = useState(false);
+  const [manualPhone, setManualPhone] = useState('');
 
   const schema = selectedRole === 'ngo' ? ngoSchema : volunteerSchema;
   const { register, handleSubmit, formState: { errors }, watch, reset } = useHookForm({
@@ -67,6 +73,13 @@ const Register = () => {
   const passwordValue = watch('password');
   const strength = checkPasswordStrength(passwordValue);
 
+  // Cooldown countdown timer
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = setInterval(() => setCooldown(prev => Math.max(0, prev - 1)), 1000);
+    return () => clearInterval(timer);
+  }, [cooldown]);
+
   useEffect(() => {
     reset({ role: selectedRole }); // Reset form when role changes
   }, [selectedRole, reset]);
@@ -76,30 +89,101 @@ const Register = () => {
     setStep(2);
   };
 
-  const onSubmit = async (data) => {
+  const dispatchOTP = async (identifier, channel) => {
+    setOtpSending(true);
+    try {
+      const res = await authService.sendOTP({
+        identifier,
+        channel,
+        purpose: 'registration'
+      });
+      toast.success(res?.message || `Verification code sent via ${channel.toUpperCase()}`);
+      setCooldown(60);
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to dispatch verification code');
+    } finally {
+      setOtpSending(false);
+    }
+  };
+
+  const onSubmitForm = async (data) => {
+    const payload = {
+      name: data.name,
+      email: data.email,
+      phone: data.phone || '',
+      password: data.password,
+      role: selectedRole
+    };
+    if (selectedRole === 'ngo') {
+      payload.organizationName = data.organizationName;
+    }
+
+    setPendingPayload(payload);
+    setStep(3);
+    setOtpCode('');
+    // Dispatch initial OTP via Email
+    setOtpChannel('email');
+    dispatchOTP(data.email, 'email');
+  };
+
+  const handleChangeChannel = (channel) => {
+    setOtpChannel(channel);
+    const activePhone = pendingPayload?.phone || manualPhone;
+    if (channel === 'sms' && !activePhone) {
+      toast('Please enter your phone number below to receive your SMS code.', { icon: '📱' });
+      return;
+    }
+    const id = channel === 'sms' ? activePhone : pendingPayload?.email;
+    dispatchOTP(id, channel);
+  };
+
+  const handleSendManualPhone = () => {
+    if (!manualPhone || manualPhone.trim().length < 6) {
+      toast.error('Please enter a valid phone number');
+      return;
+    }
+    const cleanPhone = manualPhone.trim();
+    setPendingPayload(prev => ({ ...prev, phone: cleanPhone }));
+    dispatchOTP(cleanPhone, 'sms');
+  };
+
+  const handleResendOTP = () => {
+    if (cooldown > 0) return;
+    const activePhone = pendingPayload?.phone || manualPhone;
+    const id = otpChannel === 'sms' ? (activePhone || pendingPayload?.email) : pendingPayload?.email;
+    dispatchOTP(id, otpChannel);
+  };
+
+  const handleVerifyAndRegister = async () => {
+    if (otpCode.length !== 6) {
+      toast.error('Please enter the complete 6-digit verification code');
+      return;
+    }
+
     setIsLoading(true);
     try {
-      const payload = {
-        name: data.name,
-        email: data.email,
-        password: data.password,
-        role: selectedRole
-      };
-      if (selectedRole === 'ngo') {
-        payload.organizationName = data.organizationName;
-      }
+      const activePhone = pendingPayload?.phone || manualPhone;
+      const id = otpChannel === 'sms' ? activePhone : pendingPayload?.email;
+      await authService.verifyOTP({
+        identifier: id,
+        otp: otpCode,
+        purpose: 'registration'
+      });
 
-      await authService.register(payload);
-      toast.success('Registration successful!');
-      
+      // Proceed with actual account registration
+      const registrationPayload = {
+        ...pendingPayload,
+        phone: activePhone || pendingPayload?.phone || ''
+      };
+      await authService.register(registrationPayload);
+      toast.success('Account verified and registration successful!');
+
       // Auto login
-      const user = await login(data.email, data.password);
-      
+      const user = await login(pendingPayload.email, pendingPayload.password);
       if (user.role === 'ngo') navigate('/ngo/dashboard');
       else navigate('/volunteer/dashboard');
-      
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Registration failed. Please try again.');
+      toast.error(error.response?.data?.message || 'Verification failed. Please check the code.');
     } finally {
       setIsLoading(false);
     }
@@ -231,7 +315,7 @@ const Register = () => {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-4">
                 {selectedRole === 'ngo' && (
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-1">Organization Name</label>
@@ -280,6 +364,21 @@ const Register = () => {
                     />
                   </div>
                   {errors.email && <p className="mt-1 text-xs text-red-400">{errors.email.message}</p>}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Phone Number (For SMS Verification)</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                      <Phone className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                      type="tel"
+                      {...register('phone')}
+                      className="block w-full pl-11 pr-3 py-3 bg-white/[0.05] border border-white/10 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20 rounded-xl text-white outline-none transition-all placeholder-gray-400"
+                      placeholder="+91 9876543210"
+                    />
+                  </div>
                 </div>
 
                 <div>
@@ -338,12 +437,139 @@ const Register = () => {
 
                 <button
                   type="submit"
-                  disabled={isLoading}
+                  disabled={isLoading || otpSending}
                   className={`w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-xl shadow-lg text-sm font-semibold text-white ${selectedRole === 'ngo' ? 'bg-accent-600 hover:bg-accent-500 focus:ring-accent-500' : 'bg-primary-600 hover:bg-primary-500 btn-glow focus:ring-primary-500'} focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 transition-all mt-6`}
                 >
-                  {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Create Account'}
+                  {otpSending ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
+                  {otpSending ? 'Sending Verification Code...' : 'Continue to Verification →'}
                 </button>
               </form>
+            </motion.div>
+          )}
+
+          {/* STEP 3: REAL EMAIL + SMS OTP VERIFICATION FLOW (Phase 23, 24, 25) */}
+          {step === 3 && (
+            <motion.div 
+              key="step3"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-[#0a0f28]/60 backdrop-blur-2xl border border-white/[0.15] p-8 rounded-3xl max-w-lg mx-auto w-full shadow-[0_16px_40px_rgba(0,0,0,0.5)] text-center"
+            >
+              <div className="w-16 h-16 rounded-2xl bg-primary-500/20 border border-primary-500/30 flex items-center justify-center mx-auto mb-4 text-primary-400">
+                <ShieldCheck className="w-8 h-8" />
+              </div>
+
+              <h3 className="text-xl font-bold text-white mb-1">Verify Your Account</h3>
+              <p className="text-xs text-gray-300 mb-6">
+                Enter the 6-digit one-time code to complete your registration.
+              </p>
+
+              {/* Delivery Channel Choice */}
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <button
+                  type="button"
+                  onClick={() => handleChangeChannel('email')}
+                  className={`p-3 rounded-2xl border text-xs font-semibold flex items-center justify-center gap-2 transition-all ${
+                    otpChannel === 'email'
+                      ? 'bg-primary-500/25 border-primary-400 text-white shadow-glow-sm'
+                      : 'bg-white/5 border-white/10 text-gray-400 hover:text-white'
+                  }`}
+                >
+                  <Mail className="w-4 h-4" />
+                  <span>Verify by Email</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleChangeChannel('sms')}
+                  className={`p-3 rounded-2xl border text-xs font-semibold flex items-center justify-center gap-2 transition-all ${
+                    otpChannel === 'sms'
+                      ? 'bg-primary-500/25 border-primary-400 text-white shadow-glow-sm'
+                      : 'bg-white/5 border-white/10 text-gray-400 hover:text-white'
+                  }`}
+                >
+                  <Phone className="w-4 h-4" />
+                  <span>Verify by SMS</span>
+                </button>
+              </div>
+
+              {otpChannel === 'sms' && !pendingPayload?.phone && (
+                <div className="mb-4 text-left p-3.5 bg-white/[0.04] border border-white/10 rounded-2xl">
+                  <label className="block text-xs font-medium text-gray-300 mb-1.5">Enter Phone Number to Receive SMS Code:</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="tel"
+                      value={manualPhone}
+                      onChange={(e) => setManualPhone(e.target.value)}
+                      placeholder="+91 9876543210"
+                      className="flex-1 py-2 px-3 bg-white/5 border border-white/15 rounded-xl text-white text-xs outline-none focus:border-primary-400"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleSendManualPhone}
+                      disabled={otpSending}
+                      className="px-3.5 py-2 bg-primary-600 hover:bg-primary-500 rounded-xl text-xs font-semibold text-white transition-all disabled:opacity-50 whitespace-nowrap"
+                    >
+                      {otpSending ? 'Sending...' : 'Send SMS OTP'}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <div className="p-3 rounded-xl bg-white/[0.03] border border-white/10 mb-6 text-xs text-gray-300">
+                <span>Code dispatched to: </span>
+                <strong className="text-white">
+                  {otpChannel === 'sms' ? (pendingPayload?.phone || manualPhone || 'your phone number') : pendingPayload?.email}
+                </strong>
+              </div>
+
+              {/* 6-Digit Code Input */}
+              <div className="mb-6">
+                <label className="block text-xs font-medium text-gray-400 mb-2">6-Digit Verification Code</label>
+                <input
+                  type="text"
+                  maxLength={6}
+                  value={otpCode}
+                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
+                  placeholder="• • • • • •"
+                  className="w-full text-center tracking-[10px] text-2xl font-mono py-3.5 bg-white/[0.06] border border-white/15 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/25 rounded-2xl text-white outline-none transition-all placeholder-gray-500"
+                />
+              </div>
+
+              {/* Action Button */}
+              <button
+                type="button"
+                onClick={handleVerifyAndRegister}
+                disabled={isLoading || otpCode.length !== 6}
+                className="w-full py-3.5 px-4 rounded-xl font-semibold text-sm text-white bg-primary-600 hover:bg-primary-500 disabled:opacity-50 transition-all shadow-glow-sm flex items-center justify-center gap-2"
+              >
+                {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Verify & Complete Registration'}
+              </button>
+
+              {/* Resend & Back */}
+              <div className="flex items-center justify-between mt-5 text-xs text-gray-400">
+                <button
+                  type="button"
+                  onClick={() => setStep(2)}
+                  className="hover:text-white transition-colors"
+                >
+                  ← Edit Information
+                </button>
+
+                {cooldown > 0 ? (
+                  <span>Resend in {cooldown}s</span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleResendOTP}
+                    disabled={otpSending}
+                    className="text-primary-400 hover:text-primary-300 font-medium transition-colors"
+                  >
+                    {otpSending ? 'Sending...' : 'Resend Code'}
+                  </button>
+                )}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

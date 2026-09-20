@@ -31,6 +31,7 @@ const VolunteerNotifications = lazy(() => import('./pages/volunteer/Notification
 // NGO Pages
 const NGODashboard = lazy(() => import('./pages/ngo/Dashboard'));
 const NGOProfile = lazy(() => import('./pages/ngo/Profile'));
+const NGOVolunteers = lazy(() => import('./pages/ngo/Volunteers'));
 const NGOOpportunities = lazy(() => import('./pages/ngo/Opportunities'));
 const CreateOpportunity = lazy(() => import('./pages/ngo/CreateOpportunity'));
 const EditOpportunity = lazy(() => import('./pages/ngo/EditOpportunity'));
@@ -109,6 +110,7 @@ function App() {
                 <Route path="/ngo" element={<ProtectedRoute role="ngo" />}>
                   <Route index element={<Navigate to="dashboard" replace />} />
                   <Route path="dashboard" element={<NGODashboard />} />
+                  <Route path="volunteers" element={<NGOVolunteers />} />
                   <Route path="profile" element={<NGOProfile />} />
                   <Route path="opportunities" element={<NGOOpportunities />} />
                   <Route path="opportunities/create" element={<CreateOpportunity />} />

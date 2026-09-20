@@ -76,6 +76,50 @@ exports.getOpportunities = async (req, res) => {
     else if (sort === 'date_desc') sortOptions.eventDate = -1;
     else sortOptions.createdAt = -1;
 
+const CATEGORY_DEFAULT_IMAGES = {
+    'Environment': 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=1000&auto=format&fit=crop&q=80',
+    'Education': 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1000&auto=format&fit=crop&q=80',
+    'Healthcare': 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=1000&auto=format&fit=crop&q=80',
+    'Health': 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=1000&auto=format&fit=crop&q=80',
+    'Community': 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1000&auto=format&fit=crop&q=80',
+    'Community Service': 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1000&auto=format&fit=crop&q=80',
+    'Disaster Relief': 'https://images.unsplash.com/photo-1547683905-f686c993aae5?w=1000&auto=format&fit=crop&q=80',
+    'Animals': 'https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=1000&auto=format&fit=crop&q=80',
+    'Animal Welfare': 'https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=1000&auto=format&fit=crop&q=80',
+    'Arts & Culture': 'https://images.unsplash.com/photo-1460661419200-1801a9b2142a?w=1000&auto=format&fit=crop&q=80',
+    'Technology': 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1000&auto=format&fit=crop&q=80',
+    'General': 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1000&auto=format&fit=crop&q=80'
+};
+
+const getCategoryDefaultImage = (category) => {
+    if (!category) return CATEGORY_DEFAULT_IMAGES.General;
+    const cat = category.toString().trim();
+    if (CATEGORY_DEFAULT_IMAGES[cat]) return CATEGORY_DEFAULT_IMAGES[cat];
+    const catLower = cat.toLowerCase();
+    if (catLower.includes('env') || catLower.includes('tree') || catLower.includes('clean') || catLower.includes('water')) {
+        return CATEGORY_DEFAULT_IMAGES.Environment;
+    }
+    if (catLower.includes('edu') || catLower.includes('teach') || catLower.includes('school') || catLower.includes('child')) {
+        return CATEGORY_DEFAULT_IMAGES.Education;
+    }
+    if (catLower.includes('health') || catLower.includes('medic') || catLower.includes('blood')) {
+        return CATEGORY_DEFAULT_IMAGES.Healthcare;
+    }
+    if (catLower.includes('anim') || catLower.includes('pet') || catLower.includes('dog')) {
+        return CATEGORY_DEFAULT_IMAGES.Animals;
+    }
+    if (catLower.includes('disaster') || catLower.includes('flood') || catLower.includes('relief') || catLower.includes('fire')) {
+        return CATEGORY_DEFAULT_IMAGES['Disaster Relief'];
+    }
+    if (catLower.includes('art') || catLower.includes('cultur') || catLower.includes('music')) {
+        return CATEGORY_DEFAULT_IMAGES['Arts & Culture'];
+    }
+    if (catLower.includes('tech') || catLower.includes('code') || catLower.includes('digital')) {
+        return CATEGORY_DEFAULT_IMAGES.Technology;
+    }
+    return CATEGORY_DEFAULT_IMAGES.Community;
+};
+
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
     const opportunities = await Opportunity.find(query)
@@ -87,8 +131,16 @@ exports.getOpportunities = async (req, res) => {
 
     const total = await Opportunity.countDocuments(query);
 
+    const enrichedOpportunities = opportunities.map(opp => {
+        const obj = opp.toObject ? opp.toObject() : { ...opp };
+        if (!obj.image) {
+            obj.image = getCategoryDefaultImage(obj.category);
+        }
+        return obj;
+    });
+
     return success(res, {
-        opportunities,
+        opportunities: enrichedOpportunities,
         totalPages: Math.ceil(total / parseInt(limit)),
         currentPage: parseInt(page),
         total
@@ -104,7 +156,12 @@ exports.getOpportunity = async (req, res) => {
     if (!opportunity) {
         return error(res, 'Opportunity not found', 404);
     }
-    return success(res, opportunity, 'Opportunity retrieved successfully');
+    
+    const oppObj = opportunity.toObject ? opportunity.toObject() : { ...opportunity };
+    if (!oppObj.image) {
+        oppObj.image = getCategoryDefaultImage(oppObj.category);
+    }
+    return success(res, oppObj, 'Opportunity retrieved successfully');
 };
 
 const { geocodeAddress } = require('../services/geocodingService');
@@ -123,6 +180,8 @@ const parseOpportunityData = async (req) => {
     }
     if (req.file) {
         data.image = req.file.path;
+    } else if (!data.image) {
+        data.image = getCategoryDefaultImage(data.category);
     }
 
     // Parse location if nested or flattened

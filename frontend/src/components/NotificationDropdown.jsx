@@ -4,10 +4,12 @@ import { Bell, Check, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { formatDistanceToNowSafe } from '../utils/date';
 import { useAuth } from '../context/AuthContext';
+import { useSocket } from '../context/SocketContext';
 import { getNotifications, markAsRead, markAllAsRead, getUnreadCount } from '../services/notificationService';
 
 const NotificationDropdown = () => {
   const { user } = useAuth();
+  const { socket } = useSocket() || {};
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -15,8 +17,22 @@ const NotificationDropdown = () => {
 
   useEffect(() => {
     fetchData();
-    // In a real app, listen to socket events here
   }, []);
+
+  // Real-time socket listener for incoming notifications
+  useEffect(() => {
+    if (!socket) return;
+    const handleNewNotification = (notification) => {
+      if (notification) {
+        setNotifications(prev => [notification, ...prev]);
+        setUnreadCount(prev => prev + 1);
+      }
+    };
+    socket.on('new_notification', handleNewNotification);
+    return () => {
+      socket.off('new_notification', handleNewNotification);
+    };
+  }, [socket]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -84,7 +100,7 @@ const NotificationDropdown = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute right-0 mt-2 w-80 sm:w-96 bg-[#070b24]/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50"
+            className="absolute right-0 mt-2 w-80 sm:w-96 max-w-[calc(100vw-32px)] bg-[#070b24]/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50"
           >
             <div className="p-4 border-b border-white/10 flex justify-between items-center bg-white/5">
               <h3 className="font-semibold text-white">Notifications</h3>

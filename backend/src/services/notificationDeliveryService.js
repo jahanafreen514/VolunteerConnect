@@ -5,16 +5,19 @@
  */
 
 const sendEmail = async ({ to, subject, html, text }) => {
-  const host = process.env.EMAIL_HOST;
-  const port = process.env.EMAIL_PORT || 587;
-  const user = process.env.EMAIL_USERNAME;
-  const pass = process.env.EMAIL_PASSWORD;
-  const from = process.env.EMAIL_FROM || '"VolunteerConnect" <no-reply@volunteerconnect.org>';
+  const host = process.env.EMAIL_HOST || process.env.SMTP_HOST;
+  const port = process.env.EMAIL_PORT || process.env.SMTP_PORT || 587;
+  const user = process.env.EMAIL_USERNAME || process.env.SMTP_USER;
+  const pass = process.env.EMAIL_PASSWORD || process.env.SMTP_PASS;
+  const from = process.env.EMAIL_FROM || process.env.FROM_EMAIL || '"VolunteerConnect" <no-reply@volunteerconnect.org>';
 
   if (!host || !user || !pass) {
     // Graceful fallback status in development when SMTP is not configured
-    console.log(`[EmailDeliveryService] SMTP environment variables not configured (EMAIL_HOST/EMAIL_USERNAME unset).`);
-    console.log(`[EmailDeliveryService] Message intended for <${to}>: "${subject}"`);
+    console.log('----------------------------------------------------');
+    console.log(`[EMAIL SIMULATION] Destination: <${to}>`);
+    console.log(`[EMAIL SIMULATION] Subject: ${subject}`);
+    console.log(`[EMAIL SIMULATION] Content:\n${text || subject}`);
+    console.log('----------------------------------------------------');
     return {
       sent: false,
       configured: false,

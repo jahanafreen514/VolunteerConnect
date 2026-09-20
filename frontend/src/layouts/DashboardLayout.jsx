@@ -7,11 +7,14 @@ const DashboardLayout = ({ children, sidebar }) => {
   const renderSidebar = () => {
     if (!sidebar) return null;
     if (React.isValidElement(sidebar)) {
-      return React.cloneElement(sidebar, { onNavigate: () => setIsSidebarOpen(false) });
+      return React.cloneElement(sidebar, { 
+        onNavigate: () => setIsSidebarOpen(false),
+        onClose: () => setIsSidebarOpen(false)
+      });
     }
     if (typeof sidebar === 'function') {
       const SidebarComponent = sidebar;
-      return <SidebarComponent onNavigate={() => setIsSidebarOpen(false)} />;
+      return <SidebarComponent onNavigate={() => setIsSidebarOpen(false)} onClose={() => setIsSidebarOpen(false)} />;
     }
     return sidebar;
   };
@@ -21,14 +24,14 @@ const DashboardLayout = ({ children, sidebar }) => {
       {/* Mobile overlay */}
       {isSidebarOpen && (
         <div 
-          className="fixed inset-0 bg-black/60 z-30 lg:hidden backdrop-blur-sm"
+          className="fixed inset-0 bg-black/75 z-40 lg:hidden backdrop-blur-sm transition-opacity"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar container */}
       <div 
-        className={`fixed inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:z-auto ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >

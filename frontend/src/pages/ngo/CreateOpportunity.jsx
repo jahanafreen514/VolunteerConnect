@@ -8,6 +8,7 @@ import NGOSidebar from '../../components/layouts/NGOSidebar';
 import { opportunityService } from '../../services/opportunityService';
 import { ngoService } from '../../services/ngoService';
 import { locationService } from '../../services/locationService';
+import { getOpportunityImage } from '../../utils/categoryImages';
 import Card from '../../components/ui/Card';
 import Input from '../../components/ui/Input';
 import Textarea from '../../components/ui/Textarea';
@@ -33,7 +34,8 @@ const CreateOpportunity = () => {
   const [adoptedEventId, setAdoptedEventId] = useState(null);
   const [adoptedEventTitle, setAdoptedEventTitle] = useState('');
 
-  const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm();
+  const { register, handleSubmit, setValue, reset, watch, formState: { errors } } = useForm();
+  const selectedCategory = watch('category');
 
   useEffect(() => {
     const initForm = async () => {
@@ -185,15 +187,34 @@ const CreateOpportunity = () => {
             
             {/* Image Upload */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Cover Image</label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-medium text-gray-300">Cover Image</label>
+                <span className="text-xs text-primary-400 font-medium">
+                  {imageFile ? 'Custom Image Selected' : (selectedCategory ? `Auto-Assigned Category Cover: ${selectedCategory}` : 'Auto-assigned by category if omitted')}
+                </span>
+              </div>
               <div className="flex items-center justify-center w-full">
-                <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-white/20 border-dashed rounded-xl cursor-pointer bg-white/5 hover:bg-white/10 transition-colors overflow-hidden relative">
+                <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-white/20 border-dashed rounded-xl cursor-pointer bg-white/5 hover:bg-white/10 transition-colors overflow-hidden relative group">
                   {imagePreview ? (
                     <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                  ) : selectedCategory ? (
+                    <div className="relative w-full h-full">
+                      <img 
+                        src={getOpportunityImage({ category: selectedCategory })} 
+                        alt={selectedCategory} 
+                        className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-4">
+                        <span className="text-xs font-semibold text-white bg-primary-600/80 px-3 py-1 rounded-full w-fit backdrop-blur-md">
+                          ✨ Default {selectedCategory} Photo (Click to upload custom image)
+                        </span>
+                      </div>
+                    </div>
                   ) : (
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                       <ImageIcon className="w-8 h-8 text-gray-400 mb-2" />
-                      <p className="text-sm text-gray-400">Click to upload an image</p>
+                      <p className="text-sm text-gray-300 font-medium">Click to upload custom cover photo</p>
+                      <p className="text-xs text-gray-400 mt-1">Or select a category below for auto-curated high-res imagery</p>
                     </div>
                   )}
                   <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />

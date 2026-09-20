@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, User, Briefcase, Users, ClipboardCheck, PlusCircle, LogOut } from 'lucide-react';
+import { LayoutDashboard, User, Briefcase, Users, UserCheck, ClipboardCheck, PlusCircle, LogOut, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { getMyProfile } from '../services/ngoService';
 import Avatar from '../components/ui/Avatar';
@@ -8,15 +8,17 @@ import Badge from '../components/ui/Badge';
 
 const links = [
   { label: 'Dashboard', path: '/ngo/dashboard', icon: LayoutDashboard },
-  { label: 'Organization Profile', path: '/ngo/profile', icon: User },
-  { label: 'Manage Opportunities', path: '/ngo/opportunities', icon: Briefcase },
+  { label: 'Active Volunteers', path: '/ngo/volunteers', icon: UserCheck },
   { label: 'Volunteer Applications', path: '/ngo/applications', icon: Users },
+  { label: 'Manage Opportunities', path: '/ngo/opportunities', icon: Briefcase },
   { label: 'Attendance Management', path: '/ngo/attendance', icon: ClipboardCheck },
+  { label: 'Organization Profile', path: '/ngo/profile', icon: User },
 ];
 
-const NGOSidebar = ({ onNavigate }) => {
+const NGOSidebar = ({ onNavigate, onClose }) => {
   const { user, logout } = useAuth();
   const [ngoData, setNgoData] = useState(null);
+  const handleClose = onClose || onNavigate;
 
   useEffect(() => {
     getMyProfile().then(res => {
@@ -35,7 +37,16 @@ const NGOSidebar = ({ onNavigate }) => {
 
   return (
     <div className="h-full flex flex-col w-56 sm:w-60 bg-[#050a1e]/85 backdrop-blur-2xl border-r border-white/10 shadow-2xl">
-      <div className="p-4 border-b border-white/10 flex flex-col items-center text-center">
+      <div className="p-4 border-b border-white/10 relative flex flex-col items-center text-center">
+        {handleClose && (
+          <button
+            onClick={handleClose}
+            className="lg:hidden absolute top-3 right-3 p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10"
+            aria-label="Close NGO sidebar"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
         <Avatar src={ngoData?.logo} name={user?.name} size="md" className="mb-2 ring-2 ring-primary-500/30" />
         <h3 className="text-white font-semibold text-xs sm:text-sm w-full truncate">{user?.name || 'NGO Partner'}</h3>
         <div className="mt-1.5">
