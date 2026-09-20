@@ -18,7 +18,7 @@ const AdminSidebar = ({ onNavigate, onClose }) => {
 
   return (
     <div className="h-full flex flex-col w-56 sm:w-60 bg-[#050a1e]/85 backdrop-blur-2xl border-r border-white/10 shadow-2xl">
-      <div className="p-4 border-b border-white/10 flex items-center justify-between">
+      <div className="p-4 border-b border-white/10 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2.5 overflow-hidden">
           <div className="p-2 rounded-xl bg-amber-500/15 text-amber-400 border border-amber-500/30 shrink-0">
             <Shield className="w-4 h-4" />
@@ -61,7 +61,7 @@ const AdminSidebar = ({ onNavigate, onClose }) => {
         ))}
       </nav>
 
-      <div className="p-3 border-t border-white/10">
+      <div className="p-3 border-t border-white/10 shrink-0">
         <button
           onClick={logout}
           className="flex items-center w-full px-3 py-2 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors text-xs sm:text-sm font-medium"

@@ -20,7 +20,7 @@ const VolunteerSidebar = ({ onNavigate, onClose }) => {
 
   return (
     <div className="h-full flex flex-col w-56 sm:w-60 bg-[#050a1e]/85 backdrop-blur-2xl border-r border-white/10 shadow-2xl">
-      <div className="p-4 border-b border-white/10 flex items-center justify-between">
+      <div className="p-4 border-b border-white/10 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2.5 overflow-hidden">
           <Avatar name={user?.name} size="sm" />
           <div className="overflow-hidden">
@@ -61,7 +61,7 @@ const VolunteerSidebar = ({ onNavigate, onClose }) => {
         ))}
       </nav>
 
-      <div className="p-3 border-t border-white/10">
+      <div className="p-3 border-t border-white/10 shrink-0">
         <button
           onClick={logout}
           className="flex items-center w-full px-3 py-2 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors text-xs sm:text-sm font-medium"

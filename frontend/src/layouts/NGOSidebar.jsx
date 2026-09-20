@@ -37,7 +37,7 @@ const NGOSidebar = ({ onNavigate, onClose }) => {
 
   return (
     <div className="h-full flex flex-col w-56 sm:w-60 bg-[#050a1e]/85 backdrop-blur-2xl border-r border-white/10 shadow-2xl">
-      <div className="p-4 border-b border-white/10 relative flex flex-col items-center text-center">
+      <div className="p-4 border-b border-white/10 relative flex flex-col items-center text-center shrink-0">
         {handleClose && (
           <button
             onClick={handleClose}
@@ -73,7 +73,7 @@ const NGOSidebar = ({ onNavigate, onClose }) => {
         ))}
       </nav>
 
-      <div className="p-3 border-t border-white/10 space-y-1.5">
+      <div className="p-3 border-t border-white/10 space-y-1.5 shrink-0">
         {verificationStatus === 'approved' && (
           <NavLink
             to="/ngo/opportunities/create"
