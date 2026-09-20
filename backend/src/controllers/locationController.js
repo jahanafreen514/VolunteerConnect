@@ -71,9 +71,15 @@ const getNearby = async (req, res) => {
     }
     nearbyNGOs.sort((a, b) => a.distanceKm - b.distanceKm);
 
-    // Fetch active opportunities
+    // Fetch active opportunities (excluding past completed events)
+    const now = new Date();
     const oppQuery = {
       status: 'published',
+      $or: [
+        { eventDate: { $gte: new Date(now.getTime() - 24 * 3600 * 1000) } },
+        { eventDate: null },
+        { eventDate: { $exists: false } }
+      ],
       'location.latitude': { $exists: true, $ne: null },
       'location.longitude': { $exists: true, $ne: null }
     };

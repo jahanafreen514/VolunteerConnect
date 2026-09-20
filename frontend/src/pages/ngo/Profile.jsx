@@ -197,157 +197,171 @@ const NGOProfile = () => {
 
   return (
     <DashboardLayout sidebar={<NGOSidebar />}>
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        <h1 className="text-2xl font-bold text-white mb-6">NGO Profile & Headquarters Location</h1>
+      <div className="relative z-10 w-full px-2 sm:px-4 lg:px-6 py-6 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">NGO Profile & Headquarters Location</h1>
+            <p className="text-sm text-gray-400 mt-1">Manage your organization credentials, real-world headquarters, and verification documents.</p>
+          </div>
+        </div>
         
         {profile && (
-          <Card className={`p-4 border-l-4 ${profile.verificationStatus === 'approved' ? 'border-l-green-500 bg-green-500/5' : profile.verificationStatus === 'rejected' ? 'border-l-red-500 bg-red-500/5' : 'border-l-amber-500 bg-amber-500/5'}`}>
+          <Card className={`p-4 border-l-4 ${profile.verificationStatus === 'approved' ? 'border-l-green-500 bg-green-500/10' : profile.verificationStatus === 'rejected' ? 'border-l-red-500 bg-red-500/10' : 'border-l-amber-500 bg-amber-500/10'}`}>
             <div className="flex items-start gap-4">
-              {profile.verificationStatus === 'approved' ? <ShieldCheck className="w-6 h-6 text-green-500" /> : <ShieldAlert className={`w-6 h-6 ${profile.verificationStatus === 'rejected' ? 'text-red-500' : 'text-amber-500'}`} />}
-              <div>
-                <h3 className="font-semibold text-white flex items-center gap-2">
-                  Verification Status: 
-                  <Badge variant={profile.verificationStatus === 'approved' ? 'success' : profile.verificationStatus === 'rejected' ? 'error' : 'warning'} className="uppercase">
+              {profile.verificationStatus === 'approved' ? <ShieldCheck className="w-6 h-6 text-green-400 shrink-0 mt-0.5" /> : <ShieldAlert className={`w-6 h-6 shrink-0 mt-0.5 ${profile.verificationStatus === 'rejected' ? 'text-red-400' : 'text-amber-400'}`} />}
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-white">Verification Status:</h3>
+                  <Badge variant={profile.verificationStatus === 'approved' ? 'success' : profile.verificationStatus === 'rejected' ? 'error' : 'warning'} className="uppercase font-semibold text-xs px-2.5 py-0.5">
                     {profile.verificationStatus}
                   </Badge>
-                </h3>
-                <p className="text-sm text-gray-400 mt-1">
+                </div>
+                <p className="text-xs sm:text-sm text-gray-300 mt-1">
                   {profile.verificationStatus === 'approved' 
-                    ? 'Your organization is verified on Volunteer Connect. You appear on the real-world discovery map.' 
+                    ? 'Your organization is fully verified on Volunteer Connect. You are visible on the real-world discovery map and volunteer listings.' 
                     : profile.verificationStatus === 'rejected' 
-                    ? 'Your application was rejected. Please contact support or update your documents.' 
-                    : 'Your profile is under review by administrators. Please ensure your location and documents are accurate.'}
+                    ? 'Your application was rejected. Please review administrator notes or re-upload your official registration documents.' 
+                    : 'Your organization profile is under review by administrators. You can still create opportunities, publish initiatives, and register your headquarters location.'}
                 </p>
               </div>
             </div>
           </Card>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="p-6 md:col-span-2">
-            <h2 className="text-xl font-semibold text-white mb-4">Organization Details</h2>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <Input label="Organization Name" {...register('organizationName')} required />
-              <Textarea label="Description" {...register('description')} rows={4} required placeholder="What does your NGO do?" />
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Input label="Email Address" type="email" {...register('email')} required />
-                <Input label="Phone Number" {...register('phone')} required />
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Input label="Website" {...register('website')} placeholder="https://" />
-                <Input label="Registration Number" {...register('registrationNumber')} required />
-              </div>
-
-              {/* Real Location & Address Section */}
-              <div className="pt-6 border-t border-white/10 space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div>
-                    <h3 className="text-lg font-medium text-white flex items-center gap-2">
-                      <MapPin className="w-5 h-5 text-emerald-400" />
-                      Physical Headquarters & Map Registration
-                    </h3>
-                    <p className="text-xs text-gray-400 mt-0.5">
-                      Enter your address and we will automatically determine your coordinates for volunteer discovery.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleGeocodeAddress}
-                    disabled={geocoding}
-                    className="px-3.5 py-1.5 rounded-xl bg-primary-600/30 hover:bg-primary-600/50 text-primary-300 border border-primary-500/40 text-xs font-semibold flex items-center gap-1.5 transition-all self-start sm:self-auto"
-                  >
-                    <RefreshCw className={`w-3.5 h-3.5 ${geocoding ? 'animate-spin text-primary-400' : ''}`} />
-                    <span>{geocoding ? 'Geocoding...' : 'Auto-Locate on Map'}</span>
-                  </button>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Main Column (8 cols): Org Details & HQ Location Map */}
+          <div className="lg:col-span-8 space-y-6">
+            <Card className="p-6 sm:p-8">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <div className="border-b border-white/10 pb-4 mb-2">
+                  <h2 className="text-xl font-bold text-white">Organization Details</h2>
+                  <p className="text-xs text-gray-400 mt-0.5">Official information presented to prospective volunteers and donors.</p>
                 </div>
 
-                <Input label="Street Address" {...register('address')} placeholder="e.g. 4th Line, Arundelpet" required />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <Input label="Organization Name" {...register('organizationName')} required placeholder="e.g. Hope Foundation India" />
+                  <Input label="Registration Number / CIN" {...register('registrationNumber')} required placeholder="e.g. REG-59281-2024" />
+                </div>
+
+                <Textarea label="Organization Description & Mission" {...register('description')} rows={4} required placeholder="Describe your NGO's mission, causes supported, and impact goals..." />
                 
-                <div className="grid grid-cols-2 gap-4">
-                  <Input label="City" {...register('city')} placeholder="e.g. Guntur" required />
-                  <Input label="State/Province" {...register('state')} placeholder="e.g. Andhra Pradesh" required />
-                  <Input label="Country" {...register('country')} placeholder="India" required />
-                  <Input label="Postal Code / PIN" {...register('postalCode')} placeholder="e.g. 522002" required />
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                  <Input label="Official Email" type="email" {...register('email')} required placeholder="contact@organization.org" />
+                  <Input label="Phone Number" {...register('phone')} required placeholder="+91 98765 43210" />
+                  <Input label="Official Website" {...register('website')} placeholder="https://organization.org" />
                 </div>
 
-                {/* Location Confirmation & Map Picker */}
-                <div className="mt-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-gray-300">
-                      Pinpoint Location (Drag marker to adjust):
-                    </span>
-                    {latitude && longitude && (
-                      <span className="text-xs text-emerald-400 flex items-center gap-1">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        Coordinates: {latitude.toFixed(4)}°, {longitude.toFixed(4)}°
+                {/* Real Location & Headquarters Map Section */}
+                <div className="pt-6 border-t border-white/10 space-y-5">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                        <MapPin className="w-5 h-5 text-emerald-400" />
+                        Headquarters Address & Real-World Map
+                      </h3>
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        Set your exact coordinates so volunteers in your district can discover and volunteer with your NGO.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleGeocodeAddress}
+                      disabled={geocoding}
+                      className="px-4 py-2 rounded-xl bg-primary-600/30 hover:bg-primary-600/50 text-primary-300 border border-primary-500/40 text-xs font-semibold flex items-center gap-2 transition-all self-start sm:self-auto shadow-sm"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${geocoding ? 'animate-spin text-primary-400' : ''}`} />
+                      <span>{geocoding ? 'Locating...' : 'Auto-Locate on Map'}</span>
+                    </button>
+                  </div>
+
+                  <Input label="Street Address" {...register('address')} placeholder="e.g. 4th Line, Arundelpet, Near RTC Bus Stand" required />
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <Input label="City" {...register('city')} placeholder="e.g. Guntur" required />
+                    <Input label="State/Province" {...register('state')} placeholder="e.g. Andhra Pradesh" required />
+                    <Input label="Country" {...register('country')} placeholder="India" required />
+                    <Input label="Postal Code / PIN" {...register('postalCode')} placeholder="e.g. 522002" required />
+                  </div>
+
+                  {/* Location Confirmation & Map Picker */}
+                  <div className="mt-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-gray-300">
+                        Pinpoint Location (Click or drag marker to set exact premises):
                       </span>
+                      {latitude && longitude && (
+                        <span className="text-xs font-mono text-emerald-400 flex items-center gap-1.5 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                          {latitude.toFixed(4)}° N, {longitude.toFixed(4)}° E
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="rounded-2xl overflow-hidden border border-white/15 shadow-2xl">
+                      <LocationPickerMap
+                        initialLat={latitude || 16.3067}
+                        initialLng={longitude || 80.4365}
+                        onConfirmLocation={handleLocationSelect}
+                        height="440px"
+                      />
+                    </div>
+
+                    {formattedAddress && (
+                      <div className="p-3.5 bg-white/5 border border-white/10 rounded-xl text-xs text-gray-300 flex items-start gap-2.5">
+                        <MapPin className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                        <div>
+                          <strong className="text-white font-medium">Verified Headquarters Address:</strong> {formattedAddress}
+                        </div>
+                      </div>
                     )}
                   </div>
-
-                  <LocationPickerMap
-                    initialLat={latitude || 16.3067}
-                    initialLng={longitude || 80.4365}
-                    onLocationSelect={handleLocationSelect}
-                    confirmPrompt="Is this your organization headquarters?"
-                  />
-
-                  {formattedAddress && (
-                    <div className="p-3 bg-white/5 border border-white/10 rounded-xl text-xs text-gray-300 flex items-start gap-2">
-                      <MapPin className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                      <div>
-                        <strong className="text-white">Detected Address:</strong> {formattedAddress}
-                      </div>
-                    </div>
-                  )}
                 </div>
-              </div>
 
-              <div className="pt-6 border-t border-white/10 flex justify-end">
-                <Button type="submit" isLoading={saving}>
-                  {profile ? 'Save & Update Location' : 'Register Organization Location'}
-                </Button>
-              </div>
-            </form>
-          </Card>
+                <div className="pt-6 border-t border-white/10 flex justify-end">
+                  <Button type="submit" isLoading={saving} className="px-8 py-3 text-sm font-semibold shadow-glow-sm">
+                    {profile ? 'Save & Update Organization Profile' : 'Register Organization'}
+                  </Button>
+                </div>
+              </form>
+            </Card>
+          </div>
 
-          <div className="space-y-6">
+          {/* Right Column (4 cols): Documents & Change Password */}
+          <div className="lg:col-span-4 space-y-6">
             <Card className="p-6">
-              <h2 className="text-lg font-semibold text-white mb-4">Verification Documents</h2>
-              <p className="text-sm text-gray-400 mb-4">Upload registration certificates, tax exemptions, or any official documents to help verify your organization.</p>
+              <h2 className="text-lg font-bold text-white mb-2">Verification Documents</h2>
+              <p className="text-xs text-gray-400 mb-4">Upload registration certificates, 80G/12A receipts, or government trust deed to speed up verification.</p>
               
-              <label className="border-2 border-dashed border-white/20 rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-white/5 transition-colors group">
-                <UploadCloud className="w-8 h-8 text-gray-400 group-hover:text-primary-400 transition-colors mb-2" />
-                <span className="text-sm text-white font-medium">Click to upload documents</span>
-                <span className="text-xs text-gray-500 mt-1">PDF, JPG, PNG (Max 5MB)</span>
+              <label className="border-2 border-dashed border-white/20 hover:border-primary-500/60 rounded-2xl p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-white/5 transition-all group">
+                <UploadCloud className="w-10 h-10 text-gray-400 group-hover:text-primary-400 transition-colors mb-2" />
+                <span className="text-sm text-white font-semibold">Click to upload certificates</span>
+                <span className="text-xs text-gray-500 mt-1">PDF, JPG, PNG (Max 5MB per document)</span>
                 <input type="file" multiple className="hidden" onChange={handleDocUpload} disabled={docsLoading || profile?.verificationStatus === 'approved'} />
               </label>
 
-              {docsLoading && <div className="text-sm text-center text-primary-400 mt-4 animate-pulse">Uploading documents...</div>}
+              {docsLoading && <div className="text-xs text-center text-primary-400 mt-3 animate-pulse font-medium">Uploading and encrypting documents...</div>}
 
               {profile?.documents?.length > 0 && (
-                <div className="mt-6 space-y-3">
-                  <h3 className="text-sm font-medium text-gray-300">Uploaded Documents</h3>
+                <div className="mt-5 space-y-2.5">
+                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Uploaded Documents ({profile.documents.length})</h3>
                   {profile.documents.map((doc, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
-                      <div className="flex items-center gap-2 overflow-hidden">
-                        <FileText className="w-4 h-4 text-primary-400 flex-shrink-0" />
-                        <span className="text-xs text-gray-300 truncate">{doc.name || `Document ${idx+1}`}</span>
+                    <div key={idx} className="flex items-center justify-between p-3 bg-white/5 border border-white/5 rounded-xl hover:bg-white/8 transition-colors">
+                      <div className="flex items-center gap-2.5 overflow-hidden">
+                        <FileText className="w-4 h-4 text-primary-400 shrink-0" />
+                        <span className="text-xs text-gray-200 truncate font-medium">{doc.name || `Certificate ${idx+1}`}</span>
                       </div>
-                      <a href={doc.url} target="_blank" rel="noopener noreferrer" className="text-primary-400 hover:text-primary-300">
-                        <ExternalLink className="w-4 h-4" />
+                      <a href={doc.url} target="_blank" rel="noopener noreferrer" className="text-primary-400 hover:text-primary-300 p-1">
+                        <ExternalLink className="w-3.5 h-3.5" />
                       </a>
                     </div>
                   ))}
                 </div>
               )}
             </Card>
-          </div>
-        </div>
 
-        <div className="max-w-2xl mt-8">
-          <ChangePasswordCard />
+            {/* Change Password Card placed side-by-side in right column */}
+            <ChangePasswordCard />
+          </div>
         </div>
       </div>
     </DashboardLayout>

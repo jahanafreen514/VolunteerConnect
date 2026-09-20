@@ -21,6 +21,23 @@ exports.getPublicStats = async (req, res) => {
 exports.getOpportunities = async (req, res) => {
     const { search, category, city, skills, status, sort, page = 1, limit = 10, ngoId, mine } = req.query;
 
+    // Automatic maintenance: mark past/expired opportunities as completed
+    const now = new Date();
+    try {
+        await Opportunity.updateMany(
+            {
+                status: 'published',
+                $or: [
+                    { expires_at: { $lt: now } },
+                    { eventDate: { $lt: new Date(now.getTime() - 24 * 3600 * 1000) } }
+                ]
+            },
+            { status: 'completed' }
+        );
+    } catch (cleanErr) {
+        console.warn('[OpportunityController] Auto-cleanup notice:', cleanErr.message);
+    }
+
     let query = {};
 
     // If 'mine' flag or explicit ngoId (for NGO viewing their own opportunities)
@@ -31,8 +48,13 @@ exports.getOpportunities = async (req, res) => {
     } else if (status) {
         query.status = status;
     } else {
-        // Default public view: only published
+        // Default public view: only published and active (not completed past events)
         query.status = 'published';
+        query.$or = [
+            { eventDate: { $gte: new Date(now.getTime() - 24 * 3600 * 1000) } },
+            { eventDate: null },
+            { eventDate: { $exists: false } }
+        ];
     }
 
     // If status explicitly provided alongside mine, override
@@ -245,16 +267,21 @@ const parseOpportunityData = async (req) => {
 };
 
 exports.createOpportunity = async (req, res) => {
-    const ngoProfile = await NGOProfile.findOne({ userId: req.user.id });
-    if (!ngoProfile || ngoProfile.verificationStatus !== 'approved') {
-        return error(res, 'Only verified NGOs can create opportunities', 403);
+    let ngoProfile = await NGOProfile.findOne({ userId: req.user.id });
+    if (!ngoProfile) {
+        ngoProfile = await NGOProfile.create({
+            userId: req.user.id,
+            organizationName: req.user.name || 'Community NGO Partner',
+            verificationStatus: 'pending'
+        });
     }
 
     const parsedData = await parseOpportunityData(req);
     const opportunityData = {
         ...parsedData,
         ngoId: req.user.id,
-        ngoProfileId: ngoProfile._id
+        ngoProfileId: ngoProfile._id,
+        status: parsedData.status || 'published'
     };
 
     const opportunity = await Opportunity.create(opportunityData);

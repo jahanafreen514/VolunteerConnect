@@ -74,16 +74,14 @@ const NGOSidebar = ({ onNavigate, onClose }) => {
       </nav>
 
       <div className="p-3 border-t border-white/10 space-y-1.5 shrink-0">
-        {verificationStatus === 'approved' && (
-          <NavLink
-            to="/ngo/opportunities/create"
-            onClick={onNavigate}
-            className="flex items-center justify-center gap-1.5 w-full py-2 px-3 rounded-xl bg-primary-600 hover:bg-primary-500 text-white text-xs font-semibold shadow-glow-sm transition-all"
-          >
-            <PlusCircle className="w-3.5 h-3.5" />
-            <span>Create Opportunity</span>
-          </NavLink>
-        )}
+        <NavLink
+          to="/ngo/opportunities/create"
+          onClick={onNavigate}
+          className="flex items-center justify-center gap-1.5 w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white text-xs font-semibold shadow-glow-sm transition-all"
+        >
+          <PlusCircle className="w-3.5 h-3.5" />
+          <span>Create Opportunity</span>
+        </NavLink>
 
         <button
           onClick={logout}

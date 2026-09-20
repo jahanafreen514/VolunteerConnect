@@ -110,8 +110,14 @@ const Opportunities = () => {
       if (userLocation?.lat && userLocation?.lng) {
         const res = await locationService.getNearby(userLocation.lat, userLocation.lng, radiusKm, category || 'all');
         const list = res?.data?.opportunities || [];
-        setOpportunities(list);
-        setTotal(res?.data?.totalOpportunities || list.length);
+        const activeList = list.filter(opp => {
+          if (opp.status === 'completed' || opp.status === 'cancelled') return false;
+          if (!opp.eventDate && !opp.date) return true;
+          const d = new Date(opp.eventDate || opp.date);
+          return isNaN(d.getTime()) || d >= new Date(Date.now() - 24 * 3600 * 1000);
+        });
+        setOpportunities(activeList);
+        setTotal(res?.data?.totalOpportunities || activeList.length);
         if (res?.data?.ngos) setNearbyNGOs(res.data.ngos);
       } else {
         const query = {
@@ -126,8 +132,14 @@ const Opportunities = () => {
 
         const res = await opportunityService.getOpportunities(query);
         const list = res?.data?.opportunities || res?.opportunities || (Array.isArray(res?.data) ? res.data : []);
-        setOpportunities(list);
-        setTotal(res?.data?.totalDocs || res?.data?.total || res?.total || list.length);
+        const activeList = list.filter(opp => {
+          if (opp.status === 'completed' || opp.status === 'cancelled') return false;
+          if (!opp.eventDate && !opp.date) return true;
+          const d = new Date(opp.eventDate || opp.date);
+          return isNaN(d.getTime()) || d >= new Date(Date.now() - 24 * 3600 * 1000);
+        });
+        setOpportunities(activeList);
+        setTotal(res?.data?.totalDocs || res?.data?.total || res?.total || activeList.length);
       }
     } catch (error) {
       console.error('Error fetching opportunities:', error);
@@ -141,7 +153,13 @@ const Opportunities = () => {
     setNewsLoading(true);
     try {
       const res = await locationService.getNewsEvents(userLocation?.lat, userLocation?.lng);
-      setNewsEvents(res?.data || []);
+      const rawNews = res?.data || [];
+      const activeNews = rawNews.filter(n => {
+        if (!n.expires_at) return true;
+        const exp = new Date(n.expires_at);
+        return isNaN(exp.getTime()) || exp >= new Date();
+      });
+      setNewsEvents(activeNews);
     } catch (err) {
       console.warn('News events error:', err);
     } finally {

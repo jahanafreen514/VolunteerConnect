@@ -69,14 +69,14 @@ const NGOOpportunities = () => {
 
   return (
     <DashboardLayout sidebar={<NGOSidebar />}>
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <div className="relative z-10 w-full px-2 sm:px-4 lg:px-6 py-6 space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-white">Manage Opportunities</h1>
-            <p className="text-gray-400 mt-1">Create and manage your volunteering events.</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">Manage Opportunities</h1>
+            <p className="text-sm text-gray-400 mt-1">Create, edit, and organize your volunteering events and civic initiatives.</p>
           </div>
           <Link to="/ngo/opportunities/create">
-            <Button disabled={!isVerified} title={!isVerified ? 'Your NGO must be verified to create opportunities' : ''} className="flex items-center gap-2">
+            <Button className="flex items-center gap-2 shadow-glow-sm px-5 py-2.5 font-semibold text-sm">
               <Plus className="w-4 h-4" /> Create Opportunity
             </Button>
           </Link>
