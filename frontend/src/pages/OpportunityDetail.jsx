@@ -13,6 +13,7 @@ import SkeletonCard from '../components/ui/SkeletonCard';
 import InteractiveMap from '../components/map/InteractiveMap';
 import { format } from 'date-fns';
 import { formatDateSafe } from '../utils/date';
+import { getOpportunityImage } from '../utils/categoryImages';
 
 const OpportunityDetail = () => {
   const { id } = useParams();
@@ -164,10 +165,16 @@ const OpportunityDetail = () => {
     <PublicLayout>
       <div className="min-h-screen pb-20 bg-transparent">
         {/* Banner */}
-        <div className="h-64 md:h-80 w-full bg-gradient-to-r from-primary-950/40 via-purple-950/30 to-indigo-950/40 relative">
-          {opportunity.image && (
-            <img src={opportunity.image} alt={opportunity.title} className="w-full h-full object-cover opacity-60" />
-          )}
+        <div className="h-64 md:h-80 w-full bg-gradient-to-r from-primary-950/40 via-purple-950/30 to-indigo-950/40 relative overflow-hidden">
+          <img 
+            src={getOpportunityImage(opportunity)} 
+            alt={opportunity.title} 
+            className="w-full h-full object-cover opacity-60" 
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=800&auto=format&fit=crop&q=80';
+            }}
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-[#050816]/90 via-transparent to-transparent"></div>
         </div>
 

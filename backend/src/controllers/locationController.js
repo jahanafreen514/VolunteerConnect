@@ -79,7 +79,16 @@ const getNearby = async (req, res) => {
     };
 
     if (category && category.toLowerCase() !== 'all') {
-      oppQuery.category = new RegExp(category, 'i');
+      const catTrimmed = category.trim().toLowerCase();
+      let catPattern = catTrimmed;
+      if (catTrimmed === 'environment') catPattern = 'environment';
+      else if (catTrimmed === 'education') catPattern = 'education';
+      else if (catTrimmed === 'health' || catTrimmed === 'healthcare') catPattern = '(health|healthcare)';
+      else if (catTrimmed === 'food') catPattern = '(food|community)';
+      else if (catTrimmed === 'community' || catTrimmed === 'community service') catPattern = '(community|social)';
+      else if (catTrimmed.includes('disaster')) catPattern = '(disaster|relief)';
+      else if (catTrimmed.includes('anim')) catPattern = '(anim|pet)';
+      oppQuery.category = { $regex: new RegExp(catPattern, 'i') };
     }
 
     const opportunities = await Opportunity.find(oppQuery)

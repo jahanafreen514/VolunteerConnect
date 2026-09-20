@@ -3,17 +3,45 @@ const Application = require('../models/Application');
 const Certificate = require('../models/Certificate');
 const Attendance = require('../models/Attendance');
 const { success, error } = require('../utils/apiResponse');
+const { geocodeAddress } = require('../services/geocodingService');
 
 exports.getProfile = async (req, res) => {
     return success(res, req.user, 'Profile retrieved successfully');
 };
 
 exports.updateProfile = async (req, res) => {
-    const { name, phone, bio, skills, interests, location } = req.body;
+    const { name, phone, bio, skills, interests, location, availability } = req.body;
+    let locationData = location ? { ...location } : undefined;
+
+    if (locationData && (!locationData.latitude || !locationData.longitude) && (locationData.city || locationData.address)) {
+        try {
+            const geo = await geocodeAddress({
+                address: locationData.address || '',
+                city: locationData.city || '',
+                state: locationData.state || '',
+                country: locationData.country || 'India',
+                pincode: locationData.pincode || ''
+            });
+            if (geo && geo.latitude && geo.longitude) {
+                locationData.latitude = geo.latitude;
+                locationData.longitude = geo.longitude;
+                locationData.formatted_address = geo.formattedAddress;
+                if (!locationData.city && geo.city) locationData.city = geo.city;
+                if (!locationData.state && geo.state) locationData.state = geo.state;
+                if (!locationData.pincode && geo.pincode) locationData.pincode = geo.pincode;
+            }
+        } catch (err) {
+            console.warn('[userController] Geocoding notice:', err.message);
+        }
+    }
+
+    const updateFields = { name, phone, bio, skills, interests };
+    if (availability !== undefined) updateFields.availability = availability;
+    if (locationData !== undefined) updateFields.location = locationData;
     
     const user = await User.findByIdAndUpdate(
         req.user.id,
-        { name, phone, bio, skills, interests, location },
+        updateFields,
         { new: true, runValidators: true }
     );
 

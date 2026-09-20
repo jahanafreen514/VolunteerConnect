@@ -18,44 +18,44 @@ const VolunteerSidebar = ({ onNavigate }) => {
   const { user, logout } = useAuth();
 
   return (
-    <div className="h-full flex flex-col w-64 bg-[#050a1e]/65 backdrop-blur-xl border-r border-white/10">
-      <div className="p-6 border-b border-white/10">
-        <div className="flex items-center gap-3">
-          <Avatar name={user?.name} size="md" />
+    <div className="h-full flex flex-col w-56 sm:w-60 bg-[#050a1e]/85 backdrop-blur-2xl border-r border-white/10 shadow-2xl">
+      <div className="p-4 border-b border-white/10">
+        <div className="flex items-center gap-2.5">
+          <Avatar name={user?.name} size="sm" />
           <div className="overflow-hidden">
-            <h3 className="text-white font-semibold text-sm truncate">{user?.name || 'Volunteer'}</h3>
-            <span className="inline-block mt-0.5 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded-md bg-primary-500/20 text-primary-300 border border-primary-500/30">
+            <h3 className="text-white font-semibold text-xs sm:text-sm truncate">{user?.name || 'Volunteer'}</h3>
+            <span className="inline-block mt-0.5 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider rounded-md bg-primary-500/20 text-primary-300 border border-primary-500/30">
               Volunteer
             </span>
           </div>
         </div>
       </div>
 
-      <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1.5 custom-scrollbar">
+      <nav className="flex-1 overflow-y-auto py-3 px-2.5 space-y-1 custom-scrollbar">
         {links.map((link) => (
           <NavLink
             key={link.path}
             to={link.path}
             onClick={onNavigate}
             className={({ isActive }) => `
-              flex items-center px-3.5 py-2.5 rounded-xl transition-all font-medium text-sm
+              flex items-center px-3 py-2 rounded-xl transition-all font-medium text-xs sm:text-sm
               ${isActive 
                 ? 'bg-gradient-to-r from-primary-500/20 to-primary-600/10 text-white border-l-4 border-primary-500 shadow-glow-sm' 
                 : 'text-gray-400 hover:text-white hover:bg-white/5'}
             `}
           >
-            <link.icon className="w-4 h-4 mr-3 shrink-0" />
-            <span>{link.label}</span>
+            <link.icon className="w-4 h-4 mr-2.5 shrink-0" />
+            <span className="truncate">{link.label}</span>
           </NavLink>
         ))}
       </nav>
 
-      <div className="p-4 border-t border-white/10">
+      <div className="p-3 border-t border-white/10">
         <button
           onClick={logout}
-          className="flex items-center w-full px-3.5 py-2.5 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors text-sm font-medium"
+          className="flex items-center w-full px-3 py-2 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors text-xs sm:text-sm font-medium"
         >
-          <LogOut className="w-4 h-4 mr-3" />
+          <LogOut className="w-4 h-4 mr-2.5" />
           <span>Sign Out</span>
         </button>
       </div>

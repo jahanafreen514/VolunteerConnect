@@ -34,51 +34,51 @@ const NGOSidebar = ({ onNavigate }) => {
   const statusConfig = badgeConfig[verificationStatus] || badgeConfig.pending;
 
   return (
-    <div className="h-full flex flex-col w-64 bg-[#050a1e]/65 backdrop-blur-xl border-r border-white/10">
-      <div className="p-6 border-b border-white/10 flex flex-col items-center text-center">
-        <Avatar src={ngoData?.logo} name={user?.name} size="lg" className="mb-3 ring-2 ring-primary-500/30" />
-        <h3 className="text-white font-semibold text-sm w-full truncate">{user?.name || 'NGO Partner'}</h3>
-        <div className="mt-2">
-          <Badge variant={statusConfig.variant}>{statusConfig.label}</Badge>
+    <div className="h-full flex flex-col w-56 sm:w-60 bg-[#050a1e]/85 backdrop-blur-2xl border-r border-white/10 shadow-2xl">
+      <div className="p-4 border-b border-white/10 flex flex-col items-center text-center">
+        <Avatar src={ngoData?.logo} name={user?.name} size="md" className="mb-2 ring-2 ring-primary-500/30" />
+        <h3 className="text-white font-semibold text-xs sm:text-sm w-full truncate">{user?.name || 'NGO Partner'}</h3>
+        <div className="mt-1.5">
+          <Badge variant={statusConfig.variant} className="text-[10px] px-2 py-0.5">{statusConfig.label}</Badge>
         </div>
       </div>
 
-      <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1.5 custom-scrollbar">
+      <nav className="flex-1 overflow-y-auto py-3 px-2.5 space-y-1 custom-scrollbar">
         {links.map((link) => (
           <NavLink
             key={link.path}
             to={link.path}
             onClick={onNavigate}
             className={({ isActive }) => `
-              flex items-center px-3.5 py-2.5 rounded-xl transition-all font-medium text-sm
+              flex items-center px-3 py-2 rounded-xl transition-all font-medium text-xs sm:text-sm
               ${isActive 
                 ? 'bg-gradient-to-r from-secondary-500/20 to-secondary-600/10 text-white border-l-4 border-secondary-500 shadow-glow-cyan' 
                 : 'text-gray-400 hover:text-white hover:bg-white/5'}
             `}
           >
-            <link.icon className="w-4 h-4 mr-3 shrink-0" />
-            <span>{link.label}</span>
+            <link.icon className="w-4 h-4 mr-2.5 shrink-0" />
+            <span className="truncate">{link.label}</span>
           </NavLink>
         ))}
       </nav>
 
-      <div className="p-4 border-t border-white/10 space-y-2">
+      <div className="p-3 border-t border-white/10 space-y-1.5">
         {verificationStatus === 'approved' && (
           <NavLink
             to="/ngo/opportunities/create"
             onClick={onNavigate}
-            className="flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-xl bg-primary-600 hover:bg-primary-500 text-white text-xs font-semibold shadow-glow-sm transition-all"
+            className="flex items-center justify-center gap-1.5 w-full py-2 px-3 rounded-xl bg-primary-600 hover:bg-primary-500 text-white text-xs font-semibold shadow-glow-sm transition-all"
           >
-            <PlusCircle className="w-4 h-4" />
+            <PlusCircle className="w-3.5 h-3.5" />
             <span>Create Opportunity</span>
           </NavLink>
         )}
 
         <button
           onClick={logout}
-          className="flex items-center w-full px-3.5 py-2.5 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors text-sm font-medium"
+          className="flex items-center w-full px-3 py-2 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors text-xs sm:text-sm font-medium"
         >
-          <LogOut className="w-4 h-4 mr-3" />
+          <LogOut className="w-4 h-4 mr-2.5" />
           <span>Sign Out</span>
         </button>
       </div>

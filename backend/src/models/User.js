@@ -11,10 +11,16 @@ const userSchema = new mongoose.Schema({
     bio: { type: String },
     skills: [{ type: String }],
     interests: [{ type: String }],
+    availability: { type: String, default: 'Weekends' },
     location: {
+        address: String,
         city: String,
         state: String,
-        country: String
+        country: { type: String, default: 'India' },
+        pincode: String,
+        formatted_address: String,
+        latitude: Number,
+        longitude: Number
     },
     isActive: { type: Boolean, default: true },
     resetPasswordToken: { type: String, select: false },

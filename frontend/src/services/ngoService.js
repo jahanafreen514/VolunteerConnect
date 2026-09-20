@@ -11,6 +11,8 @@ export const uploadLogo = (formData) => api.post('/ngos/profile/logo', formData,
 }).then(r => r.data);
 export const getNGOStats = () => api.get('/ngos/stats').then(r => r.data);
 export const getPublicProfile = (userId) => api.get(`/ngos/public/${userId}`).then(r => r.data);
+export const getActiveVolunteers = () => api.get('/ngos/active-volunteers').then(r => r.data);
+export const getSuggestedVolunteers = () => api.get('/ngos/suggested-volunteers').then(r => r.data);
 
 export const ngoService = {
   createProfile,
@@ -19,7 +21,9 @@ export const ngoService = {
   uploadDocuments,
   uploadLogo,
   getNGOStats,
-  getPublicProfile
+  getPublicProfile,
+  getActiveVolunteers,
+  getSuggestedVolunteers
 };
 
 export default ngoService;

@@ -30,6 +30,7 @@ import OpportunityCard from '../components/ui/OpportunityCard';
 import SkeletonCard from '../components/ui/SkeletonCard';
 import EmptyState from '../components/ui/EmptyState';
 import DepthText from '../components/ui/DepthText';
+import FlipCard3D from '../components/visual/FlipCard3D';
 import PolaroidCard from '../components/visual/PolaroidCard';
 import MotionVideoCard from '../components/visual/MotionVideoCard';
 import FloatingCard from '../components/visual/FloatingCard';
@@ -151,7 +152,7 @@ const Home = () => {
     const loadHomeData = async () => {
       try {
         const [oppsRes, statsRes] = await Promise.allSettled([
-          opportunityService.getOpportunities({ status: 'published', limit: 3 }),
+          opportunityService.getOpportunities({ status: 'published', limit: 6 }),
           opportunityService.getPublicStats()
         ]);
 
@@ -181,16 +182,21 @@ const Home = () => {
           {/* Desktop Left-Flank Layered Cards */}
           <div className="hidden xl:block absolute left-4 2xl:left-12 top-1/2 -translate-y-1/2 pointer-events-auto z-10">
             <div className="flex flex-col gap-6 items-start">
-              {/* Top Left: Polaroid Card */}
-              <Floating distance={10} duration={6} delay={0.2} rotate={-1}>
-                <PolaroidCard
-                  image="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600&auto=format&fit=crop&q=80"
-                  caption="Urban Forest Drive · 1,200 saplings planted"
-                  tag="Environment"
-                  date="Spring 2026"
-                  badge="🌱 ECO"
-                  rotation={-5}
-                  width="w-64"
+              {/* Top Left: 3D Flip Card 1 */}
+              <Floating distance={8} duration={6} delay={0.2}>
+                <FlipCard3D
+                  frontTitle={"Connect with\nPurpose"}
+                  frontTag="Causes"
+                  frontIcon={Compass}
+                  backTitle="Explore Needs"
+                  backDesc="Discover meaningful volunteering opportunities near your community and interests."
+                  linkText="Explore Opportunities"
+                  linkTo="/opportunities"
+                  accentColor="from-primary-500/25 via-indigo-500/20 to-purple-500/25"
+                  borderColor="border-primary-500/30 hover:border-primary-400/60"
+                  iconColor="text-primary-300 bg-primary-500/20 border-primary-500/30"
+                  width="w-64 2xl:w-72"
+                  height="h-72"
                 />
               </Floating>
 
@@ -211,16 +217,21 @@ const Home = () => {
           {/* Desktop Right-Flank Layered Cards */}
           <div className="hidden xl:block absolute right-4 2xl:right-12 top-1/2 -translate-y-1/2 pointer-events-auto z-10">
             <div className="flex flex-col gap-6 items-end">
-              {/* Top Right: Polaroid Card */}
-              <Floating distance={12} duration={5.5} delay={0.5} rotate={1.5}>
-                <PolaroidCard
-                  image="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600&auto=format&fit=crop&q=80"
-                  caption="NextGen Code Camp · 60+ kids mentored"
-                  tag="Education"
-                  date="Active"
-                  badge="💻 TECH"
-                  rotation={4}
-                  width="w-64"
+              {/* Top Right: 3D Flip Card 2 */}
+              <Floating distance={8} duration={6.5} delay={0.5}>
+                <FlipCard3D
+                  frontTitle={"Make an\nImpact"}
+                  frontTag="Action"
+                  frontIcon={Sparkles}
+                  backTitle="Real Contribution"
+                  backDesc="Connect with NGOs, join community initiatives and contribute your skills where they matter."
+                  linkText="Join as Volunteer"
+                  linkTo="/register?role=volunteer"
+                  accentColor="from-purple-500/25 via-pink-500/20 to-rose-500/25"
+                  borderColor="border-purple-500/30 hover:border-purple-400/60"
+                  iconColor="text-purple-300 bg-purple-500/20 border-purple-500/30"
+                  width="w-64 2xl:w-72"
+                  height="h-72"
                 />
               </Floating>
 
@@ -384,6 +395,82 @@ const Home = () => {
                 Register Your NGO →
               </Link>
             </motion.div>
+
+            {/* Mobile/Tablet 3D Flip Cards Showcase */}
+            <div className="xl:hidden grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl mx-auto mt-10">
+              <FlipCard3D
+                frontTitle={"Connect with\nPurpose"}
+                frontTag="Causes"
+                frontIcon={Compass}
+                backTitle="Explore Needs"
+                backDesc="Discover meaningful volunteering opportunities near your community and interests."
+                linkText="Explore Opportunities"
+                linkTo="/opportunities"
+                accentColor="from-primary-500/25 via-indigo-500/20 to-purple-500/25"
+                borderColor="border-primary-500/30 hover:border-primary-400/60"
+                iconColor="text-primary-300 bg-primary-500/20 border-primary-500/30"
+                width="w-full"
+                height="h-64 sm:h-72"
+              />
+              <FlipCard3D
+                frontTitle={"Make an\nImpact"}
+                frontTag="Action"
+                frontIcon={Sparkles}
+                backTitle="Real Contribution"
+                backDesc="Connect with NGOs, join community initiatives and contribute your skills where they matter."
+                linkText="Join as Volunteer"
+                linkTo="/register?role=volunteer"
+                accentColor="from-purple-500/25 via-pink-500/20 to-rose-500/25"
+                borderColor="border-purple-500/30 hover:border-purple-400/60"
+                iconColor="text-purple-300 bg-purple-500/20 border-purple-500/30"
+                width="w-full"
+                height="h-64 sm:h-72"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* 1.2 OPPORTUNITIES NEAR YOU (Real Backend Data) */}
+        <section className="py-14 px-4 sm:px-6 lg:px-8 relative z-10 border-b border-white/10 bg-white/[0.02]">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-8 gap-4">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-widest text-primary-400 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5" /> Local Community Impact
+                </span>
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">Opportunities Near You</h3>
+                <p className="text-sm text-gray-400 mt-1">Directly explore real verified initiatives from local organizations and community drives.</p>
+              </div>
+              <Link 
+                to="/opportunities" 
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs sm:text-sm font-semibold text-primary-300 hover:text-white transition-all backdrop-blur-md"
+              >
+                <span>Browse All Causes</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[1, 2, 3].map((i) => <SkeletonCard key={i} />)}
+              </div>
+            ) : opportunities.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {opportunities.slice(0, 3).map((opp) => (
+                  <OpportunityCard key={opp._id} opportunity={opp} />
+                ))}
+              </div>
+            ) : (
+              <div className="glass-card p-10 text-center border border-white/10 max-w-lg mx-auto">
+                <Compass className="w-10 h-10 text-primary-400 mx-auto mb-3 opacity-60" />
+                <h4 className="text-lg font-bold text-white mb-2">Connecting Local Causes</h4>
+                <p className="text-xs sm:text-sm text-gray-400 mb-6">Explore newly launched initiatives or register your non-profit to publish community drives.</p>
+                <Link to="/opportunities" className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-500 text-white text-xs font-semibold shadow-glow-sm transition-all">
+                  <span>Explore Open Opportunities</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            )}
           </div>
         </section>
 

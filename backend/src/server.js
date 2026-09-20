@@ -105,6 +105,7 @@ app.use('/api/reports', require('./routes/reports'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/location', require('./routes/location'));
+app.use('/api/otp', require('./routes/otp'));
 
 // Error Handler
 app.use(errorHandler);

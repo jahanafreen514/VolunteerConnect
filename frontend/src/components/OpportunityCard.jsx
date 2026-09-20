@@ -5,6 +5,7 @@ import { MapPin, Calendar, CheckCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import Button from './ui/Button';
 import Badge from './ui/Badge';
+import { getOpportunityImage } from '../utils/categoryImages';
 
 const categoryColors = {
   Environment: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
@@ -43,7 +44,7 @@ const OpportunityCard = ({ opportunity = {}, onApply, showNGOActions = false }) 
   const skills = opportunity.requiredSkills || opportunity.skills || [];
   const registeredCount = opportunity.registeredVolunteers ?? opportunity.registeredCount ?? 0;
   const capacity = opportunity.volunteerCapacity ?? opportunity.capacity ?? 10;
-  const image = opportunity.image || opportunity.imageUrl || '';
+  const image = getOpportunityImage(opportunity);
 
   const isFull = registeredCount >= capacity;
   const progress = Math.min(Math.round((registeredCount / Math.max(capacity, 1)) * 100), 100);
@@ -64,13 +65,16 @@ const OpportunityCard = ({ opportunity = {}, onApply, showNGOActions = false }) 
       className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden flex flex-col hover:bg-white/8 hover:border-white/20 hover:shadow-2xl hover:shadow-primary-500/10 transition-all duration-300"
     >
       <div className="h-48 w-full relative">
-        {image ? (
-          <img src={image} alt={title} className="w-full h-full object-cover" />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-primary-600/30 to-purple-600/30 flex items-center justify-center">
-            <span className="text-white/50 font-semibold capitalize">{category}</span>
-          </div>
-        )}
+        <img 
+          src={image} 
+          alt={title} 
+          loading="lazy"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=800&auto=format&fit=crop&q=80';
+          }}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-[#050816]/80 via-transparent to-transparent" />
         
         <div className="absolute top-4 left-4 flex flex-wrap gap-2">

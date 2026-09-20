@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   Calendar, Users, Briefcase, CheckCircle, Award, AlertTriangle, 
-  UserCheck, XCircle, MapPin, Newspaper, ExternalLink, Sparkles, Navigation, ArrowRight 
+  UserCheck, XCircle, MapPin, Newspaper, ExternalLink, Sparkles, Navigation, ArrowRight,
+  Eye, Send, Clock, Heart, Shield, X
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { formatDateSafe } from '../../utils/date';
@@ -27,6 +28,10 @@ const NGODashboard = () => {
   const [stats, setStats] = useState(null);
   const [profile, setProfile] = useState(null);
   const [recentApps, setRecentApps] = useState([]);
+  const [activeVolunteers, setActiveVolunteers] = useState([]);
+  const [suggestedVolunteers, setSuggestedVolunteers] = useState([]);
+  const [selectedVolunteer, setSelectedVolunteer] = useState(null);
+  const [invitedIds, setInvitedIds] = useState(new Set());
   const [newsEvents, setNewsEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [adoptingId, setAdoptingId] = useState(null);
@@ -34,22 +39,41 @@ const NGODashboard = () => {
 
   const fetchData = async () => {
     try {
-      const [statsData, profileData, appsData] = await Promise.all([
+      const [statsData, profileData, appsData, activeVolData, suggestedVolData] = await Promise.allSettled([
         ngoService.getNGOStats(),
         ngoService.getMyProfile(),
-        applicationService.getNGOApplications({ limit: 5, status: 'pending' })
+        applicationService.getNGOApplications({ limit: 5, status: 'pending' }),
+        ngoService.getActiveVolunteers(),
+        ngoService.getSuggestedVolunteers()
       ]);
-      const prof = profileData?.data || profileData;
-      setStats(statsData?.data || statsData);
-      setProfile(prof);
-      setRecentApps(appsData?.data?.applications || appsData?.applications || (Array.isArray(appsData?.data) ? appsData.data : []));
 
-      // Fetch nearby real-world news events
-      try {
-        const newsRes = await locationService.getNewsEvents(prof?.latitude, prof?.longitude);
-        setNewsEvents(newsRes?.data || []);
-      } catch (err) {
-        console.warn('News events in dashboard:', err);
+      if (profileData.status === 'fulfilled') {
+        const prof = profileData.value?.data || profileData.value;
+        setProfile(prof);
+        try {
+          const newsRes = await locationService.getNewsEvents(prof?.latitude, prof?.longitude);
+          setNewsEvents(newsRes?.data || []);
+        } catch (err) {
+          console.warn('News events in dashboard:', err);
+        }
+      }
+
+      if (statsData.status === 'fulfilled') {
+        setStats(statsData.value?.data || statsData.value);
+      }
+
+      if (appsData.status === 'fulfilled') {
+        setRecentApps(appsData.value?.data?.applications || appsData.value?.applications || (Array.isArray(appsData.value?.data) ? appsData.value.data : []));
+      }
+
+      if (activeVolData.status === 'fulfilled') {
+        const list = activeVolData.value?.data || activeVolData.value || [];
+        setActiveVolunteers(Array.isArray(list) ? list : []);
+      }
+
+      if (suggestedVolData.status === 'fulfilled') {
+        const list = suggestedVolData.value?.data || suggestedVolData.value || [];
+        setSuggestedVolunteers(Array.isArray(list) ? list : []);
       }
     } catch (error) {
       console.error(error);
@@ -316,7 +340,284 @@ const NGODashboard = () => {
             )}
           </Card>
         </div>
+
+        {/* Active & Registered Volunteers (Phase 6 & 7) */}
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+                <UserCheck className="w-5 h-5 text-emerald-400" /> Active & Registered Volunteers
+              </h2>
+              <p className="text-xs text-gray-400 mt-0.5">Volunteers who registered for your initiatives</p>
+            </div>
+            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+              {activeVolunteers.length} Active
+            </span>
+          </div>
+
+          <Card className="overflow-hidden">
+            {activeVolunteers.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm text-gray-300">
+                  <thead className="bg-white/5 text-gray-400 uppercase text-xs">
+                    <tr>
+                      <th className="px-6 py-4">Volunteer</th>
+                      <th className="px-6 py-4">Opportunity & Category</th>
+                      <th className="px-6 py-4">Location</th>
+                      <th className="px-6 py-4">Status</th>
+                      <th className="px-6 py-4 text-right">Details</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    {activeVolunteers.map((vol) => (
+                      <tr key={vol.applicationId || vol.volunteerId} className="hover:bg-white/[0.02] transition-colors">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <Avatar src={vol.profileImage} alt={vol.name} size="sm" />
+                            <div>
+                              <p className="font-medium text-white">{vol.name}</p>
+                              <p className="text-xs text-gray-400">{vol.availability || 'Available'}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <p className="text-white font-medium">{vol.opportunityTitle}</p>
+                          <span className="inline-block text-[11px] px-2 py-0.5 mt-0.5 rounded-full bg-primary-500/20 text-primary-300 border border-primary-500/30 capitalize">
+                            {vol.category}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-gray-300">
+                          <div className="flex items-center gap-1.5">
+                            <MapPin className="w-3.5 h-3.5 text-primary-400 shrink-0" />
+                            <span>{vol.location}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <Badge variant={vol.status === 'Registered' ? 'success' : 'primary'}>
+                            {vol.status}
+                          </Badge>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="border-white/20 text-gray-200 hover:text-white"
+                            onClick={() => setSelectedVolunteer(vol)}
+                          >
+                            <Eye className="w-3.5 h-3.5 mr-1" /> View Profile
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <EmptyState 
+                title="No active volunteers yet" 
+                description="When volunteers register for your opportunities, their profiles and contact details will appear here." 
+                icon={Users} 
+              />
+            )}
+          </Card>
+        </div>
+
+        {/* Suggested Volunteers for NGOs (Phase 8) */}
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-amber-400" /> Suggested Volunteers
+              </h2>
+              <p className="text-xs text-gray-400 mt-0.5">Matched based on proximity, cause categories, skills, and availability</p>
+            </div>
+          </div>
+
+          {suggestedVolunteers.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {suggestedVolunteers.map((vol) => {
+                const isInvited = invitedIds.has(vol._id);
+                return (
+                  <div 
+                    key={vol._id} 
+                    className="p-5 rounded-2xl bg-white/[0.04] backdrop-blur-xl border border-white/10 hover:border-primary-500/40 transition-all flex flex-col justify-between group"
+                  >
+                    <div>
+                      <div className="flex items-start justify-between gap-3 mb-3">
+                        <div className="flex items-center gap-3">
+                          <Avatar src={vol.profileImage} alt={vol.name} size="md" />
+                          <div>
+                            <h4 className="text-base font-bold text-white group-hover:text-primary-300 transition-colors">{vol.name}</h4>
+                            <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
+                              <MapPin className="w-3 h-3 text-emerald-400" />
+                              <span>{vol.location}</span>
+                            </p>
+                          </div>
+                        </div>
+                        {vol.matchScore > 0 && (
+                          <span className="px-2 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shrink-0">
+                            {vol.matchScore}% Match
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Match reason notice */}
+                      {vol.matchReasons && vol.matchReasons.length > 0 && (
+                        <p className="text-[11px] text-amber-300/90 mb-3 bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20">
+                          {vol.matchReasons[0]}
+                        </p>
+                      )}
+
+                      {/* Skills & Availability */}
+                      <div className="space-y-2 mb-4">
+                        {vol.skills && vol.skills.length > 0 && (
+                          <div>
+                            <span className="text-[11px] text-gray-400 uppercase tracking-wider block mb-1">Skills:</span>
+                            <div className="flex flex-wrap gap-1.5">
+                              {vol.skills.slice(0, 3).map((skill, idx) => (
+                                <span key={idx} className="px-2 py-0.5 rounded-md bg-white/5 text-gray-300 border border-white/10 text-xs">
+                                  {skill}
+                                </span>
+                              ))}
+                              {vol.skills.length > 3 && (
+                                <span className="px-2 py-0.5 text-xs text-gray-500">+{vol.skills.length - 3}</span>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {vol.availability && (
+                          <p className="text-xs text-gray-400">
+                            <span className="text-gray-500">Availability:</span> <strong className="text-gray-300">{vol.availability}</strong>
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex items-center gap-2 pt-3 border-t border-white/10">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="flex-1 text-xs" 
+                        onClick={() => setSelectedVolunteer(vol)}
+                      >
+                        <Eye className="w-3.5 h-3.5 mr-1" /> View Profile
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant={isInvited ? "secondary" : "primary"}
+                        disabled={isInvited}
+                        className="flex-1 text-xs"
+                        onClick={() => {
+                          setInvitedIds(prev => new Set([...prev, vol._id]));
+                          toast.success(`Invitation sent to ${vol.name}!`);
+                        }}
+                      >
+                        {isInvited ? (
+                          <>
+                            <CheckCircle className="w-3.5 h-3.5 mr-1 text-emerald-400" /> Invited
+                          </>
+                        ) : (
+                          <>
+                            <Send className="w-3.5 h-3.5 mr-1" /> Invite
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <Card className="p-6 text-center text-gray-400 text-xs">
+              Complete your organization's causes in profile to see personalized volunteer recommendations.
+            </Card>
+          )}
+        </div>
       </div>
+
+      {/* Volunteer Profile Modal (Phase 7 - Privacy Safe) */}
+      {selectedVolunteer && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+          <div className="bg-[#0c1230] border border-white/15 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+            <button 
+              onClick={() => setSelectedVolunteer(null)}
+              className="absolute top-5 right-5 p-2 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-4 mb-6">
+              <Avatar src={selectedVolunteer.profileImage} alt={selectedVolunteer.name} size="lg" />
+              <div>
+                <h3 className="text-xl font-bold text-white">{selectedVolunteer.name}</h3>
+                <p className="text-xs text-emerald-400 flex items-center gap-1 mt-0.5">
+                  <MapPin className="w-3.5 h-3.5" />
+                  <span>{selectedVolunteer.location || 'Location upon participation'}</span>
+                </p>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  Availability: <strong className="text-gray-200">{selectedVolunteer.availability || 'Weekends'}</strong>
+                </p>
+              </div>
+            </div>
+
+            {selectedVolunteer.bio && (
+              <div className="mb-5 p-3.5 rounded-2xl bg-white/[0.03] border border-white/5 text-xs text-gray-300 leading-relaxed">
+                <span className="block text-[11px] font-semibold uppercase tracking-wider text-primary-300 mb-1">About the Volunteer</span>
+                {selectedVolunteer.bio}
+              </div>
+            )}
+
+            <div className="space-y-4 text-xs">
+              {selectedVolunteer.skills && selectedVolunteer.skills.length > 0 && (
+                <div>
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block mb-1.5">Skills</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {selectedVolunteer.skills.map((s, idx) => (
+                      <span key={idx} className="px-2.5 py-1 rounded-lg bg-primary-500/15 text-primary-300 border border-primary-500/25">
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {selectedVolunteer.interests && selectedVolunteer.interests.length > 0 && (
+                <div>
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block mb-1.5">Interests & Causes</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {selectedVolunteer.interests.map((intr, idx) => (
+                      <span key={idx} className="px-2.5 py-1 rounded-lg bg-secondary-500/15 text-secondary-300 border border-secondary-500/25">
+                        {intr}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="mt-8 pt-4 border-t border-white/10 flex justify-end gap-3">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setSelectedVolunteer(null)}
+              >
+                Close
+              </Button>
+              {selectedVolunteer.email && (
+                <a 
+                  href={`mailto:${selectedVolunteer.email}`} 
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary-600 hover:bg-primary-500 text-white text-xs font-semibold shadow-glow-sm transition-all"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  <span>Contact Volunteer</span>
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       <ConfirmDialog
         isOpen={actionDialog.isOpen}
