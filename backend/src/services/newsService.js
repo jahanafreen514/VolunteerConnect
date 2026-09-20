@@ -1,4 +1,4 @@
-const axios = require('axios');
+const { httpGet } = require('../utils/httpClient');
 const NewsEvent = require('../models/NewsEvent');
 const Opportunity = require('../models/Opportunity');
 const NGOProfile = require('../models/NGOProfile');
@@ -82,7 +82,7 @@ async function fetchPublicHumanitarianReports() {
 
   // 1. ReliefWeb Humanitarian API (Official UN OCHA API - 100% free & open for humanitarian info)
   try {
-    const rwResponse = await axios.get('https://api.reliefweb.int/v1/reports', {
+    const rwResponse = await httpGet('https://api.reliefweb.int/v1/reports', {
       params: {
         appname: 'VolunteerConnect-CivicPlatform',
         'filter[field]': 'country',
@@ -113,7 +113,7 @@ async function fetchPublicHumanitarianReports() {
   try {
     const rssQuery = encodeURIComponent('flood relief OR blood donation camp OR tree plantation drive India');
     const rssUrl = `https://news.google.com/rss/search?q=${rssQuery}&hl=en-IN&gl=IN&ceid=IN:en`;
-    const rssRes = await axios.get(rssUrl, {
+    const rssRes = await httpGet(rssUrl, {
       headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' },
       timeout: 6000
     });

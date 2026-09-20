@@ -1,4 +1,4 @@
-const axios = require('axios');
+const { httpGet } = require('../utils/httpClient');
 
 // In-memory cache to prevent redundant external API hits
 const geocodeCache = new Map();
@@ -61,7 +61,7 @@ async function geocodeAddress({ address, city, state, country = 'India', pincode
 
   // Attempt Nominatim OpenStreetMap query
   try {
-    const response = await axios.get('https://nominatim.openstreetmap.org/search', {
+    const response = await httpGet('https://nominatim.openstreetmap.org/search', {
       params: {
         q: fullQuery,
         format: 'json',
@@ -133,7 +133,7 @@ async function reverseGeocode(latitude, longitude) {
   }
 
   try {
-    const response = await axios.get('https://nominatim.openstreetmap.org/reverse', {
+    const response = await httpGet('https://nominatim.openstreetmap.org/reverse', {
       params: {
         lat: latitude,
         lon: longitude,
