@@ -5,7 +5,7 @@ import { opportunityService } from '../services/opportunityService';
 import { applicationService } from '../services/applicationService';
 import { 
   Calendar, Clock, MapPin, Users, ChevronLeft, ShieldCheck, 
-  CheckCircle, XCircle, Navigation, ExternalLink, Globe, Newspaper, AlertCircle 
+  CheckCircle, XCircle, Navigation, ExternalLink, Globe, Newspaper, AlertCircle, Lock, LogIn, UserPlus 
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import PublicLayout from '../layouts/PublicLayout';
@@ -18,7 +18,7 @@ import { getOpportunityImage } from '../utils/categoryImages';
 const OpportunityDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   
   const [opportunity, setOpportunity] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -44,6 +44,10 @@ const OpportunityDetail = () => {
   }, []);
 
   useEffect(() => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     const fetchDetail = async () => {
       try {
         const res = await opportunityService.getOpportunity(id);
@@ -56,7 +60,7 @@ const OpportunityDetail = () => {
       }
     };
     fetchDetail();
-  }, [id]);
+  }, [id, user]);
 
   useEffect(() => {
     if (user && user.role === 'volunteer' && opportunity) {
@@ -111,10 +115,65 @@ const OpportunityDetail = () => {
     }
   };
 
+  if (authLoading) {
+    return (
+      <PublicLayout>
+        <div className="container mx-auto px-6 py-20 min-h-[60vh] flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
+        </div>
+      </PublicLayout>
+    );
+  }
+
+  if (!user) {
+    return (
+      <PublicLayout>
+        <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
+          <div className="max-w-md w-full glass-card p-6 sm:p-8 border border-white/10 rounded-3xl text-center space-y-5 bg-[#0a0f28]/70 backdrop-blur-2xl shadow-2xl">
+            <div className="w-14 h-14 rounded-2xl bg-primary-500/20 text-primary-400 border border-primary-500/30 flex items-center justify-center mx-auto shadow-inner">
+              <Lock className="w-7 h-7" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-white mb-2">Login Required</h2>
+              <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                Please log in to view opportunity details and submit volunteer applications.
+              </p>
+            </div>
+            <div className="space-y-2.5 pt-2">
+              <Link
+                to={`/login?redirect=/opportunities/${id}`}
+                className="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-primary-600 hover:bg-primary-500 text-white text-xs font-semibold shadow-lg shadow-primary-600/25 transition-all"
+              >
+                <LogIn className="w-4 h-4" />
+                <span>Log In to View Opportunity</span>
+              </Link>
+              <div className="flex gap-2">
+                <Link
+                  to="/register?role=volunteer"
+                  className="flex items-center justify-center gap-1.5 flex-1 py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-semibold transition-all"
+                >
+                  <UserPlus className="w-3.5 h-3.5 text-primary-400" />
+                  <span>Volunteer</span>
+                </Link>
+                <Link
+                  to="/register?role=ngo"
+                  className="flex items-center justify-center gap-1.5 flex-1 py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-semibold transition-all"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>NGO Partner</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </PublicLayout>
+    );
+  }
+
   if (loading) {
     return (
       <PublicLayout>
-        <div className="container mx-auto px-6 py-24 min-h-screen">
+        <div className="container mx-auto px-6 py-16 min-h-[60vh]">
           <SkeletonCard />
         </div>
       </PublicLayout>

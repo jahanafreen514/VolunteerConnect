@@ -25,7 +25,22 @@ const userSchema = new mongoose.Schema({
     isActive: { type: Boolean, default: true },
     resetPasswordToken: { type: String, select: false },
     resetPasswordExpire: { type: Date, select: false }
-}, { timestamps: true });
+}, { 
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
+
+userSchema.virtual('profile_image').get(function() {
+    return this.profileImage;
+});
+
+userSchema.virtual('is_active').get(function() {
+    return this.isActive;
+});
+
+userSchema.index({ role: 1 });
+userSchema.index({ 'location.city': 1 });
 
 userSchema.pre('save', async function(next) {
     if (!this.isModified('password')) return next();
@@ -56,3 +71,4 @@ userSchema.methods.getResetPasswordToken = function() {
 };
 
 module.exports = mongoose.model('User', userSchema);
+

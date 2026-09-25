@@ -56,28 +56,30 @@ exports.sendOTP = async (req, res) => {
         });
 
         // Dispatch via chosen delivery channel
-        let deliveryStatus = { sent: false, configured: false };
+        let deliveryStatus = { success: false, configured: false };
         if (channel === 'sms') {
             deliveryStatus = await sendSMS({
                 to: normalizedId,
-                message: `Your VolunteerConnect verification code is ${rawOtp}. Valid for ${EXPIRY_MINUTES} minutes.`
+                message: `Your Virtual Connect verification code is ${rawOtp}. Valid for ${EXPIRY_MINUTES} minutes.`
             });
+            if (!deliveryStatus.sent && !deliveryStatus.configured) {
+                return error(res, 'SMS delivery provider is not configured on the server.', 503);
+            }
         } else {
-            deliveryStatus = await sendEmail({
+            const { send_otp_email } = require('../services/emailService');
+            deliveryStatus = await send_otp_email({
                 to: normalizedId,
-                subject: `Your VolunteerConnect Verification Code: ${rawOtp}`,
-                text: `Your VolunteerConnect verification code is ${rawOtp}. It will expire in ${EXPIRY_MINUTES} minutes. Do not share this code with anyone.`,
-                html: `
-                    <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 24px; border: 1px solid #e2e8f0; rounded: 16px;">
-                        <h2 style="color: #4f46e5; margin-bottom: 12px;">VolunteerConnect Verification</h2>
-                        <p style="color: #475569; font-size: 14px; line-height: 1.5;">Use the verification code below to complete your authentication process:</p>
-                        <div style="background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 16px; text-align: center; margin: 20px 0;">
-                            <span style="font-size: 32px; font-weight: bold; letter-spacing: 6px; color: #1e293b;">${rawOtp}</span>
-                        </div>
-                        <p style="color: #94a3b8; font-size: 12px;">This code will expire in ${EXPIRY_MINUTES} minutes. If you did not request this, you can safely ignore this email.</p>
-                    </div>
-                `
+                otp: rawOtp,
+                purpose,
+                expiresInMinutes: EXPIRY_MINUTES
             });
+
+            if (!deliveryStatus.success) {
+                if (!deliveryStatus.configured) {
+                    return error(res, 'Email delivery service is not configured. Please set SMTP credentials (SMTP_HOST, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD) in the server environment.', 503);
+                }
+                return error(res, deliveryStatus.error || 'Failed to dispatch email verification code. Please check the recipient address.', 500);
+            }
         }
 
         // Mask identifier for response privacy
@@ -89,7 +91,7 @@ exports.sendOTP = async (req, res) => {
             channel,
             recipient: masked,
             expiresInMinutes: EXPIRY_MINUTES,
-            deliveryConfigured: deliveryStatus.configured
+            deliveryConfigured: true
         }, `Verification code dispatched to ${masked}`);
     } catch (err) {
         return error(res, err.message, 500);

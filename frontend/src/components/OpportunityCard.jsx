@@ -8,12 +8,12 @@ import Badge from './ui/Badge';
 import { getOpportunityImage } from '../utils/categoryImages';
 
 const categoryColors = {
-  Environment: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
-  Education: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-  Health: 'bg-red-500/20 text-red-400 border-red-500/30',
-  Community: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-  Animals: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-  Default: 'bg-primary-500/20 text-primary-400 border-primary-500/30'
+  Environment: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-500/30',
+  Education: 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-500/20 dark:text-indigo-300 dark:border-indigo-500/30',
+  Health: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/20 dark:text-rose-300 dark:border-rose-500/30',
+  Community: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/30',
+  Animals: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-500/20 dark:text-purple-300 dark:border-purple-500/30',
+  Default: 'bg-primary-50 text-primary-700 border-primary-200 dark:bg-primary-500/20 dark:text-primary-300 dark:border-primary-500/30'
 };
 
 const OpportunityCard = ({ opportunity = {}, onApply, showNGOActions = false }) => {
@@ -62,7 +62,7 @@ const OpportunityCard = ({ opportunity = {}, onApply, showNGOActions = false }) 
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
-      className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden flex flex-col hover:bg-white/8 hover:border-white/20 hover:shadow-2xl hover:shadow-primary-500/10 transition-all duration-300"
+      className="bg-white/80 dark:bg-white/[0.04] backdrop-blur-xl border border-slate-200/80 dark:border-white/10 rounded-2xl overflow-hidden flex flex-col hover:bg-white/95 dark:hover:bg-white/[0.08] hover:border-primary-300 dark:hover:border-white/20 shadow-sm hover:shadow-md dark:shadow-glass transition-all duration-300"
     >
       <div className="h-48 w-full relative">
         <img 
@@ -75,11 +75,13 @@ const OpportunityCard = ({ opportunity = {}, onApply, showNGOActions = false }) 
           }}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#050816]/80 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         
         <div className="absolute top-4 left-4 flex flex-wrap gap-2">
           {category && (
-            <Badge className={categoryColors[category] || categoryColors.Default}>{category}</Badge>
+            <Badge className={`${categoryColors[category] || categoryColors.Default} backdrop-blur-md`}>
+              {category}
+            </Badge>
           )}
           {isNewsDerived && (
             <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase tracking-wider backdrop-blur-md">
@@ -98,21 +100,21 @@ const OpportunityCard = ({ opportunity = {}, onApply, showNGOActions = false }) 
 
       <div className="p-5 flex flex-col flex-1">
         <div className="flex items-center gap-1 mb-2">
-          <span className="text-xs text-gray-400">
+          <span className="text-xs text-slate-500 dark:text-gray-400">
             {isNewsDerived ? `Reported via ${opportunity.source_name || 'Public News'}` : ngoName}
           </span>
-          {isVerified && <CheckCircle className="w-3 h-3 text-emerald-400" />}
+          {isVerified && <CheckCircle className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400" />}
         </div>
         
-        <h3 className="text-lg font-semibold text-white mb-3 line-clamp-2">{title}</h3>
+        <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3 line-clamp-2">{title}</h3>
         
-        <div className="space-y-2 mb-4 text-sm text-gray-400 flex-1">
+        <div className="space-y-2 mb-4 text-sm text-slate-500 dark:text-gray-400 flex-1">
           <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 shrink-0 text-gray-400" />
+            <MapPin className="w-4 h-4 shrink-0 text-slate-400 dark:text-gray-400" />
             <span className="truncate">{locationText}</span>
           </div>
           <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 shrink-0 text-gray-400" />
+            <Calendar className="w-4 h-4 shrink-0 text-slate-400 dark:text-gray-400" />
             <span>{formattedDate}</span>
           </div>
         </div>
@@ -120,12 +122,12 @@ const OpportunityCard = ({ opportunity = {}, onApply, showNGOActions = false }) 
         {Array.isArray(skills) && skills.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
             {skills.slice(0, 2).map((skill, i) => (
-              <span key={i} className="text-xs px-2 py-1 rounded-md bg-white/5 text-gray-300 border border-white/10">
+              <span key={i} className="text-xs px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-gray-300 border border-slate-200 dark:border-white/10">
                 {skill}
               </span>
             ))}
             {skills.length > 2 && (
-              <span className="text-xs px-2 py-1 rounded-md bg-white/5 text-gray-300 border border-white/10">
+              <span className="text-xs px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-gray-300 border border-slate-200 dark:border-white/10">
                 +{skills.length - 2} more
               </span>
             )}
@@ -133,19 +135,19 @@ const OpportunityCard = ({ opportunity = {}, onApply, showNGOActions = false }) 
         )}
 
         <div className="mb-4">
-          <div className="flex justify-between text-xs text-gray-400 mb-1">
+          <div className="flex justify-between text-xs text-slate-500 dark:text-gray-400 mb-1">
             <span>{registeredCount} / {capacity} volunteers</span>
             <span>{isFull ? 'Full' : `${capacity - registeredCount} spots left`}</span>
           </div>
-          <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+          <div className="w-full h-1.5 bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden">
             <div 
-              className={`h-full rounded-full ${isFull ? 'bg-red-500' : 'bg-primary-500'}`}
+              className={`h-full rounded-full transition-all duration-500 ${isFull ? 'bg-red-400' : 'bg-primary-500'}`}
               style={{ width: `${progress}%` }}
             />
           </div>
         </div>
 
-        <div className="mt-auto pt-4 border-t border-white/10">
+        <div className="mt-auto pt-4 border-t border-slate-200/80 dark:border-white/10">
           {showNGOActions ? (
             <Button variant="outline" className="w-full" onClick={() => onApply?.(opportunity._id)}>
               Manage

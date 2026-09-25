@@ -34,8 +34,8 @@ const optionalAuth = (req, res, next) => {
 };
 
 router.get('/public-stats', getPublicStats);
-router.get('/', optionalAuth, getOpportunities);
-router.get('/:id', getOpportunity);
+router.get('/', authenticateUser, getOpportunities);
+router.get('/:id', authenticateUser, getOpportunity);
 
 router.use(authenticateUser);
 router.use(requireRole('ngo'));

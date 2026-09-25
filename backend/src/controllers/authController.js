@@ -99,30 +99,25 @@ exports.forgotPassword = async (req, res) => {
 
     const message = `You are receiving this email because a password reset request was submitted for your VolunteerConnect account.\n\nPlease click the link below to choose a new password:\n\n${resetUrl}\n\nThis link will expire in 60 minutes. If you did not request this, you can safely ignore this email.`;
 
-    try {
-        await sendEmail({
-            email: user.email,
-            subject: 'VolunteerConnect - Password Reset Request',
-            message,
-            html: `
-                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #111827; color: #ffffff; border-radius: 8px;">
-                  <h2 style="color: #6366f1;">VolunteerConnect Password Reset</h2>
-                  <p>You requested a password reset for your account. Click the button below to choose a new password:</p>
-                  <div style="margin: 30px 0;">
-                    <a href="${resetUrl}" style="background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Reset Password</a>
-                  </div>
-                  <p style="color: #9ca3af; font-size: 14px;">This link will expire in 60 minutes. If you did not make this request, you can safely ignore this email.</p>
-                </div>
-            `
-        });
+    const { send_password_reset_email } = require('../services/emailService');
+    const emailResult = await send_password_reset_email({
+        to: user.email,
+        name: user.name,
+        resetUrl
+    });
 
-        return success(res, { resetUrl }, 'Password reset link sent to your email');
-    } catch (err) {
+    if (!emailResult.success) {
         user.resetPasswordToken = undefined;
         user.resetPasswordExpire = undefined;
         await user.save({ validateBeforeSave: false });
-        return error(res, 'Email could not be sent. Please try again later', 500);
+
+        if (!emailResult.configured) {
+            return error(res, 'Email delivery is currently not configured on the server. Please set SMTP credentials.', 503);
+        }
+        return error(res, emailResult.error || 'Email could not be delivered. Please verify your address or try again later.', 500);
     }
+
+    return success(res, null, 'Password reset instructions sent to your email');
 };
 
 exports.resetPassword = async (req, res) => {

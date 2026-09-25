@@ -26,10 +26,9 @@ api.interceptors.response.use(
         '/login', 
         '/register', 
         '/about', 
-        '/opportunities', 
+        '/contact', 
         '/forgot-password'
       ].includes(currentPath) || 
-      currentPath.startsWith('/opportunities/') || 
       currentPath.startsWith('/reset-password/');
       if (!isPublic) {
         window.location.href = '/login';

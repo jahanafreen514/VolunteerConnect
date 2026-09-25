@@ -57,6 +57,21 @@ io.on('connection', (socket) => {
         }
     });
 
+    // Real-time Event-based community chat rooms
+    socket.on('join_event_chat', (eventId) => {
+        if (eventId) {
+            socket.join(`event_${eventId}`);
+            console.log(`Socket ${socket.id} joined event chat: event_${eventId}`);
+        }
+    });
+
+    socket.on('leave_event_chat', (eventId) => {
+        if (eventId) {
+            socket.leave(`event_${eventId}`);
+            console.log(`Socket ${socket.id} left event chat: event_${eventId}`);
+        }
+    });
+
     socket.on('disconnect', () => {
         console.log('Client disconnected', socket.id);
     });
@@ -105,6 +120,7 @@ app.use('/api/reports', require('./routes/reports'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/location', require('./routes/location'));
+app.use('/api/events', require('./routes/events'));
 app.use('/api/otp', require('./routes/otp'));
 
 // Error Handler

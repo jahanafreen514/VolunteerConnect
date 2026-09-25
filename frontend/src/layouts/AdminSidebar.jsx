@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, ShieldCheck, Users, Briefcase, Flag, BarChart3, LogOut, Shield, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { ThemeToggle } from '../context/ThemeContext';
 
 const links = [
   { label: 'Admin Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
@@ -17,24 +18,24 @@ const AdminSidebar = ({ onNavigate, onClose }) => {
   const handleClose = onClose || onNavigate;
 
   return (
-    <div className="h-full flex flex-col w-56 sm:w-60 bg-[#050a1e]/85 backdrop-blur-2xl border-r border-white/10 shadow-2xl">
-      <div className="p-4 border-b border-white/10 flex items-center justify-between shrink-0">
+    <div className="h-full flex flex-col w-56 sm:w-60 bg-white/90 dark:bg-[#0a0f20]/90 backdrop-blur-2xl border-r border-slate-200/80 dark:border-white/10 shadow-lg dark:shadow-2xl">
+      <div className="p-4 border-b border-slate-200/80 dark:border-white/10 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2.5 overflow-hidden">
-          <div className="p-2 rounded-xl bg-amber-500/15 text-amber-400 border border-amber-500/30 shrink-0">
+          <div className="p-2 rounded-xl bg-amber-50 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30 shrink-0">
             <Shield className="w-4 h-4" />
           </div>
           <div className="overflow-hidden">
-            <h2 className="text-xs sm:text-sm font-bold text-white tracking-wide uppercase truncate">
+            <h2 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white tracking-wide uppercase truncate">
               Admin Console
             </h2>
-            <p className="text-[10px] text-gray-400 truncate">{user?.name || 'Administrator'}</p>
+            <p className="text-[10px] text-slate-500 dark:text-gray-400 truncate">{user?.name || 'Administrator'}</p>
           </div>
         </div>
 
         {handleClose && (
           <button
             onClick={handleClose}
-            className="lg:hidden p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 shrink-0 ml-1"
+            className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:text-gray-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 shrink-0 ml-1"
             aria-label="Close admin sidebar"
           >
             <X className="w-5 h-5" />
@@ -51,8 +52,8 @@ const AdminSidebar = ({ onNavigate, onClose }) => {
             className={({ isActive }) => `
               flex items-center px-3 py-2 rounded-xl transition-all font-medium text-xs sm:text-sm
               ${isActive 
-                ? 'bg-gradient-to-r from-amber-500/20 to-amber-600/10 text-amber-300 border-l-4 border-amber-500 shadow-sm' 
-                : 'text-gray-400 hover:text-white hover:bg-white/5'}
+                ? 'bg-amber-50 dark:bg-gradient-to-r dark:from-amber-500/20 dark:to-amber-600/10 text-amber-700 dark:text-amber-300 border-l-4 border-amber-500 shadow-sm' 
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/5'}
             `}
           >
             <link.icon className="w-4 h-4 mr-2.5 shrink-0" />
@@ -61,14 +62,15 @@ const AdminSidebar = ({ onNavigate, onClose }) => {
         ))}
       </nav>
 
-      <div className="p-3 border-t border-white/10 shrink-0">
+      <div className="p-3 border-t border-slate-200/80 dark:border-white/10 shrink-0 flex items-center justify-between gap-2">
         <button
           onClick={logout}
-          className="flex items-center w-full px-3 py-2 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors text-xs sm:text-sm font-medium"
+          className="flex items-center flex-1 px-3 py-2 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-xs sm:text-sm font-medium"
         >
-          <LogOut className="w-4 h-4 mr-2.5" />
+          <LogOut className="w-4 h-4 mr-2.5 shrink-0" />
           <span>Sign Out</span>
         </button>
+        <ThemeToggle size="sm" />
       </div>
     </div>
   );

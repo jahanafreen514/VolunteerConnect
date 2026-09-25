@@ -15,7 +15,7 @@ const { authenticateUser, requireRole } = require('../middleware/auth');
 // Public location & discovery endpoints
 router.post('/geocode', geocode);
 router.post('/reverse-geocode', reverse);
-router.get('/nearby', getNearby);
+router.get('/nearby', authenticateUser, getNearby);
 router.get('/news-events', getNewsEvents);
 router.post('/refresh-news', refreshNews);
 router.post('/request-support/:id', requestSupport);

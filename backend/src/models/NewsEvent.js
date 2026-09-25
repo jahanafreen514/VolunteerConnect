@@ -36,8 +36,37 @@ const newsEventSchema = new mongoose.Schema({
     potential_activities: [{ type: String }],
     status: { 
         type: String, 
-        enum: ['news_detected', 'needs_verification', 'confirmed', 'active', 'expired', 'rejected'],
-        default: 'needs_verification'
+        enum: [
+            'NEWS_DETECTED', 'NEEDS_VERIFICATION', 'COMMUNITY_REPORTED', 'NGO_CONFIRMED', 'ACTIVE', 'RESOLVED', 'EXPIRED',
+            'news_detected', 'needs_verification', 'confirmed', 'active', 'expired', 'rejected'
+        ],
+        default: 'NEEDS_VERIFICATION'
+    },
+    organization_id: { type: mongoose.Schema.Types.ObjectId, ref: 'NGOProfile' },
+    contact_information: {
+        contact_name: { type: String },
+        organization_name: { type: String },
+        phone: { type: String },
+        email: { type: String },
+        website: { type: String },
+        source_url: { type: String }
+    },
+    community_verification: {
+        confirmed_count: { type: Number, default: 0 },
+        unsure_count: { type: Number, default: 0 },
+        updates_count: { type: Number, default: 0 },
+        helpful_count: { type: Number, default: 0 },
+        responses: [{
+            user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+            user_name: { type: String },
+            response_type: { 
+                type: String, 
+                enum: ['confirm', 'unsure', 'update', 'helpful'],
+                default: 'confirm'
+            },
+            comment: { type: String },
+            created_at: { type: Date, default: Date.now }
+        }]
     },
     nearbyNGOs: [{
         ngoId: { type: mongoose.Schema.Types.ObjectId, ref: 'NGOProfile' },
@@ -46,12 +75,26 @@ const newsEventSchema = new mongoose.Schema({
     }],
     adoptedOpportunityId: { type: mongoose.Schema.Types.ObjectId, ref: 'Opportunity' },
     supportRequestsCount: { type: Number, default: 0 }
-}, { timestamps: true });
+}, { 
+    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
+
+newsEventSchema.virtual('description').get(function() {
+    return this.summary;
+});
+
+newsEventSchema.virtual('category').get(function() {
+    return this.event_type;
+});
 
 newsEventSchema.index({ "location.geo": '2dsphere' });
 newsEventSchema.index({ status: 1 });
 newsEventSchema.index({ event_type: 1 });
+newsEventSchema.index({ published_at: -1 });
 newsEventSchema.index({ expires_at: 1 });
 newsEventSchema.index({ "location.city": 1 });
 
 module.exports = mongoose.model('NewsEvent', newsEventSchema);
+

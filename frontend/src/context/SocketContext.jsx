@@ -14,7 +14,7 @@ export const SocketProvider = ({ children }) => {
       const newSocket = io(socketUrl);
       
       newSocket.on('connect', () => {
-        newSocket.emit('join', user.id);
+        newSocket.emit('join', user._id || user.id);
       });
 
       setSocket(newSocket);

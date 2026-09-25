@@ -6,12 +6,24 @@ const notificationSchema = new mongoose.Schema({
     message: { type: String, required: true },
     type: { 
         type: String, 
-        enum: ['application_submitted', 'application_accepted', 'application_rejected', 'ngo_verified', 'ngo_rejected', 'new_opportunity', 'certificate_issued', 'event_reminder', 'general'] 
+        enum: [
+            'application_submitted', 'application_accepted', 'application_rejected', 
+            'ngo_verified', 'ngo_rejected', 'new_opportunity', 'certificate_issued', 
+            'event_reminder', 'comment_reply', 'chat_message', 'incident_update', 'general'
+        ] 
     },
     isRead: { type: Boolean, default: false },
     relatedId: { type: mongoose.Schema.Types.ObjectId },
     relatedModel: { type: String }
-}, { timestamps: true });
+}, { 
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
+
+notificationSchema.virtual('read').get(function() {
+    return this.isRead;
+});
 
 notificationSchema.index({ userId: 1 });
 notificationSchema.index({ isRead: 1 });

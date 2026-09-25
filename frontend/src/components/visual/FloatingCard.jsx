@@ -6,7 +6,7 @@ import { motion, useReducedMotion } from 'framer-motion';
  */
 const FloatingCard = ({
   icon: Icon,
-  iconColor = 'text-primary-400 bg-primary-500/20 border-primary-500/30',
+  iconColor = 'text-primary-600 bg-primary-50 dark:text-primary-300 dark:bg-primary-500/20 border-primary-200 dark:border-primary-500/30',
   title = '',
   subtitle = '',
   value = '',
@@ -42,11 +42,11 @@ const FloatingCard = ({
         shouldReduceMotion
           ? {}
           : {
-              scale: 1.05,
+              scale: 1.04,
               transition: { type: 'spring', stiffness: 350, damping: 20 }
             }
       }
-      className={`inline-flex items-center gap-3.5 p-3 sm:p-3.5 pr-4 rounded-2xl bg-[#0a0f28]/60 hover:bg-[#0a0f28]/80 backdrop-blur-2xl border border-white/15 shadow-[0_12px_32px_0_rgba(0,0,0,0.4)] transition-all cursor-default ${className}`}
+      className={`inline-flex items-center gap-3.5 p-3 sm:p-3.5 pr-4 rounded-2xl bg-white/85 hover:bg-white/95 dark:bg-[#0f172a]/70 dark:hover:bg-[#0f172a]/90 backdrop-blur-2xl border border-slate-200/80 dark:border-white/15 shadow-sm dark:shadow-[0_12px_32px_0_rgba(0,0,0,0.4)] transition-all cursor-default ${className}`}
       style={style}
     >
       {Icon && (
@@ -58,23 +58,23 @@ const FloatingCard = ({
       <div className="flex flex-col text-left">
         <div className="flex items-center gap-1.5">
           {value && (
-            <span className="text-sm sm:text-base font-extrabold text-white tracking-tight">
+            <span className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white tracking-tight">
               {value}
             </span>
           )}
           {badge && (
-            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-accent-500/20 text-accent-300 border border-accent-500/30">
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-accent-100 dark:bg-accent-500/20 text-accent-700 dark:text-accent-300 border border-accent-300/60 dark:border-accent-500/30">
               {badge}
             </span>
           )}
         </div>
         {title && (
-          <span className="text-xs font-semibold text-gray-200 line-clamp-1">
+          <span className="text-xs font-semibold text-slate-800 dark:text-gray-200 line-clamp-1">
             {title}
           </span>
         )}
         {subtitle && (
-          <span className="text-[11px] text-gray-400 line-clamp-1">
+          <span className="text-[11px] text-slate-500 dark:text-gray-400 line-clamp-1">
             {subtitle}
           </span>
         )}

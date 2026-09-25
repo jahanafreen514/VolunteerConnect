@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Newspaper, MapPin, Clock, ExternalLink, ShieldCheck, AlertCircle, Building2, BellRing, CheckCircle2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
@@ -163,9 +164,18 @@ const NewsOpportunityCard = ({
           </a>
         </div>
 
-        <span className="text-[10px] text-gray-500 italic max-w-xs text-right">
-          * Verify with coordinators before participating.
-        </span>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
+          <Link
+            to={`/events/${event._id}`}
+            className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-md shadow-primary-600/20 transition-all text-center"
+          >
+            <span>Open Incident & Discussion</span>
+            <ExternalLink className="w-3.5 h-3.5" />
+          </Link>
+          <span className="text-[10px] text-gray-400 italic text-center sm:text-right">
+            * Check official guidance before travelling.
+          </span>
+        </div>
       </div>
     </motion.div>
   );

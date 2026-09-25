@@ -30,7 +30,6 @@ import OpportunityCard from '../components/ui/OpportunityCard';
 import SkeletonCard from '../components/ui/SkeletonCard';
 import EmptyState from '../components/ui/EmptyState';
 import DepthText from '../components/ui/DepthText';
-import FlipCard3D from '../components/visual/FlipCard3D';
 import PolaroidCard from '../components/visual/PolaroidCard';
 import MotionVideoCard from '../components/visual/MotionVideoCard';
 import FloatingCard from '../components/visual/FloatingCard';
@@ -38,6 +37,7 @@ import Floating from '../components/animations/Floating';
 import FadeUp from '../components/animations/FadeUp';
 import Parallax from '../components/animations/Parallax';
 import ScrollReveal from '../components/animations/ScrollReveal';
+import { useTheme } from '../context/ThemeContext';
 import { opportunityService } from '../services/opportunityService';
 
 const SEARCH_PROMPTS = [
@@ -60,14 +60,14 @@ const POPULAR_TAGS = [
 ];
 
 const CATEGORIES = [
-  { id: 'environment', name: 'Environment', icon: TreePine, color: 'from-emerald-500/20 to-teal-500/20', border: 'border-emerald-500/30', text: 'text-emerald-400' },
-  { id: 'education', name: 'Education', icon: GraduationCap, color: 'from-indigo-500/20 to-blue-500/20', border: 'border-indigo-500/30', text: 'text-indigo-400' },
-  { id: 'health', name: 'Healthcare', icon: Stethoscope, color: 'from-rose-500/20 to-pink-500/20', border: 'border-rose-500/30', text: 'text-rose-400' },
-  { id: 'community', name: 'Community', icon: Users, color: 'from-amber-500/20 to-orange-500/20', border: 'border-amber-500/30', text: 'text-amber-400' },
-  { id: 'animals', name: 'Animal Welfare', icon: Heart, color: 'from-purple-500/20 to-fuchsia-500/20', border: 'border-purple-500/30', text: 'text-purple-400' },
-  { id: 'disaster-relief', name: 'Disaster Relief', icon: Flame, color: 'from-red-500/20 to-amber-500/20', border: 'border-red-500/30', text: 'text-red-400' },
-  { id: 'arts', name: 'Arts & Culture', icon: Palette, color: 'from-violet-500/20 to-purple-500/20', border: 'border-violet-500/30', text: 'text-violet-400' },
-  { id: 'technology', name: 'Technology', icon: Laptop, color: 'from-cyan-500/20 to-sky-500/20', border: 'border-cyan-500/30', text: 'text-cyan-400' }
+  { id: 'environment', name: 'Environment', icon: TreePine, color: 'from-emerald-500/10 to-teal-500/10 dark:from-emerald-500/20 dark:to-teal-500/20', border: 'border-emerald-300/60 dark:border-emerald-500/30', text: 'text-emerald-600 dark:text-emerald-400' },
+  { id: 'education', name: 'Education', icon: GraduationCap, color: 'from-indigo-500/10 to-blue-500/10 dark:from-indigo-500/20 dark:to-blue-500/20', border: 'border-indigo-300/60 dark:border-indigo-500/30', text: 'text-indigo-600 dark:text-indigo-400' },
+  { id: 'health', name: 'Healthcare', icon: Stethoscope, color: 'from-rose-500/10 to-pink-500/10 dark:from-rose-500/20 dark:to-pink-500/20', border: 'border-rose-300/60 dark:border-rose-500/30', text: 'text-rose-600 dark:text-rose-400' },
+  { id: 'community', name: 'Community', icon: Users, color: 'from-amber-500/10 to-orange-500/10 dark:from-amber-500/20 dark:to-orange-500/20', border: 'border-amber-300/60 dark:border-amber-500/30', text: 'text-amber-600 dark:text-amber-400' },
+  { id: 'animals', name: 'Animal Welfare', icon: Heart, color: 'from-purple-500/10 to-fuchsia-500/10 dark:from-purple-500/20 dark:to-fuchsia-500/20', border: 'border-purple-300/60 dark:border-purple-500/30', text: 'text-purple-600 dark:text-purple-400' },
+  { id: 'disaster-relief', name: 'Disaster Relief', icon: Flame, color: 'from-red-500/10 to-amber-500/10 dark:from-red-500/20 dark:to-amber-500/20', border: 'border-red-300/60 dark:border-red-500/30', text: 'text-red-600 dark:text-red-400' },
+  { id: 'arts', name: 'Arts & Culture', icon: Palette, color: 'from-violet-500/10 to-purple-500/10 dark:from-violet-500/20 dark:to-purple-500/20', border: 'border-violet-300/60 dark:border-violet-500/30', text: 'text-violet-600 dark:text-violet-400' },
+  { id: 'technology', name: 'Technology', icon: Laptop, color: 'from-sky-500/10 to-cyan-500/10 dark:from-sky-500/20 dark:to-cyan-500/20', border: 'border-sky-300/60 dark:border-sky-500/30', text: 'text-sky-600 dark:text-sky-400' }
 ];
 
 const HOW_IT_WORKS_STEPS = [
@@ -115,6 +115,7 @@ const HOW_IT_WORKS_STEPS = [
 
 const Home = () => {
   const navigate = useNavigate();
+  const { isDark } = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
   const [promptIndex, setPromptIndex] = useState(0);
   const [opportunities, setOpportunities] = useState([]);
@@ -175,36 +176,43 @@ const Home = () => {
 
   return (
     <PublicLayout>
-      <div className="relative overflow-hidden text-white bg-transparent">
-        {/* 1. HERO SECTION WITH LAYERED POLAROID & MOTION CARDS */}
+      <div className="relative overflow-hidden text-slate-800 dark:text-slate-100 bg-transparent transition-colors duration-300">
+        {/* 1. HERO SECTION WITH LAYERED SOFT PASTEL CARDS */}
         <section className="relative min-h-[85vh] flex items-center justify-center pt-8 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
           
-          {/* Desktop Left-Flank Layered Cards */}
+          {/* Desktop Left-Flank Layered Cards (Non-flipping soft pastel cards) */}
           <div className="hidden xl:block absolute left-4 2xl:left-12 top-1/2 -translate-y-1/2 pointer-events-auto z-10">
             <div className="flex flex-col gap-6 items-start">
-              {/* Top Left: 3D Flip Card 1 */}
+              {/* Top Left: Static Soft Pastel Feature Card */}
               <Floating distance={8} duration={6} delay={0.2}>
-                <FlipCard3D
-                  frontTitle={"Connect with\nPurpose"}
-                  frontTag="Causes"
-                  frontIcon={Compass}
-                  backTitle="Explore Needs"
-                  backDesc="Discover meaningful volunteering opportunities near your community and interests."
-                  linkText="Explore Opportunities"
-                  linkTo="/opportunities"
-                  accentColor="from-primary-500/25 via-indigo-500/20 to-purple-500/25"
-                  borderColor="border-primary-500/30 hover:border-primary-400/60"
-                  iconColor="text-primary-300 bg-primary-500/20 border-primary-500/30"
-                  width="w-64 2xl:w-72"
-                  height="h-72"
-                />
+                <div className="w-64 2xl:w-72 p-5 rounded-2xl bg-white/85 dark:bg-[#0f172a]/70 backdrop-blur-2xl border border-slate-200/80 dark:border-white/15 shadow-sm dark:shadow-glass hover:shadow-md transition-all">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-primary-50 dark:bg-primary-500/20 text-primary-700 dark:text-primary-300 border border-primary-200 dark:border-primary-500/30">
+                      Causes
+                    </span>
+                    <div className="p-2 rounded-xl bg-primary-50 dark:bg-primary-500/20 text-primary-600 dark:text-primary-300 border border-primary-200 dark:border-primary-500/30">
+                      <Compass className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">Explore Needs</h4>
+                  <p className="text-xs text-slate-500 dark:text-gray-400 mb-3 leading-relaxed">
+                    Discover verified volunteering initiatives near your community and interests.
+                  </p>
+                  <Link
+                    to="/opportunities"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary-600 dark:text-primary-300 hover:text-primary-700 dark:hover:text-primary-200 transition-colors"
+                  >
+                    <span>Browse Initiatives</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
               </Floating>
 
               {/* Middle Left: Floating Stat Badge */}
               <Floating distance={8} duration={5} delay={1}>
                 <FloatingCard
                   icon={ShieldCheck}
-                  iconColor="text-emerald-400 bg-emerald-500/20 border-emerald-500/30"
+                  iconColor="text-accent-600 bg-accent-50 dark:text-accent-300 dark:bg-accent-500/20 border-accent-200 dark:border-accent-500/30"
                   title="100% Vetted NGOs"
                   subtitle="Verified registration docs"
                   badge="Audited"
@@ -214,32 +222,39 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Desktop Right-Flank Layered Cards */}
+          {/* Desktop Right-Flank Layered Cards (Non-flipping soft pastel cards) */}
           <div className="hidden xl:block absolute right-4 2xl:right-12 top-1/2 -translate-y-1/2 pointer-events-auto z-10">
             <div className="flex flex-col gap-6 items-end">
-              {/* Top Right: 3D Flip Card 2 */}
+              {/* Top Right: Static Soft Pastel Feature Card */}
               <Floating distance={8} duration={6.5} delay={0.5}>
-                <FlipCard3D
-                  frontTitle={"Make an\nImpact"}
-                  frontTag="Action"
-                  frontIcon={Sparkles}
-                  backTitle="Real Contribution"
-                  backDesc="Connect with NGOs, join community initiatives and contribute your skills where they matter."
-                  linkText="Join as Volunteer"
-                  linkTo="/register?role=volunteer"
-                  accentColor="from-purple-500/25 via-pink-500/20 to-rose-500/25"
-                  borderColor="border-purple-500/30 hover:border-purple-400/60"
-                  iconColor="text-purple-300 bg-purple-500/20 border-purple-500/30"
-                  width="w-64 2xl:w-72"
-                  height="h-72"
-                />
+                <div className="w-64 2xl:w-72 p-5 rounded-2xl bg-white/85 dark:bg-[#0f172a]/70 backdrop-blur-2xl border border-slate-200/80 dark:border-white/15 shadow-sm dark:shadow-glass hover:shadow-md transition-all text-left">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-rose-50 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-500/30">
+                      Impact
+                    </span>
+                    <div className="p-2 rounded-xl bg-rose-50 dark:bg-rose-500/20 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-500/30">
+                      <Sparkles className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">Make an Impact</h4>
+                  <p className="text-xs text-slate-500 dark:text-gray-400 mb-3 leading-relaxed">
+                    Connect with NGOs, join community initiatives and contribute your skills where they matter.
+                  </p>
+                  <Link
+                    to="/register?role=volunteer"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-600 dark:text-rose-300 hover:text-rose-700 dark:hover:text-rose-200 transition-colors"
+                  >
+                    <span>Join as Volunteer</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
               </Floating>
 
               {/* Bottom Right: Floating Stat Badge */}
               <Floating distance={9} duration={6.2} delay={1.2}>
                 <FloatingCard
                   icon={Award}
-                  iconColor="text-purple-400 bg-purple-500/20 border-purple-500/30"
+                  iconColor="text-purple-600 bg-purple-50 dark:text-purple-300 dark:bg-purple-500/20 border-purple-200 dark:border-purple-500/30"
                   value="35,000+ Hrs"
                   title="Service Hours"
                   subtitle="Tamper-proof certificates"
@@ -257,9 +272,9 @@ const Home = () => {
               initial={{ opacity: 0, y: -15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/10 border border-primary-500/25 text-primary-300 text-xs sm:text-sm font-semibold uppercase tracking-wider mb-6 shadow-glow-sm"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-50 dark:bg-primary-500/10 border border-primary-200 dark:border-primary-500/25 text-primary-700 dark:text-primary-300 text-xs sm:text-sm font-semibold uppercase tracking-wider mb-6 shadow-sm"
             >
-              <Sparkles className="w-4 h-4 text-primary-400 animate-pulse" />
+              <Sparkles className="w-4 h-4 text-primary-500 dark:text-primary-400 animate-pulse" />
               <span>The Next Generation Social Impact Platform</span>
             </motion.div>
 
@@ -272,10 +287,10 @@ const Home = () => {
             >
               <DepthText
                 text="Connect Volunteer"
-                layers={34}
-                depth={2.4}
-                faceColor="#f8fafc"
-                depthColor="#7c3aed"
+                layers={28}
+                depth={2.2}
+                faceColor={isDark ? '#f8fafc' : '#1e293b'}
+                depthColor={isDark ? '#6672de' : '#a5b4fc'}
                 tilt={7.5}
                 pointerTracking
                 smoothing={0.14}
@@ -296,12 +311,12 @@ const Home = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed"
+              className="text-lg sm:text-xl text-slate-600 dark:text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed"
             >
               VolunteerConnect bridges passionate volunteers with verified non-profit organizations. Discover meaningful causes, track your volunteer hours, and receive tamper-proof digital certificates.
             </motion.p>
 
-            {/* Interactive Opportunity Prompt & Search Bar (Wegic-inspired floating glass bar) */}
+            {/* Interactive Opportunity Prompt & Search Bar */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -310,10 +325,10 @@ const Home = () => {
             >
               <form 
                 onSubmit={handleSearchSubmit}
-                className="relative flex items-center p-2 rounded-2xl bg-white/[0.04] backdrop-blur-2xl border border-white/15 shadow-[0_12px_40px_0_rgba(0,0,0,0.45)] hover:border-primary-500/40 focus-within:border-primary-400 focus-within:ring-2 focus-within:ring-primary-500/20 transition-all group"
+                className="relative flex items-center p-2 rounded-2xl bg-white/90 dark:bg-white/[0.04] backdrop-blur-2xl border border-slate-200/80 dark:border-white/15 shadow-sm dark:shadow-[0_12px_40px_0_rgba(0,0,0,0.45)] hover:border-primary-400 focus-within:border-primary-500 focus-within:ring-2 focus-within:ring-primary-400/20 transition-all group"
               >
-                <div className="pl-3 pr-2 text-primary-400 flex items-center pointer-events-none">
-                  <Search className="w-5 h-5 group-focus-within:text-primary-300 transition-colors" />
+                <div className="pl-3 pr-2 text-primary-500 dark:text-primary-400 flex items-center pointer-events-none">
+                  <Search className="w-5 h-5 group-focus-within:text-primary-600 dark:group-focus-within:text-primary-300 transition-colors" />
                 </div>
 
                 <input
@@ -321,7 +336,7 @@ const Home = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={`Try: "${SEARCH_PROMPTS[promptIndex]}"`}
-                  className="flex-1 bg-transparent text-white placeholder-gray-400/70 text-sm sm:text-base outline-none px-2 py-2 font-medium"
+                  className="flex-1 bg-transparent text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-gray-400/70 text-sm sm:text-base outline-none px-2 py-2 font-medium"
                 />
 
                 <div className="flex items-center gap-1.5 shrink-0 pr-1">
@@ -329,13 +344,13 @@ const Home = () => {
                     type="button"
                     onClick={handleShufflePrompt}
                     title="Shuffle suggestion"
-                    className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-all"
+                    className="p-2 text-slate-400 hover:text-slate-700 dark:text-gray-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-all"
                   >
                     <RotateCcw className="w-4 h-4" />
                   </button>
                   <button
                     type="submit"
-                    className="inline-flex items-center gap-1.5 px-4 sm:px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary-600 via-indigo-600 to-purple-600 hover:from-primary-500 hover:to-purple-500 text-white font-semibold text-xs sm:text-sm shadow-glow-sm transition-all group/btn"
+                    className="inline-flex items-center gap-1.5 px-4 sm:px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500 hover:from-primary-600 hover:to-accent-600 text-white font-semibold text-xs sm:text-sm shadow-sm transition-all group/btn"
                   >
                     <span>Search</span>
                     <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
@@ -345,13 +360,13 @@ const Home = () => {
 
               {/* Quick Cause Pill Tags */}
               <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
-                <span className="text-xs text-gray-400 font-medium mr-1 hidden sm:inline">Popular:</span>
+                <span className="text-xs text-slate-500 dark:text-gray-400 font-medium mr-1 hidden sm:inline">Popular:</span>
                 {POPULAR_TAGS.map((tag) => (
                   <button
                     key={tag.category}
                     type="button"
                     onClick={() => handleTagClick(tag.category)}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium text-gray-300 hover:text-white bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 hover:border-primary-500/40 backdrop-blur-md transition-all shadow-sm hover:scale-105 active:scale-95"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-700 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white bg-white/80 dark:bg-white/[0.04] hover:bg-white dark:hover:bg-white/[0.09] border border-slate-200/80 dark:border-white/10 hover:border-primary-300 dark:hover:border-primary-500/40 backdrop-blur-md transition-all shadow-sm hover:scale-105 active:scale-95"
                   >
                     <span>{tag.icon}</span>
                     <span>{tag.label}</span>
@@ -369,7 +384,7 @@ const Home = () => {
             >
               <Link
                 to="/opportunities"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-semibold text-white bg-primary-600 hover:bg-primary-500 btn-glow transition-all group shadow-glow-sm"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-semibold text-white bg-primary-600 hover:bg-primary-500 btn-glow transition-all group shadow-sm"
               >
                 <span>Find Opportunities</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -377,7 +392,7 @@ const Home = () => {
 
               <Link
                 to="/register?role=volunteer"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-semibold text-white bg-white/5 hover:bg-white/10 border border-white/10 backdrop-blur-md transition-all"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-semibold text-slate-700 dark:text-white bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 backdrop-blur-md transition-all"
               >
                 <span>Join as a Volunteer</span>
               </Link>
@@ -388,62 +403,30 @@ const Home = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.7, delay: 0.4 }}
-              className="text-sm text-gray-400"
+              className="text-sm text-slate-500 dark:text-gray-400"
             >
               Are you an organization?{' '}
-              <Link to="/register?role=ngo" className="text-secondary-400 hover:text-secondary-300 font-semibold underline underline-offset-4 decoration-secondary-500/40">
+              <Link to="/register?role=ngo" className="text-secondary-600 dark:text-secondary-400 hover:underline font-semibold underline-offset-4">
                 Register Your NGO →
               </Link>
             </motion.div>
-
-            {/* Mobile/Tablet 3D Flip Cards Showcase */}
-            <div className="xl:hidden grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl mx-auto mt-10">
-              <FlipCard3D
-                frontTitle={"Connect with\nPurpose"}
-                frontTag="Causes"
-                frontIcon={Compass}
-                backTitle="Explore Needs"
-                backDesc="Discover meaningful volunteering opportunities near your community and interests."
-                linkText="Explore Opportunities"
-                linkTo="/opportunities"
-                accentColor="from-primary-500/25 via-indigo-500/20 to-purple-500/25"
-                borderColor="border-primary-500/30 hover:border-primary-400/60"
-                iconColor="text-primary-300 bg-primary-500/20 border-primary-500/30"
-                width="w-full"
-                height="h-64 sm:h-72"
-              />
-              <FlipCard3D
-                frontTitle={"Make an\nImpact"}
-                frontTag="Action"
-                frontIcon={Sparkles}
-                backTitle="Real Contribution"
-                backDesc="Connect with NGOs, join community initiatives and contribute your skills where they matter."
-                linkText="Join as Volunteer"
-                linkTo="/register?role=volunteer"
-                accentColor="from-purple-500/25 via-pink-500/20 to-rose-500/25"
-                borderColor="border-purple-500/30 hover:border-purple-400/60"
-                iconColor="text-purple-300 bg-purple-500/20 border-purple-500/30"
-                width="w-full"
-                height="h-64 sm:h-72"
-              />
-            </div>
           </div>
         </section>
 
         {/* 1.2 OPPORTUNITIES NEAR YOU (Real Backend Data) */}
-        <section className="py-14 px-4 sm:px-6 lg:px-8 relative z-10 border-b border-white/10 bg-white/[0.02]">
+        <section className="py-14 px-4 sm:px-6 lg:px-8 relative z-10 border-b border-slate-200/70 dark:border-white/10 bg-white/40 dark:bg-white/[0.02]">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-8 gap-4">
               <div>
-                <span className="text-xs font-bold uppercase tracking-widest text-primary-400 flex items-center gap-1.5">
+                <span className="text-xs font-bold uppercase tracking-widest text-primary-600 dark:text-primary-400 flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5" /> Local Community Impact
                 </span>
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">Opportunities Near You</h3>
-                <p className="text-sm text-gray-400 mt-1">Directly explore real verified initiatives from local organizations and community drives.</p>
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">Opportunities Near You</h3>
+                <p className="text-sm text-slate-500 dark:text-gray-400 mt-1">Directly explore real verified initiatives from local organizations and community drives.</p>
               </div>
               <Link 
                 to="/opportunities" 
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs sm:text-sm font-semibold text-primary-300 hover:text-white transition-all backdrop-blur-md"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/70 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 border border-slate-200/80 dark:border-white/10 text-xs sm:text-sm font-semibold text-primary-700 dark:text-primary-300 hover:text-primary-900 dark:hover:text-white transition-all backdrop-blur-md shadow-sm"
               >
                 <span>Browse All Causes</span>
                 <ArrowRight className="w-4 h-4" />
@@ -461,11 +444,11 @@ const Home = () => {
                 ))}
               </div>
             ) : (
-              <div className="glass-card p-10 text-center border border-white/10 max-w-lg mx-auto">
-                <Compass className="w-10 h-10 text-primary-400 mx-auto mb-3 opacity-60" />
-                <h4 className="text-lg font-bold text-white mb-2">Connecting Local Causes</h4>
-                <p className="text-xs sm:text-sm text-gray-400 mb-6">Explore newly launched initiatives or register your non-profit to publish community drives.</p>
-                <Link to="/opportunities" className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-500 text-white text-xs font-semibold shadow-glow-sm transition-all">
+              <div className="glass-card p-10 text-center border border-slate-200/80 dark:border-white/10 max-w-lg mx-auto">
+                <Compass className="w-10 h-10 text-primary-500 dark:text-primary-400 mx-auto mb-3 opacity-60" />
+                <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Connecting Local Causes</h4>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 mb-6">Explore newly launched initiatives or register your non-profit to publish community drives.</p>
+                <Link to="/opportunities" className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-500 text-white text-xs font-semibold shadow-sm transition-all">
                   <span>Explore Open Opportunities</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
@@ -475,14 +458,14 @@ const Home = () => {
         </section>
 
         {/* 1.5 COMMUNITY IN MOTION SHOWCASE (Polaroid & Video Carousel) */}
-        <section className="py-12 px-4 sm:px-6 lg:px-8 relative z-10 border-b border-white/5 bg-white/[0.01]">
+        <section className="py-12 px-4 sm:px-6 lg:px-8 relative z-10 border-b border-slate-200/70 dark:border-white/5 bg-transparent">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <span className="text-xs font-bold uppercase tracking-widest text-primary-400">Real Moments</span>
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">Community in Motion</h3>
+                <span className="text-xs font-bold uppercase tracking-widest text-primary-600 dark:text-primary-400">Real Moments</span>
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">Community in Motion</h3>
               </div>
-              <Link to="/about" className="text-xs sm:text-sm font-semibold text-gray-400 hover:text-primary-300 flex items-center gap-1">
+              <Link to="/about" className="text-xs sm:text-sm font-semibold text-slate-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-300 flex items-center gap-1">
                 <span>Our Story</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
@@ -532,41 +515,41 @@ const Home = () => {
         </section>
 
         {/* 2. REAL IMPACT SUMMARY (Atlas Backed) */}
-        <section className="relative z-10 py-12 px-4 sm:px-6 lg:px-8 border-b border-white/10 bg-white/[0.02] backdrop-blur-xl">
+        <section className="relative z-10 py-12 px-4 sm:px-6 lg:px-8 border-b border-slate-200/70 dark:border-white/10 bg-white/30 dark:bg-white/[0.02] backdrop-blur-xl">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-              <div className="p-6 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/10 shadow-glass hover:bg-white/[0.06] transition-all">
-                <p className="text-3xl sm:text-4xl font-extrabold text-primary-400 mb-1">
+              <div className="p-6 rounded-2xl bg-white/70 dark:bg-white/[0.03] backdrop-blur-md border border-slate-200/80 dark:border-white/10 shadow-sm dark:shadow-glass hover:bg-white/90 dark:hover:bg-white/[0.06] transition-all">
+                <p className="text-3xl sm:text-4xl font-extrabold text-primary-600 dark:text-primary-400 mb-1">
                   {stats.activeOpportunities}
                 </p>
-                <p className="text-xs sm:text-sm font-medium text-gray-300 uppercase tracking-wider">
+                <p className="text-xs sm:text-sm font-medium text-slate-600 dark:text-gray-300 uppercase tracking-wider">
                   Active Opportunities
                 </p>
               </div>
 
-              <div className="p-6 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/10 shadow-glass hover:bg-white/[0.06] transition-all">
-                <p className="text-3xl sm:text-4xl font-extrabold text-secondary-400 mb-1">
+              <div className="p-6 rounded-2xl bg-white/70 dark:bg-white/[0.03] backdrop-blur-md border border-slate-200/80 dark:border-white/10 shadow-sm dark:shadow-glass hover:bg-white/90 dark:hover:bg-white/[0.06] transition-all">
+                <p className="text-3xl sm:text-4xl font-extrabold text-secondary-600 dark:text-secondary-400 mb-1">
                   {stats.verifiedNGOs}
                 </p>
-                <p className="text-xs sm:text-sm font-medium text-gray-300 uppercase tracking-wider">
+                <p className="text-xs sm:text-sm font-medium text-slate-600 dark:text-gray-300 uppercase tracking-wider">
                   Verified NGOs
                 </p>
               </div>
 
-              <div className="p-6 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/10 shadow-glass hover:bg-white/[0.06] transition-all">
-                <p className="text-3xl sm:text-4xl font-extrabold text-accent-400 mb-1">
+              <div className="p-6 rounded-2xl bg-white/70 dark:bg-white/[0.03] backdrop-blur-md border border-slate-200/80 dark:border-white/10 shadow-sm dark:shadow-glass hover:bg-white/90 dark:hover:bg-white/[0.06] transition-all">
+                <p className="text-3xl sm:text-4xl font-extrabold text-accent-600 dark:text-accent-400 mb-1">
                   {stats.totalVolunteers}
                 </p>
-                <p className="text-xs sm:text-sm font-medium text-gray-300 uppercase tracking-wider">
+                <p className="text-xs sm:text-sm font-medium text-slate-600 dark:text-gray-300 uppercase tracking-wider">
                   Registered Volunteers
                 </p>
               </div>
 
-              <div className="p-6 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/10 shadow-glass hover:bg-white/[0.06] transition-all">
-                <p className="text-3xl sm:text-4xl font-extrabold text-purple-400 mb-1">
+              <div className="p-6 rounded-2xl bg-white/70 dark:bg-white/[0.03] backdrop-blur-md border border-slate-200/80 dark:border-white/10 shadow-sm dark:shadow-glass hover:bg-white/90 dark:hover:bg-white/[0.06] transition-all">
+                <p className="text-3xl sm:text-4xl font-extrabold text-purple-600 dark:text-purple-400 mb-1">
                   {stats.completedEvents}
                 </p>
-                <p className="text-xs sm:text-sm font-medium text-gray-300 uppercase tracking-wider">
+                <p className="text-xs sm:text-sm font-medium text-slate-600 dark:text-gray-300 uppercase tracking-wider">
                   Completed Events
                 </p>
               </div>
@@ -575,14 +558,14 @@ const Home = () => {
         </section>
 
         {/* 3. HOW IT WORKS (ANIMATED 5-STEP WORKFLOW) */}
-        <section id="how-it-works" className="py-24 px-4 sm:px-6 lg:px-8 relative z-10">
+        <section id="how-it-works" className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center max-w-3xl mx-auto mb-20">
-              <span className="text-xs font-bold uppercase tracking-widest text-primary-400">Step-by-Step Pathway</span>
-              <h2 className="text-3xl sm:text-5xl font-extrabold text-white mt-2">
+            <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
+              <span className="text-xs font-bold uppercase tracking-widest text-primary-600 dark:text-primary-400">Step-by-Step Pathway</span>
+              <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mt-2">
                 How VolunteerConnect Works
               </h2>
-              <p className="text-gray-400 text-base sm:text-lg mt-4">
+              <p className="text-slate-600 dark:text-gray-400 text-base sm:text-lg mt-4">
                 From finding an initiative that inspires you to receiving certified proof of service, we make volunteering effortless, transparent, and rewarding.
               </p>
             </div>
@@ -590,25 +573,25 @@ const Home = () => {
             {/* 5-Step Cards Grid with Connecting Visual Flow */}
             <div className="relative">
               {/* Progressive Connector Line on Desktop */}
-              <div className="hidden lg:block absolute top-1/2 left-8 right-8 h-0.5 bg-gradient-to-r from-primary-500/20 via-purple-500/40 to-cyan-500/20 -translate-y-12 pointer-events-none z-0" />
+              <div className="hidden lg:block absolute top-1/2 left-8 right-8 h-0.5 bg-gradient-to-r from-primary-400/20 via-purple-400/30 to-secondary-400/20 -translate-y-12 pointer-events-none z-0" />
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 relative z-10">
                 {HOW_IT_WORKS_STEPS.map((step, idx) => (
                   <FadeUp key={step.num} delay={idx * 0.12} className="h-full">
-                    <div className="glass-card p-6 h-full flex flex-col justify-between border border-white/10 hover:border-primary-500/40 transition-all hover:-translate-y-2 group">
+                    <div className="glass-card p-6 h-full flex flex-col justify-between border border-slate-200/80 dark:border-white/10 hover:border-primary-400/60 transition-all hover:-translate-y-1.5 group">
                       <div>
                         {/* Step Header */}
                         <div className="flex items-center justify-between mb-4">
-                          <span className="text-3xl font-black font-mono text-primary-400/30 group-hover:text-primary-400 transition-colors">
+                          <span className="text-3xl font-black font-mono text-primary-400/30 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                             {step.num}
                           </span>
-                          <div className="p-3 rounded-xl bg-primary-500/10 text-primary-400 border border-primary-500/20 group-hover:scale-110 transition-transform">
+                          <div className="p-3 rounded-xl bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-400 border border-primary-200 dark:border-primary-500/20 group-hover:scale-110 transition-transform">
                             <step.icon className="w-5 h-5" />
                           </div>
                         </div>
 
                         {/* Thumbnail image */}
-                        <div className="relative aspect-[16/9] w-full rounded-xl overflow-hidden mb-4 bg-gray-900 border border-white/5">
+                        <div className="relative aspect-[16/9] w-full rounded-xl overflow-hidden mb-4 bg-slate-100 dark:bg-gray-900 border border-slate-200/60 dark:border-white/5">
                           <img
                             src={step.image}
                             alt={step.title}
@@ -621,15 +604,15 @@ const Home = () => {
                           </span>
                         </div>
 
-                        <h3 className="text-lg font-bold text-white mb-2 group-hover:text-primary-300 transition-colors">
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-300 transition-colors">
                           {step.title}
                         </h3>
-                        <p className="text-xs sm:text-sm text-gray-400 leading-relaxed">
+                        <p className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 leading-relaxed">
                           {step.desc}
                         </p>
                       </div>
 
-                      <div className="mt-4 pt-3 border-t border-white/5 flex items-center text-[11px] font-semibold text-primary-400/80 group-hover:text-primary-300">
+                      <div className="mt-4 pt-3 border-t border-slate-200/60 dark:border-white/5 flex items-center text-[11px] font-semibold text-primary-600/80 dark:text-primary-400/80 group-hover:text-primary-600 dark:group-hover:text-primary-300">
                         <span>Step {idx + 1} of 5</span>
                         <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
                       </div>
@@ -641,37 +624,36 @@ const Home = () => {
           </div>
         </section>
 
-
         {/* 4 & 5. VOLUNTEER & NGO JOURNEYS */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-white/5 relative z-10">
+        <section className="py-12 sm:py-14 px-4 sm:px-6 lg:px-8 border-t border-slate-200/70 dark:border-white/5 relative z-10">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Volunteer Card */}
-              <div className="glass-card p-8 sm:p-10 border border-primary-500/20 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-48 h-48 bg-primary-500/10 rounded-full blur-3xl pointer-events-none" />
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-500/15 text-primary-300 text-xs font-semibold mb-6">
+              <div className="glass-card p-8 sm:p-10 border border-primary-200 dark:border-primary-500/20 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-primary-300/10 dark:bg-primary-500/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-50 dark:bg-primary-500/15 text-primary-700 dark:text-primary-300 text-xs font-semibold mb-6">
                   <Users className="w-3.5 h-3.5" /> For Volunteers
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+                <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-4">
                   Turn Your Passion into Meaningful Change
                 </h3>
-                <ul className="space-y-3.5 text-sm text-gray-300 mb-8">
+                <ul className="space-y-3.5 text-sm text-slate-600 dark:text-gray-300 mb-8">
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-primary-400 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-5 h-5 text-primary-500 dark:text-primary-400 shrink-0 mt-0.5" />
                     <span>Personalized opportunity recommendations based on your skills and location.</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-primary-400 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-5 h-5 text-primary-500 dark:text-primary-400 shrink-0 mt-0.5" />
                     <span>Real-time status tracking from application to event completion.</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-primary-400 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-5 h-5 text-primary-500 dark:text-primary-400 shrink-0 mt-0.5" />
                     <span>Verified certificate gallery with unique ID codes for LinkedIn & resumes.</span>
                   </li>
                 </ul>
                 <Link
                   to="/register"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white bg-primary-600 hover:bg-primary-500 transition-colors shadow-glow-sm"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white bg-primary-600 hover:bg-primary-500 transition-colors shadow-sm"
                 >
                   <span>Start Volunteering</span>
                   <ArrowRight className="w-4 h-4" />
@@ -679,31 +661,31 @@ const Home = () => {
               </div>
 
               {/* NGO Card */}
-              <div className="glass-card p-8 sm:p-10 border border-secondary-500/20 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-48 h-48 bg-secondary-500/10 rounded-full blur-3xl pointer-events-none" />
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-500/15 text-secondary-300 text-xs font-semibold mb-6">
+              <div className="glass-card p-8 sm:p-10 border border-secondary-200 dark:border-secondary-500/20 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-secondary-300/10 dark:bg-secondary-500/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-50 dark:bg-secondary-500/15 text-secondary-700 dark:text-secondary-300 text-xs font-semibold mb-6">
                   <Building2 className="w-3.5 h-3.5" /> For Non-Profits & NGOs
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+                <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-4">
                   Streamline Volunteer Recruitment & Management
                 </h3>
-                <ul className="space-y-3.5 text-sm text-gray-300 mb-8">
+                <ul className="space-y-3.5 text-sm text-slate-600 dark:text-gray-300 mb-8">
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-secondary-400 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-5 h-5 text-secondary-500 dark:text-secondary-400 shrink-0 mt-0.5" />
                     <span>Official Verified NGO Badge following swift admin document verification.</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-secondary-400 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-5 h-5 text-secondary-500 dark:text-secondary-400 shrink-0 mt-0.5" />
                     <span>Publish opportunities, review applicant profiles, and approve participants in bulk.</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-secondary-400 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-5 h-5 text-secondary-500 dark:text-secondary-400 shrink-0 mt-0.5" />
                     <span>Built-in attendance checklists that automatically issue participant certificates.</span>
                   </li>
                 </ul>
                 <Link
                   to="/register?role=ngo"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white bg-secondary-600 hover:bg-secondary-500 transition-colors"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white bg-secondary-600 hover:bg-secondary-500 transition-colors shadow-sm"
                 >
                   <span>Register Your Organization</span>
                   <ArrowRight className="w-4 h-4" />
@@ -714,14 +696,14 @@ const Home = () => {
         </section>
 
         {/* 6. OPPORTUNITY CATEGORIES */}
-        <section className="py-24 px-4 sm:px-6 lg:px-8 relative z-10">
+        <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center max-w-3xl mx-auto mb-16">
-              <span className="text-xs font-bold uppercase tracking-widest text-primary-400">Causes That Matter</span>
-              <h2 className="text-3xl sm:text-5xl font-extrabold text-white mt-2">
+            <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
+              <span className="text-xs font-bold uppercase tracking-widest text-primary-600 dark:text-primary-400">Causes That Matter</span>
+              <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mt-2">
                 Explore by Category
               </h2>
-              <p className="text-gray-400 text-base sm:text-lg mt-4">
+              <p className="text-slate-600 dark:text-gray-400 text-base sm:text-lg mt-4">
                 Find the initiatives where your background, passion, and skills can create the greatest positive outcome.
               </p>
             </div>
@@ -731,13 +713,13 @@ const Home = () => {
                 <Link
                   key={cat.id}
                   to={`/opportunities?category=${cat.id}`}
-                  className={`group p-6 rounded-2xl bg-gradient-to-br ${cat.color} border ${cat.border} hover:scale-[1.03] transition-all duration-300 flex flex-col items-center text-center`}
+                  className={`group p-6 rounded-2xl bg-gradient-to-br ${cat.color} border ${cat.border} hover:scale-[1.02] transition-all duration-300 flex flex-col items-center text-center shadow-sm`}
                 >
-                  <div className={`p-4 rounded-xl bg-white/10 backdrop-blur-md ${cat.text} mb-4 shadow-sm group-hover:rotate-6 transition-transform`}>
+                  <div className={`p-4 rounded-xl bg-white/80 dark:bg-white/10 backdrop-blur-md ${cat.text} mb-4 shadow-sm group-hover:rotate-6 transition-transform`}>
                     <cat.icon className="w-7 h-7" />
                   </div>
-                  <h3 className="text-base font-bold text-white mb-1">{cat.name}</h3>
-                  <span className="text-xs text-gray-400 group-hover:text-white transition-colors">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">{cat.name}</h3>
+                  <span className="text-xs text-slate-500 dark:text-gray-400 group-hover:text-primary-600 dark:group-hover:text-white transition-colors">
                     Explore opportunities →
                   </span>
                 </Link>
@@ -747,18 +729,18 @@ const Home = () => {
         </section>
 
         {/* 7. LIVE OPPORTUNITIES PREVIEW (Real Atlas Data) */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-white/5 relative z-10">
+        <section className="py-12 sm:py-14 px-4 sm:px-6 lg:px-8 border-t border-slate-200/70 dark:border-white/5 relative z-10">
           <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-12">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-8">
               <div>
-                <span className="text-xs font-bold uppercase tracking-widest text-primary-400">Take Action Today</span>
-                <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-2">
+                <span className="text-xs font-bold uppercase tracking-widest text-primary-600 dark:text-primary-400">Take Action Today</span>
+                <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-2">
                   Featured Opportunities
                 </h2>
               </div>
               <Link
                 to="/opportunities"
-                className="text-sm font-semibold text-primary-400 hover:text-primary-300 inline-flex items-center gap-1"
+                className="text-sm font-semibold text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 inline-flex items-center gap-1"
               >
                 <span>View All Opportunities</span>
                 <ArrowRight className="w-4 h-4" />
@@ -776,7 +758,7 @@ const Home = () => {
                 ))}
               </div>
             ) : (
-              <div className="glass-card p-12 text-center border border-white/10 max-w-xl mx-auto">
+              <div className="glass-card p-12 text-center border border-slate-200/80 dark:border-white/10 max-w-xl mx-auto">
                 <EmptyState
                   title="No opportunities published yet"
                   description="Be the first verified organization to publish a volunteer opportunity on VolunteerConnect!"
@@ -792,76 +774,76 @@ const Home = () => {
         </section>
 
         {/* 8. TRUST & VERIFICATION */}
-        <section className="py-24 px-4 sm:px-6 lg:px-8 relative z-10">
+        <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
               <div className="lg:col-span-6 space-y-6">
-                <span className="text-xs font-bold uppercase tracking-widest text-accent-400">Uncompromising Integrity</span>
-                <h2 className="text-3xl sm:text-5xl font-extrabold text-white">
+                <span className="text-xs font-bold uppercase tracking-widest text-accent-600 dark:text-accent-400">Uncompromising Integrity</span>
+                <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white">
                   Built on Trust, Verified Authenticity
                 </h2>
-                <p className="text-gray-300 text-base sm:text-lg leading-relaxed">
+                <p className="text-slate-600 dark:text-gray-300 text-base sm:text-lg leading-relaxed">
                   We believe community service requires absolute safety and credibility. Every organization on VolunteerConnect undergoes formal verification by our administrative board before posting events.
                 </p>
 
                 <div className="space-y-4 pt-2">
                   <div className="flex items-start gap-4">
-                    <div className="p-2.5 rounded-xl bg-accent-500/15 text-accent-400 border border-accent-500/25 shrink-0">
+                    <div className="p-2.5 rounded-xl bg-accent-50 dark:bg-accent-500/15 text-accent-600 dark:text-accent-400 border border-accent-200 dark:border-accent-500/25 shrink-0">
                       <ShieldCheck className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 className="text-base font-bold text-white">Official Document Verification</h4>
-                      <p className="text-sm text-gray-400 mt-0.5">Government registration certificates and credentials are confirmed manually.</p>
+                      <h4 className="text-base font-bold text-slate-900 dark:text-white">Official Document Verification</h4>
+                      <p className="text-sm text-slate-500 dark:text-gray-400 mt-0.5">Government registration certificates and credentials are confirmed manually.</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <div className="p-2.5 rounded-xl bg-primary-500/15 text-primary-400 border border-primary-500/25 shrink-0">
+                    <div className="p-2.5 rounded-xl bg-primary-50 dark:bg-primary-500/15 text-primary-600 dark:text-primary-400 border border-primary-200 dark:border-primary-500/25 shrink-0">
                       <Award className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 className="text-base font-bold text-white">Cryptographically Serialized Certificates</h4>
-                      <p className="text-sm text-gray-400 mt-0.5">Every certificate generated carries a unique verification identifier to prevent fraud.</p>
+                      <h4 className="text-base font-bold text-slate-900 dark:text-white">Cryptographically Serialized Certificates</h4>
+                      <p className="text-sm text-slate-500 dark:text-gray-400 mt-0.5">Every certificate generated carries a unique verification identifier to prevent fraud.</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <div className="p-2.5 rounded-xl bg-secondary-500/15 text-secondary-400 border border-secondary-500/25 shrink-0">
+                    <div className="p-2.5 rounded-xl bg-secondary-50 dark:bg-secondary-500/15 text-secondary-600 dark:text-secondary-400 border border-secondary-200 dark:border-secondary-500/25 shrink-0">
                       <Globe2 className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 className="text-base font-bold text-white">Real-Time Attendance Auditing</h4>
-                      <p className="text-sm text-gray-400 mt-0.5">Event organizers check in volunteers digitally, ensuring accurate hour tracking.</p>
+                      <h4 className="text-base font-bold text-slate-900 dark:text-white">Real-Time Attendance Auditing</h4>
+                      <p className="text-sm text-slate-500 dark:text-gray-400 mt-0.5">Event organizers check in volunteers digitally, ensuring accurate hour tracking.</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="lg:col-span-6">
-                <div className="glass-card p-8 border border-white/10 shadow-2xl relative overflow-hidden">
-                  <div className="flex items-center justify-between pb-6 border-b border-white/10">
+                <div className="glass-card p-8 border border-slate-200/80 dark:border-white/10 shadow-lg dark:shadow-2xl relative overflow-hidden">
+                  <div className="flex items-center justify-between pb-6 border-b border-slate-200/80 dark:border-white/10">
                     <div>
-                      <span className="text-xs text-primary-400 font-semibold uppercase">Platform Guarantee</span>
-                      <h3 className="text-xl font-bold text-white mt-0.5">Certified Organization Badge</h3>
+                      <span className="text-xs text-primary-600 dark:text-primary-400 font-semibold uppercase">Platform Guarantee</span>
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-white mt-0.5">Certified Organization Badge</h3>
                     </div>
-                    <div className="w-12 h-12 rounded-xl bg-accent-500/10 text-accent-400 border border-accent-500/20 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-xl bg-accent-50 dark:bg-accent-500/10 text-accent-600 dark:text-accent-400 border border-accent-200 dark:border-accent-500/20 flex items-center justify-center">
                       <ShieldCheck className="w-6 h-6" />
                     </div>
                   </div>
 
-                  <div className="py-6 space-y-4 text-sm text-gray-300">
+                  <div className="py-6 space-y-4 text-sm text-slate-600 dark:text-gray-300">
                     <p>
-                      Volunteers never have to wonder whether an organization is legitimate. When you see the <span className="text-accent-400 font-semibold">Verified NGO badge</span>, you can be certain that registration documents have been validated.
+                      Volunteers never have to wonder whether an organization is legitimate. When you see the <span className="text-accent-600 dark:text-accent-400 font-semibold">Verified NGO badge</span>, you can be certain that registration documents have been validated.
                     </p>
-                    <div className="p-4 rounded-xl bg-white/5 border border-white/5 flex items-center gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-accent-400 shrink-0" />
-                      <span className="text-xs text-gray-300">100% of published events are hosted by approved NGOs.</span>
+                    <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 flex items-center gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-accent-500 dark:text-accent-400 shrink-0" />
+                      <span className="text-xs text-slate-600 dark:text-gray-300">100% of published events are hosted by approved NGOs.</span>
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t border-white/10 flex justify-between items-center">
-                    <span className="text-xs text-gray-400">Questions about verification?</span>
-                    <Link to="/contact" className="text-xs font-semibold text-primary-400 hover:text-primary-300">
+                  <div className="pt-4 border-t border-slate-200/80 dark:border-white/10 flex justify-between items-center">
+                    <span className="text-xs text-slate-500 dark:text-gray-400">Questions about verification?</span>
+                    <Link to="/contact" className="text-xs font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300">
                       Speak with our team →
                     </Link>
                   </div>
@@ -872,28 +854,28 @@ const Home = () => {
         </section>
 
         {/* 9. GLOBAL IMPACT CALL TO ACTION */}
-        <section className="py-24 px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-5xl mx-auto rounded-3xl p-10 sm:p-16 relative overflow-hidden bg-gradient-to-br from-primary-950/40 via-purple-950/30 to-gray-950/40 backdrop-blur-2xl border border-primary-500/30 shadow-glass text-center">
-            <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary-600/20 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent-600/15 rounded-full blur-3xl pointer-events-none" />
+        <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="max-w-5xl mx-auto rounded-3xl p-8 sm:p-12 relative overflow-hidden bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-primary-950/40 dark:via-purple-950/30 dark:to-gray-950/40 backdrop-blur-2xl border border-primary-200 dark:border-primary-500/30 shadow-md dark:shadow-glass text-center">
+            <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary-400/15 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent-400/15 rounded-full blur-3xl pointer-events-none" />
 
             <div className="relative z-10 max-w-2xl mx-auto">
-              <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-6 leading-tight">
+              <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-6 leading-tight">
                 Ready to Create Real Change in the World?
               </h2>
-              <p className="text-gray-300 text-base sm:text-lg mb-8 leading-relaxed">
+              <p className="text-slate-600 dark:text-gray-300 text-base sm:text-lg mb-8 leading-relaxed">
                 Join our community of changemakers today. It takes less than 2 minutes to get started as a volunteer or register your non-profit.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   to="/register"
-                  className="px-8 py-4 rounded-xl text-base font-semibold text-white bg-primary-600 hover:bg-primary-500 btn-glow transition-all"
+                  className="px-8 py-4 rounded-xl text-base font-semibold text-white bg-primary-600 hover:bg-primary-500 btn-glow transition-all shadow-sm"
                 >
                   Sign Up as Volunteer
                 </Link>
                 <Link
                   to="/register?role=ngo"
-                  className="px-8 py-4 rounded-xl text-base font-semibold text-white bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md transition-all"
+                  className="px-8 py-4 rounded-xl text-base font-semibold text-slate-700 dark:text-white bg-white/90 hover:bg-white dark:bg-white/10 dark:hover:bg-white/20 border border-slate-200 dark:border-white/20 backdrop-blur-md transition-all shadow-sm"
                 >
                   Register Your NGO
                 </Link>

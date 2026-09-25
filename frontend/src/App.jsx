@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import { AnimatePresence } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
+import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 import SplashScreen from './components/ui/SplashScreen';
@@ -18,6 +19,7 @@ const Register = lazy(() => import('./pages/auth/Register'));
 const ForgotPassword = lazy(() => import('./pages/auth/ForgotPassword'));
 const ResetPassword = lazy(() => import('./pages/auth/ResetPassword'));
 const Contact = lazy(() => import('./pages/Contact'));
+const IncidentDetail = lazy(() => import('./pages/IncidentDetail'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Volunteer Pages
@@ -59,10 +61,11 @@ function App() {
 
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <SocketProvider>
-          {/* Global Animated Background fixed behind all content */}
-          <AnimatedBackground />
+      <ThemeProvider>
+        <AuthProvider>
+          <SocketProvider>
+            {/* Global Animated Background fixed behind all content */}
+            <AnimatedBackground />
 
           <AnimatePresence>
             {showSplash && (
@@ -89,6 +92,8 @@ function App() {
                 <Route path="/about" element={<About />} />
                 <Route path="/opportunities" element={<Opportunities />} />
                 <Route path="/opportunities/:id" element={<OpportunityDetail />} />
+                <Route path="/events/:id" element={<IncidentDetail />} />
+                <Route path="/incidents/:id" element={<Navigate to="/events/:id" replace />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -136,7 +141,8 @@ function App() {
           </ErrorBoundary>
         </SocketProvider>
       </AuthProvider>
-    </BrowserRouter>
+    </ThemeProvider>
+  </BrowserRouter>
   );
 }
 
