@@ -10,43 +10,61 @@ import ErrorBoundary from './components/ErrorBoundary';
 import SplashScreen from './components/ui/SplashScreen';
 import AnimatedBackground from './components/ui/AnimatedBackground';
 
-const Home = lazy(() => import('./pages/Home'));
-const About = lazy(() => import('./pages/About'));
-const Opportunities = lazy(() => import('./pages/Opportunities'));
-const OpportunityDetail = lazy(() => import('./pages/OpportunityDetail'));
-const Login = lazy(() => import('./pages/auth/Login'));
-const Register = lazy(() => import('./pages/auth/Register'));
-const ForgotPassword = lazy(() => import('./pages/auth/ForgotPassword'));
-const ResetPassword = lazy(() => import('./pages/auth/ResetPassword'));
-const Contact = lazy(() => import('./pages/Contact'));
-const IncidentDetail = lazy(() => import('./pages/IncidentDetail'));
-const NotFound = lazy(() => import('./pages/NotFound'));
+// Resilient lazy import that auto-heals chunk mismatches from fresh deployments
+const lazyRetry = (componentImport) =>
+  lazy(async () => {
+    const pageHasBeenRefreshed = sessionStorage.getItem('vc_chunk_refreshed');
+    try {
+      const module = await componentImport();
+      sessionStorage.removeItem('vc_chunk_refreshed');
+      return module;
+    } catch (error) {
+      if (!pageHasBeenRefreshed) {
+        sessionStorage.setItem('vc_chunk_refreshed', 'true');
+        window.location.reload();
+        return new Promise(() => {}); // Hold suspense while reloading
+      }
+      throw error;
+    }
+  });
+
+const Home = lazyRetry(() => import('./pages/Home'));
+const About = lazyRetry(() => import('./pages/About'));
+const Opportunities = lazyRetry(() => import('./pages/Opportunities'));
+const OpportunityDetail = lazyRetry(() => import('./pages/OpportunityDetail'));
+const Login = lazyRetry(() => import('./pages/auth/Login'));
+const Register = lazyRetry(() => import('./pages/auth/Register'));
+const ForgotPassword = lazyRetry(() => import('./pages/auth/ForgotPassword'));
+const ResetPassword = lazyRetry(() => import('./pages/auth/ResetPassword'));
+const Contact = lazyRetry(() => import('./pages/Contact'));
+const IncidentDetail = lazyRetry(() => import('./pages/IncidentDetail'));
+const NotFound = lazyRetry(() => import('./pages/NotFound'));
 
 // Volunteer Pages
-const VolunteerDashboard = lazy(() => import('./pages/volunteer/Dashboard'));
-const VolunteerProfile = lazy(() => import('./pages/volunteer/Profile'));
-const VolunteerApplications = lazy(() => import('./pages/volunteer/Applications'));
-const Participation = lazy(() => import('./pages/volunteer/Participation'));
-const Certificates = lazy(() => import('./pages/volunteer/Certificates'));
-const VolunteerNotifications = lazy(() => import('./pages/volunteer/Notifications'));
+const VolunteerDashboard = lazyRetry(() => import('./pages/volunteer/Dashboard'));
+const VolunteerProfile = lazyRetry(() => import('./pages/volunteer/Profile'));
+const VolunteerApplications = lazyRetry(() => import('./pages/volunteer/Applications'));
+const Participation = lazyRetry(() => import('./pages/volunteer/Participation'));
+const Certificates = lazyRetry(() => import('./pages/volunteer/Certificates'));
+const VolunteerNotifications = lazyRetry(() => import('./pages/volunteer/Notifications'));
 
 // NGO Pages
-const NGODashboard = lazy(() => import('./pages/ngo/Dashboard'));
-const NGOProfile = lazy(() => import('./pages/ngo/Profile'));
-const NGOVolunteers = lazy(() => import('./pages/ngo/Volunteers'));
-const NGOOpportunities = lazy(() => import('./pages/ngo/Opportunities'));
-const CreateOpportunity = lazy(() => import('./pages/ngo/CreateOpportunity'));
-const EditOpportunity = lazy(() => import('./pages/ngo/EditOpportunity'));
-const NGOApplications = lazy(() => import('./pages/ngo/Applications'));
-const Attendance = lazy(() => import('./pages/ngo/Attendance'));
+const NGODashboard = lazyRetry(() => import('./pages/ngo/Dashboard'));
+const NGOProfile = lazyRetry(() => import('./pages/ngo/Profile'));
+const NGOVolunteers = lazyRetry(() => import('./pages/ngo/Volunteers'));
+const NGOOpportunities = lazyRetry(() => import('./pages/ngo/Opportunities'));
+const CreateOpportunity = lazyRetry(() => import('./pages/ngo/CreateOpportunity'));
+const EditOpportunity = lazyRetry(() => import('./pages/ngo/EditOpportunity'));
+const NGOApplications = lazyRetry(() => import('./pages/ngo/Applications'));
+const Attendance = lazyRetry(() => import('./pages/ngo/Attendance'));
 
 // Admin Pages
-const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
-const NGOVerification = lazy(() => import('./pages/admin/NGOVerification'));
-const AdminUsers = lazy(() => import('./pages/admin/Users'));
-const AdminOpportunities = lazy(() => import('./pages/admin/AdminOpportunities'));
-const AdminReports = lazy(() => import('./pages/admin/Reports'));
-const Analytics = lazy(() => import('./pages/admin/Analytics'));
+const AdminDashboard = lazyRetry(() => import('./pages/admin/Dashboard'));
+const NGOVerification = lazyRetry(() => import('./pages/admin/NGOVerification'));
+const AdminUsers = lazyRetry(() => import('./pages/admin/Users'));
+const AdminOpportunities = lazyRetry(() => import('./pages/admin/AdminOpportunities'));
+const AdminReports = lazyRetry(() => import('./pages/admin/Reports'));
+const Analytics = lazyRetry(() => import('./pages/admin/Analytics'));
 
 const PageLoader = () => (
   <div className="min-h-screen bg-transparent flex items-center justify-center">
