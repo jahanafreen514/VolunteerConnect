@@ -29,6 +29,8 @@ import OpportunityCard from '../components/ui/OpportunityCard';
 import SkeletonCard from '../components/ui/SkeletonCard';
 import EmptyState from '../components/ui/EmptyState';
 import { opportunityService } from '../services/opportunityService';
+import CircularCarousel from './CircularCarousel';
+import Threads from './Threads';
 
 const SEARCH_PROMPTS = [
   'Beach cleanup & marine conservation',
@@ -102,35 +104,61 @@ const HOW_IT_WORKS_STEPS = [
   }
 ];
 
-// Clean non-flipping real photo cards (Requirement 7 & 8)
-const REAL_COMMUNITY_STORIES = [
-  {
-    image: 'https://images.unsplash.com/photo-1618477461853-cf6ed80faba5?w=600&auto=format&fit=crop&q=80',
-    title: 'Coastal Habitat Restoration',
-    desc: 'Volunteers gathered to clean 3 miles of shoreline and restore indigenous dunes.',
-    tag: 'Environment',
-    tagStyle: 'bg-[#D8EEE5] text-[#244e44] border-[#bce1d3]'
+// Real community and impact photography for CircularCarousel
+const items = [
+  { 
+    src: 'https://images.unsplash.com/photo-1618477461853-cf6ed80faba5?w=800&auto=format&fit=crop&q=80', 
+    alt: 'Coastal shoreline cleanup and marine conservation', 
+    title: 'Coastal Cleanup', 
+    subtitle: 'Environment' 
   },
-  {
-    image: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=600&auto=format&fit=crop&q=80',
-    title: 'Urban Garden Renewal',
-    desc: 'Neighbors planted community vegetable patches producing sustainable fresh food.',
-    tag: 'Community',
-    tagStyle: 'bg-[#F6D8C5] text-[#7a4221] border-[#eebd9e]'
+  { 
+    src: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=800&auto=format&fit=crop&q=80', 
+    alt: 'Urban community planting 1,000 native saplings in public park', 
+    title: 'Urban Tree Planting', 
+    subtitle: 'Sustainability' 
   },
-  {
-    image: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?w=600&auto=format&fit=crop&q=80',
-    title: 'Nutrition Kit Distribution',
-    desc: 'Packaged over 2,400 balanced meals for local community pantries.',
-    tag: 'Food Drive',
-    tagStyle: 'bg-[#F2D6DD] text-[#8C3B4A] border-[#e6b5c1]'
+  { 
+    src: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?w=800&auto=format&fit=crop&q=80', 
+    alt: 'Volunteers packaging balanced food pantry nutrition kits', 
+    title: 'Food Packaging', 
+    subtitle: 'Pantry Drive' 
   },
-  {
-    image: 'https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=600&auto=format&fit=crop&q=80',
-    title: 'Shelter Rescue Support',
-    desc: 'Helped provide medical care, grooming, and loving foster matching for 48 pets.',
-    tag: 'Animal Welfare',
-    tagStyle: 'bg-[#DDD5F3] text-[#4d387a] border-[#c5b8eb]'
+  { 
+    src: 'https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=800&auto=format&fit=crop&q=80', 
+    alt: 'Animal shelter volunteers providing medical care and adoption support', 
+    title: 'Shelter Rescue', 
+    subtitle: 'Animal Welfare' 
+  },
+  { 
+    src: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&auto=format&fit=crop&q=80', 
+    alt: 'Volunteers teaching science, mathematics and digital literacy', 
+    title: 'Youth Mentorship', 
+    subtitle: 'Education' 
+  },
+  { 
+    src: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=800&auto=format&fit=crop&q=80', 
+    alt: 'Medical volunteer team checking health vitals at community camp', 
+    title: 'Health Clinic', 
+    subtitle: 'Healthcare' 
+  },
+  { 
+    src: '/images/valley.jpg', 
+    alt: 'Mist drifting through a valley', 
+    title: 'Valley', 
+    subtitle: 'Landscape' 
+  },
+  { 
+    src: '/images/portrait.jpg', 
+    alt: 'A studio portrait', 
+    title: 'Portrait', 
+    subtitle: 'Studio' 
+  },
+  { 
+    src: '/images/towers.jpg', 
+    alt: 'Glass towers from street level', 
+    title: 'Towers', 
+    subtitle: 'Architecture' 
   }
 ];
 
@@ -198,9 +226,20 @@ const Home = () => {
     <PublicLayout>
       <div className="relative text-[#354052] bg-transparent">
         
+        {/* Animated Threads Background */}
+        <div className="absolute top-0 left-0 right-0 h-[600px] overflow-hidden pointer-events-none z-0 opacity-45">
+          <div style={{ width: '100%', height: '600px', position: 'relative' }}>
+            <Threads
+              amplitude={1}
+              distance={0}
+              enableMouseInteraction
+            />
+          </div>
+        </div>
+
         {/* 1. PROFESSIONAL HERO SECTION (Requirements 9, 10, 11) */}
-        <section className="relative pt-6 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
-          <div className="max-w-[1200px] mx-auto">
+        <section className="relative pt-6 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden z-10">
+          <div className="max-w-[1200px] mx-auto relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
               
               {/* LEFT COLUMN: HERO COPY & ACTIONS */}
@@ -382,8 +421,8 @@ const Home = () => {
           </div>
         </section>
 
-        {/* 3. CLEAN MODERN REAL-PHOTO CARDS (Requirement 7 & 8: NO FLIP CARDS) */}
-        <section className="py-10 sm:py-14 px-4 sm:px-6 lg:px-8 border-b border-[#E6E8EC]">
+        {/* 3. CLEAN MODERN REAL-PHOTO 3D CAROUSEL */}
+        <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 border-b border-[#E6E8EC] relative overflow-hidden bg-white/40">
           <div className="max-w-[1200px] mx-auto">
             <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-8 gap-3">
               <div>
@@ -394,7 +433,7 @@ const Home = () => {
                   Stories of Meaningful Impact
                 </h2>
                 <p className="text-xs sm:text-sm text-[#667085] mt-1">
-                  Genuine photography from recent volunteer initiatives and verified community drives.
+                  Genuine photography from recent volunteer initiatives and verified community drives. Drag to rotate or click any card.
                 </p>
               </div>
               <Link to="/about" className="text-xs sm:text-sm font-semibold text-[#556e5a] hover:text-[#26372B] flex items-center gap-1">
@@ -403,35 +442,35 @@ const Home = () => {
               </Link>
             </div>
 
-            {/* Clean non-flipping modern cards with subtle zoom and translateY(-4px) on hover */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              {REAL_COMMUNITY_STORIES.map((story, i) => (
-                <div
-                  key={i}
-                  className="glass-card group flex flex-col overflow-hidden transition-all duration-250 hover:-translate-y-1 hover:shadow-soft-hover"
-                >
-                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
-                    <img
-                      src={story.image}
-                      alt={story.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                    <span className={`absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border backdrop-blur-md ${story.tagStyle}`}>
-                      {story.tag}
-                    </span>
-                  </div>
-                  <div className="p-4 flex flex-col flex-1">
-                    <h3 className="text-sm font-bold text-[#26372B] mb-1.5 group-hover:text-[#556e5a] transition-colors">
-                      {story.title}
-                    </h3>
-                    <p className="text-xs text-[#667085] leading-relaxed">
-                      {story.desc}
-                    </p>
-                  </div>
-                </div>
-              ))}
+            {/* 3D Circular Carousel Photo Gallery */}
+            <div style={{ width: '100%', height: '560px', position: 'relative' }}>
+              <CircularCarousel
+                items={items}
+                preset="cylinder"
+                intro="rise"
+                cardWidth={220}
+                aspectRatio={1}
+                speed={14}
+                captions={false}
+                gap={25}
+                tilt={-5}
+                curve={1}
+                perspective={2500}
+                autoplay="drift"
+                interval={3}
+                direction="left"
+                momentum={0.6}
+                snap
+                pauseOnHover
+                focusOnClick
+                draggable
+                parallax={0.3}
+                stretch={0.5}
+                fadeColor="#000000"
+                depthFade={0.55}
+                innerShade={0.6}
+                cornerRadius={12}
+              />
             </div>
           </div>
         </section>
