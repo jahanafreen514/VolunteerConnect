@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Flag, Eye } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { format } from 'date-fns';
 import { formatDateSafe } from '../../utils/date';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import AdminSidebar from '../../components/layouts/AdminSidebar';
@@ -57,7 +56,7 @@ const Reports = () => {
       resolved: 'success',
       dismissed: 'default'
     };
-    return <Badge variant={map[status] || 'default'} className="uppercase">{status}</Badge>;
+    return <Badge variant={map[status] || 'default'} className="uppercase font-semibold text-xs">{status}</Badge>;
   };
 
   return (
@@ -65,17 +64,19 @@ const Reports = () => {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-white">Reports</h1>
-            <p className="text-gray-400 mt-1">Manage user reports and content flags.</p>
+            <h1 className="text-2xl font-bold text-[#354052]">Reports & Moderation</h1>
+            <p className="text-[#667085] mt-1 text-sm">Review community feedback, content flags, and resolution notes.</p>
           </div>
           
-          <div className="flex bg-white/5 border border-white/10 rounded-lg p-1">
+          <div className="flex bg-[#F5F1FA] border border-[#E6E8EC] rounded-xl p-1 shadow-soft-sm">
             {['pending', 'resolved', 'dismissed'].map(tab => (
               <button
                 key={tab}
                 onClick={() => setFilter(tab)}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                  filter === tab ? 'bg-primary-600 text-white shadow-sm' : 'text-gray-400 hover:text-white hover:bg-white/5'
+                className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
+                  filter === tab 
+                    ? 'bg-white text-[#354052] shadow-soft-sm' 
+                    : 'text-[#667085] hover:text-[#354052]'
                 }`}
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -84,13 +85,13 @@ const Reports = () => {
           </div>
         </div>
 
-        <Card className="overflow-hidden">
+        <div className="pastel-card overflow-hidden">
           {loading ? (
             <div className="p-6"><SkeletonTable columns={5} rows={5} /></div>
           ) : reports.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-gray-300">
-                <thead className="bg-white/5 text-gray-400 uppercase text-xs">
+              <table className="w-full text-left text-sm text-[#354052]">
+                <thead className="bg-[#F5F1FA]/80 text-[#667085] uppercase text-xs font-semibold border-b border-[#E6E8EC]">
                   <tr>
                     <th className="px-6 py-4">Reporter</th>
                     <th className="px-6 py-4">Target Type</th>
@@ -99,18 +100,18 @@ const Reports = () => {
                     <th className="px-6 py-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <tbody className="divide-y divide-[#E6E8EC]">
                   {reports.map((report) => (
-                    <tr key={report._id} className="hover:bg-white/[0.02]">
+                    <tr key={report._id} className="hover:bg-[#F9FBF9] transition-colors">
                       <td className="px-6 py-4">
-                        <div className="font-medium text-white">{report.reporter?.name}</div>
-                        <div className="text-xs text-gray-500">{report.reporter?.email}</div>
+                        <div className="font-semibold text-[#354052]">{report.reporter?.name || 'Anonymous User'}</div>
+                        <div className="text-xs text-[#667085]">{report.reporter?.email || 'N/A'}</div>
                       </td>
                       <td className="px-6 py-4">
-                        <Badge variant="default" className="uppercase text-xs">{report.targetType}</Badge>
+                        <Badge variant="default" className="uppercase text-xs font-semibold">{report.targetType}</Badge>
                       </td>
-                      <td className="px-6 py-4 truncate max-w-[200px]">{report.reason}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-400">{formatDateSafe(report.createdAt, 'MMM d, yyyy')}</td>
+                      <td className="px-6 py-4 truncate max-w-[240px] text-[#354052]">{report.reason}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-[#667085]">{formatDateSafe(report.createdAt, 'MMM d, yyyy')}</td>
                       <td className="px-6 py-4 text-right">
                         <Button 
                           size="sm" 
@@ -120,9 +121,9 @@ const Reports = () => {
                             setAdminNote(report.adminNote || '');
                             setIsModalOpen(true); 
                           }}
-                          className="flex items-center gap-1 ml-auto"
+                          className="flex items-center gap-1.5 ml-auto !border-[#E6E8EC] !text-[#354052] hover:!bg-[#F5F1FA] text-xs"
                         >
-                          <Eye className="w-4 h-4" /> Review
+                          <Eye className="w-4 h-4 text-[#667085]" /> Review
                         </Button>
                       </td>
                     </tr>
@@ -139,7 +140,7 @@ const Reports = () => {
               />
             </div>
           )}
-        </Card>
+        </div>
       </div>
 
       {selectedReport && (
@@ -151,22 +152,22 @@ const Reports = () => {
           <div className="space-y-6">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm text-gray-400">Target Type</p>
-                <p className="text-white font-medium capitalize">{selectedReport.targetType}</p>
+                <p className="text-xs font-semibold text-[#667085] uppercase tracking-wider">Target Type</p>
+                <p className="text-[#354052] font-semibold text-base capitalize mt-0.5">{selectedReport.targetType}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-400">Status</p>
+                <p className="text-xs font-semibold text-[#667085] uppercase tracking-wider mb-1">Status</p>
                 {getStatusBadge(selectedReport.status)}
               </div>
             </div>
             
-            <div className="bg-white/5 p-4 rounded-lg border border-white/10">
-              <p className="text-sm text-gray-400 mb-1">Reason for reporting</p>
-              <p className="text-white">{selectedReport.reason}</p>
+            <div className="bg-[#F5F1FA]/60 p-4 rounded-xl border border-[#E6E8EC]">
+              <p className="text-xs font-semibold text-[#667085] uppercase tracking-wider mb-1">Reason for reporting</p>
+              <p className="text-[#354052] text-sm leading-relaxed">{selectedReport.reason}</p>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm text-gray-300 font-medium">Admin Notes</label>
+              <label className="text-xs font-semibold text-[#667085] uppercase tracking-wider">Admin Notes</label>
               <Textarea 
                 value={adminNote}
                 onChange={(e) => setAdminNote(e.target.value)}
@@ -177,9 +178,21 @@ const Reports = () => {
             </div>
 
             {selectedReport.status === 'pending' && (
-              <div className="flex justify-end gap-3 pt-4 border-t border-white/10">
-                <Button variant="outline" onClick={() => handleUpdateStatus('dismissed')}>Dismiss Report</Button>
-                <Button variant="primary" onClick={() => handleUpdateStatus('resolved')}>Mark Resolved</Button>
+              <div className="flex justify-end gap-3 pt-4 border-t border-[#E6E8EC]">
+                <Button 
+                  variant="outline" 
+                  className="!border-[#E6E8EC] !text-[#667085] hover:!bg-[#F5F1FA]" 
+                  onClick={() => handleUpdateStatus('dismissed')}
+                >
+                  Dismiss Report
+                </Button>
+                <Button 
+                  variant="primary" 
+                  className="!bg-[#BFD8C2] !text-[#26372B] hover:!bg-[#AFCDB5] font-semibold shadow-soft-sm" 
+                  onClick={() => handleUpdateStatus('resolved')}
+                >
+                  Mark Resolved
+                </Button>
               </div>
             )}
           </div>

@@ -10,7 +10,6 @@ import {
   Award, 
   Users, 
   Building2, 
-  Globe2, 
   CheckCircle2, 
   Heart, 
   TreePine, 
@@ -20,54 +19,44 @@ import {
   Palette, 
   Laptop, 
   Compass,
-  Clock,
-  CalendarCheck,
   UserCheck,
-  FileCheck2
+  CalendarCheck,
+  Clock,
+  MapPin
 } from 'lucide-react';
 import PublicLayout from '../layouts/PublicLayout';
 import OpportunityCard from '../components/ui/OpportunityCard';
 import SkeletonCard from '../components/ui/SkeletonCard';
 import EmptyState from '../components/ui/EmptyState';
-import DepthText from '../components/ui/DepthText';
-import PolaroidCard from '../components/visual/PolaroidCard';
-import MotionVideoCard from '../components/visual/MotionVideoCard';
-import FloatingCard from '../components/visual/FloatingCard';
-import Floating from '../components/animations/Floating';
-import FadeUp from '../components/animations/FadeUp';
-import Parallax from '../components/animations/Parallax';
-import ScrollReveal from '../components/animations/ScrollReveal';
-import { useTheme } from '../context/ThemeContext';
 import { opportunityService } from '../services/opportunityService';
 
 const SEARCH_PROMPTS = [
-  'Beach cleanup & marine plastic removal',
+  'Beach cleanup & marine conservation',
   'Teach coding & mathematics to children',
   'Emergency disaster relief & food packaging',
   'Rescue animal care & pet adoption drive',
   'Planting 1,000 urban native trees',
-  'Youth mentorship & academic coaching',
-  'Healthcare kit distribution for seniors',
+  'Senior citizen companionship & support',
 ];
 
 const POPULAR_TAGS = [
-  { label: 'Environment', category: 'environment', icon: '🌱' },
-  { label: 'Education', category: 'education', icon: '📚' },
-  { label: 'Healthcare', category: 'health', icon: '🏥' },
-  { label: 'Community', category: 'community', icon: '🤝' },
-  { label: 'Animal Care', category: 'animals', icon: '🐾' },
-  { label: 'Disaster Relief', category: 'disaster-relief', icon: '🚨' },
+  { label: 'Environment', category: 'environment', bg: 'bg-[#D8EEE5] text-[#244e44] border-[#bce1d3]' },
+  { label: 'Education', category: 'education', bg: 'bg-[#C9DDF2] text-[#24426b] border-[#a3c5eb]' },
+  { label: 'Healthcare', category: 'health', bg: 'bg-[#F2D6DD] text-[#8C3B4A] border-[#e6b5c1]' },
+  { label: 'Community', category: 'community', bg: 'bg-[#F6D8C5] text-[#7a4221] border-[#eebd9e]' },
+  { label: 'Animal Welfare', category: 'animals', bg: 'bg-[#DDD5F3] text-[#4d387a] border-[#c5b8eb]' },
+  { label: 'Disaster Relief', category: 'disaster-relief', bg: 'bg-[#F2D6DD] text-[#8C3B4A] border-[#e6b5c1]' },
 ];
 
 const CATEGORIES = [
-  { id: 'environment', name: 'Environment', icon: TreePine, color: 'from-emerald-500/10 to-teal-500/10 dark:from-emerald-500/20 dark:to-teal-500/20', border: 'border-emerald-300/60 dark:border-emerald-500/30', text: 'text-emerald-600 dark:text-emerald-400' },
-  { id: 'education', name: 'Education', icon: GraduationCap, color: 'from-indigo-500/10 to-blue-500/10 dark:from-indigo-500/20 dark:to-blue-500/20', border: 'border-indigo-300/60 dark:border-indigo-500/30', text: 'text-indigo-600 dark:text-indigo-400' },
-  { id: 'health', name: 'Healthcare', icon: Stethoscope, color: 'from-rose-500/10 to-pink-500/10 dark:from-rose-500/20 dark:to-pink-500/20', border: 'border-rose-300/60 dark:border-rose-500/30', text: 'text-rose-600 dark:text-rose-400' },
-  { id: 'community', name: 'Community', icon: Users, color: 'from-amber-500/10 to-orange-500/10 dark:from-amber-500/20 dark:to-orange-500/20', border: 'border-amber-300/60 dark:border-amber-500/30', text: 'text-amber-600 dark:text-amber-400' },
-  { id: 'animals', name: 'Animal Welfare', icon: Heart, color: 'from-purple-500/10 to-fuchsia-500/10 dark:from-purple-500/20 dark:to-fuchsia-500/20', border: 'border-purple-300/60 dark:border-purple-500/30', text: 'text-purple-600 dark:text-purple-400' },
-  { id: 'disaster-relief', name: 'Disaster Relief', icon: Flame, color: 'from-red-500/10 to-amber-500/10 dark:from-red-500/20 dark:to-amber-500/20', border: 'border-red-300/60 dark:border-red-500/30', text: 'text-red-600 dark:text-red-400' },
-  { id: 'arts', name: 'Arts & Culture', icon: Palette, color: 'from-violet-500/10 to-purple-500/10 dark:from-violet-500/20 dark:to-purple-500/20', border: 'border-violet-300/60 dark:border-violet-500/30', text: 'text-violet-600 dark:text-violet-400' },
-  { id: 'technology', name: 'Technology', icon: Laptop, color: 'from-sky-500/10 to-cyan-500/10 dark:from-sky-500/20 dark:to-cyan-500/20', border: 'border-sky-300/60 dark:border-sky-500/30', text: 'text-sky-600 dark:text-sky-400' }
+  { id: 'environment', name: 'Environment', icon: TreePine, color: 'bg-[#D8EEE5]/70 border-[#bce1d3]', text: 'text-[#244e44]' },
+  { id: 'education', name: 'Education', icon: GraduationCap, color: 'bg-[#C9DDF2]/70 border-[#a3c5eb]', text: 'text-[#24426b]' },
+  { id: 'health', name: 'Healthcare', icon: Stethoscope, color: 'bg-[#F2D6DD]/70 border-[#e6b5c1]', text: 'text-[#8C3B4A]' },
+  { id: 'community', name: 'Community', icon: Users, color: 'bg-[#F6D8C5]/70 border-[#eebd9e]', text: 'text-[#7a4221]' },
+  { id: 'animals', name: 'Animal Welfare', icon: Heart, color: 'bg-[#DDD5F3]/70 border-[#c5b8eb]', text: 'text-[#4d387a]' },
+  { id: 'disaster-relief', name: 'Disaster Relief', icon: Flame, color: 'bg-[#F2D6DD]/70 border-[#e6b5c1]', text: 'text-[#8C3B4A]' },
+  { id: 'arts', name: 'Arts & Culture', icon: Palette, color: 'bg-[#DDD5F3]/70 border-[#c5b8eb]', text: 'text-[#4d387a]' },
+  { id: 'technology', name: 'Technology', icon: Laptop, color: 'bg-[#C9DDF2]/70 border-[#a3c5eb]', text: 'text-[#24426b]' }
 ];
 
 const HOW_IT_WORKS_STEPS = [
@@ -91,7 +80,7 @@ const HOW_IT_WORKS_STEPS = [
     num: '03',
     title: 'Find Opportunities',
     tag: 'Smart Matching',
-    desc: 'Filter opportunities matching your schedule. One-click application with instant status updates and organizer chat.',
+    desc: 'Filter opportunities matching your schedule. One-click application with instant status updates.',
     icon: Search,
     image: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600&auto=format&fit=crop&q=80'
   },
@@ -99,7 +88,7 @@ const HOW_IT_WORKS_STEPS = [
     num: '04',
     title: 'Volunteer',
     tag: 'Ground Impact',
-    desc: 'Participate in on-site or virtual events. Organizers verify presence with digital attendance auditing.',
+    desc: 'Participate in on-site or virtual initiatives. Organizers verify attendance with digital checklists.',
     icon: Users,
     image: 'https://images.unsplash.com/photo-1618477461853-cf6ed80faba5?w=600&auto=format&fit=crop&q=80'
   },
@@ -107,15 +96,46 @@ const HOW_IT_WORKS_STEPS = [
     num: '05',
     title: 'Make an Impact',
     tag: 'Certified Proof',
-    desc: 'Receive tamper-proof, serialized digital certificates with hours completed for your civic resume and LinkedIn.',
+    desc: 'Receive tamper-proof digital certificates with hours completed for your civic resume and career portfolio.',
     icon: Award,
     image: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?w=600&auto=format&fit=crop&q=80'
   }
 ];
 
+// Clean non-flipping real photo cards (Requirement 7 & 8)
+const REAL_COMMUNITY_STORIES = [
+  {
+    image: 'https://images.unsplash.com/photo-1618477461853-cf6ed80faba5?w=600&auto=format&fit=crop&q=80',
+    title: 'Coastal Habitat Restoration',
+    desc: 'Volunteers gathered to clean 3 miles of shoreline and restore indigenous dunes.',
+    tag: 'Environment',
+    tagStyle: 'bg-[#D8EEE5] text-[#244e44] border-[#bce1d3]'
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=600&auto=format&fit=crop&q=80',
+    title: 'Urban Garden Renewal',
+    desc: 'Neighbors planted community vegetable patches producing sustainable fresh food.',
+    tag: 'Community',
+    tagStyle: 'bg-[#F6D8C5] text-[#7a4221] border-[#eebd9e]'
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?w=600&auto=format&fit=crop&q=80',
+    title: 'Nutrition Kit Distribution',
+    desc: 'Packaged over 2,400 balanced meals for local community pantries.',
+    tag: 'Food Drive',
+    tagStyle: 'bg-[#F2D6DD] text-[#8C3B4A] border-[#e6b5c1]'
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=600&auto=format&fit=crop&q=80',
+    title: 'Shelter Rescue Support',
+    desc: 'Helped provide medical care, grooming, and loving foster matching for 48 pets.',
+    tag: 'Animal Welfare',
+    tagStyle: 'bg-[#DDD5F3] text-[#4d387a] border-[#c5b8eb]'
+  }
+];
+
 const Home = () => {
   const navigate = useNavigate();
-  const { isDark } = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
   const [promptIndex, setPromptIndex] = useState(0);
   const [opportunities, setOpportunities] = useState([]);
@@ -131,7 +151,7 @@ const Home = () => {
     if (searchQuery.length > 0) return;
     const interval = setInterval(() => {
       setPromptIndex((prev) => (prev + 1) % SEARCH_PROMPTS.length);
-    }, 3600);
+    }, 3800);
     return () => clearInterval(interval);
   }, [searchQuery]);
 
@@ -176,380 +196,185 @@ const Home = () => {
 
   return (
     <PublicLayout>
-      <div className="relative overflow-hidden text-slate-800 dark:text-slate-100 bg-transparent transition-colors duration-300">
-        {/* 1. HERO SECTION WITH LAYERED SOFT PASTEL CARDS */}
-        <section className="relative min-h-[85vh] flex items-center justify-center pt-8 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
-          
-          {/* Desktop Left-Flank Layered Cards (Non-flipping soft pastel cards) */}
-          <div className="hidden xl:block absolute left-4 2xl:left-12 top-1/2 -translate-y-1/2 pointer-events-auto z-10">
-            <div className="flex flex-col gap-6 items-start">
-              {/* Top Left: Static Soft Pastel Feature Card */}
-              <Floating distance={8} duration={6} delay={0.2}>
-                <div className="w-64 2xl:w-72 p-5 rounded-2xl bg-white/85 dark:bg-[#0f172a]/70 backdrop-blur-2xl border border-slate-200/80 dark:border-white/15 shadow-sm dark:shadow-glass hover:shadow-md transition-all">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-primary-50 dark:bg-primary-500/20 text-primary-700 dark:text-primary-300 border border-primary-200 dark:border-primary-500/30">
-                      Causes
-                    </span>
-                    <div className="p-2 rounded-xl bg-primary-50 dark:bg-primary-500/20 text-primary-600 dark:text-primary-300 border border-primary-200 dark:border-primary-500/30">
-                      <Compass className="w-4 h-4" />
-                    </div>
-                  </div>
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">Explore Needs</h4>
-                  <p className="text-xs text-slate-500 dark:text-gray-400 mb-3 leading-relaxed">
-                    Discover verified volunteering initiatives near your community and interests.
-                  </p>
+      <div className="relative text-[#354052] bg-transparent">
+        
+        {/* 1. PROFESSIONAL HERO SECTION (Requirements 9, 10, 11) */}
+        <section className="relative pt-6 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
+          <div className="max-w-[1200px] mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+              
+              {/* LEFT COLUMN: HERO COPY & ACTIONS */}
+              <div className="lg:col-span-7 space-y-6 text-left">
+                {/* Small badge */}
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 border border-[#E6E8EC] shadow-soft-sm">
+                  <span className="w-2 h-2 rounded-full bg-[#54947f] animate-pulse" />
+                  <span className="text-xs font-semibold text-[#26372B]">
+                    Connecting People With Purpose
+                  </span>
+                </div>
+
+                {/* Main Heading */}
+                <h1 className="text-3xl sm:text-5xl lg:text-5xl font-extrabold text-[#26372B] tracking-tight leading-[1.18]">
+                  Make a Difference.<br />
+                  <span className="text-[#556e5a]">One Opportunity at a Time.</span>
+                </h1>
+
+                {/* Supporting Text */}
+                <p className="text-sm sm:text-base text-[#667085] leading-relaxed max-w-xl">
+                  VolunteerConnect brings volunteers and organizations together to create meaningful community impact. Discover verified causes, track service hours, and earn digital certificates.
+                </p>
+
+                {/* Primary & Secondary Buttons (Requirement 10 & 13) */}
+                <div className="flex flex-wrap items-center gap-3 pt-1">
                   <Link
                     to="/opportunities"
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary-600 dark:text-primary-300 hover:text-primary-700 dark:hover:text-primary-200 transition-colors"
+                    className="btn-primary-pastel inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm"
                   >
-                    <span>Browse Initiatives</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <span>Explore Opportunities</span>
+                    <ArrowRight className="w-4 h-4" />
                   </Link>
-                </div>
-              </Floating>
 
-              {/* Middle Left: Floating Stat Badge */}
-              <Floating distance={8} duration={5} delay={1}>
-                <FloatingCard
-                  icon={ShieldCheck}
-                  iconColor="text-accent-600 bg-accent-50 dark:text-accent-300 dark:bg-accent-500/20 border-accent-200 dark:border-accent-500/30"
-                  title="100% Vetted NGOs"
-                  subtitle="Verified registration docs"
-                  badge="Audited"
-                  className="-ml-3"
-                />
-              </Floating>
-            </div>
-          </div>
-
-          {/* Desktop Right-Flank Layered Cards (Non-flipping soft pastel cards) */}
-          <div className="hidden xl:block absolute right-4 2xl:right-12 top-1/2 -translate-y-1/2 pointer-events-auto z-10">
-            <div className="flex flex-col gap-6 items-end">
-              {/* Top Right: Static Soft Pastel Feature Card */}
-              <Floating distance={8} duration={6.5} delay={0.5}>
-                <div className="w-64 2xl:w-72 p-5 rounded-2xl bg-white/85 dark:bg-[#0f172a]/70 backdrop-blur-2xl border border-slate-200/80 dark:border-white/15 shadow-sm dark:shadow-glass hover:shadow-md transition-all text-left">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-rose-50 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-500/30">
-                      Impact
-                    </span>
-                    <div className="p-2 rounded-xl bg-rose-50 dark:bg-rose-500/20 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-500/30">
-                      <Sparkles className="w-4 h-4" />
-                    </div>
-                  </div>
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">Make an Impact</h4>
-                  <p className="text-xs text-slate-500 dark:text-gray-400 mb-3 leading-relaxed">
-                    Connect with NGOs, join community initiatives and contribute your skills where they matter.
-                  </p>
                   <Link
                     to="/register?role=volunteer"
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-600 dark:text-rose-300 hover:text-rose-700 dark:hover:text-rose-200 transition-colors"
+                    className="btn-secondary-pastel inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm"
                   >
-                    <span>Join as Volunteer</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <span>Join as a Volunteer</span>
                   </Link>
                 </div>
-              </Floating>
 
-              {/* Bottom Right: Floating Stat Badge */}
-              <Floating distance={9} duration={6.2} delay={1.2}>
-                <FloatingCard
-                  icon={Award}
-                  iconColor="text-purple-600 bg-purple-50 dark:text-purple-300 dark:bg-purple-500/20 border-purple-200 dark:border-purple-500/30"
-                  value="35,000+ Hrs"
-                  title="Service Hours"
-                  subtitle="Tamper-proof certificates"
-                  badge="Certified"
-                  className="-mr-3"
-                />
-              </Floating>
-            </div>
-          </div>
+                {/* Compact Interactive Search Bar */}
+                <div className="pt-2">
+                  <form 
+                    onSubmit={handleSearchSubmit}
+                    className="relative flex items-center p-1.5 rounded-2xl bg-white/95 border border-[#E6E8EC] shadow-soft-md focus-within:border-[#BFD8C2] focus-within:ring-2 focus-within:ring-[#BFD8C2]/40 transition-all max-w-lg"
+                  >
+                    <div className="pl-3 pr-2 text-[#667085] flex items-center pointer-events-none">
+                      <Search className="w-4 h-4" />
+                    </div>
 
-          {/* Center Hero Content */}
-          <div className="max-w-4xl mx-auto text-center relative z-20">
-            {/* Top pill badge */}
-            <motion.div
-              initial={{ opacity: 0, y: -15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-50 dark:bg-primary-500/10 border border-primary-200 dark:border-primary-500/25 text-primary-700 dark:text-primary-300 text-xs sm:text-sm font-semibold uppercase tracking-wider mb-6 shadow-sm"
-            >
-              <Sparkles className="w-4 h-4 text-primary-500 dark:text-primary-400 animate-pulse" />
-              <span>The Next Generation Social Impact Platform</span>
-            </motion.div>
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder={`Try: "${SEARCH_PROMPTS[promptIndex]}"`}
+                      className="flex-1 bg-transparent text-[#354052] placeholder-[#98A2B3] text-xs sm:text-sm outline-none px-2 py-1.5 font-medium"
+                    />
 
-            {/* Headline with DepthText */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1 }}
-              className="mb-8 flex flex-col items-center justify-center"
-            >
-              <DepthText
-                text="Connect Volunteer"
-                layers={28}
-                depth={2.2}
-                faceColor={isDark ? '#f8fafc' : '#1e293b'}
-                depthColor={isDark ? '#6672de' : '#a5b4fc'}
-                tilt={7.5}
-                pointerTracking
-                smoothing={0.14}
-                perspective={900}
-                autoOrbit
-                orbitSpeed={0.35}
-                fontSize="clamp(2.8rem, 8.5vw, 6rem)"
-                fontWeight={900}
-                shadow
-              />
-              <span className="block gradient-text text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight mt-2">
-                Make an Impact.
-              </span>
-            </motion.div>
+                    <div className="flex items-center gap-1 shrink-0 pr-1">
+                      <button
+                        type="button"
+                        onClick={handleShufflePrompt}
+                        title="Shuffle suggestion"
+                        className="p-1.5 text-[#667085] hover:text-[#26372B] hover:bg-black/[0.04] rounded-xl transition-all"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="submit"
+                        className="btn-primary-pastel inline-flex items-center gap-1 px-4 py-2 rounded-xl text-xs"
+                      >
+                        <span>Search</span>
+                      </button>
+                    </div>
+                  </form>
 
-            {/* Subheading */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-lg sm:text-xl text-slate-600 dark:text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed"
-            >
-              VolunteerConnect bridges passionate volunteers with verified non-profit organizations. Discover meaningful causes, track your volunteer hours, and receive tamper-proof digital certificates.
-            </motion.p>
-
-            {/* Interactive Opportunity Prompt & Search Bar */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.25 }}
-              className="w-full max-w-2xl mx-auto mb-8 text-left"
-            >
-              <form 
-                onSubmit={handleSearchSubmit}
-                className="relative flex items-center p-2 rounded-2xl bg-white/90 dark:bg-white/[0.04] backdrop-blur-2xl border border-slate-200/80 dark:border-white/15 shadow-sm dark:shadow-[0_12px_40px_0_rgba(0,0,0,0.45)] hover:border-primary-400 focus-within:border-primary-500 focus-within:ring-2 focus-within:ring-primary-400/20 transition-all group"
-              >
-                <div className="pl-3 pr-2 text-primary-500 dark:text-primary-400 flex items-center pointer-events-none">
-                  <Search className="w-5 h-5 group-focus-within:text-primary-600 dark:group-focus-within:text-primary-300 transition-colors" />
+                  {/* Popular Tags */}
+                  <div className="flex flex-wrap items-center gap-1.5 mt-3">
+                    <span className="text-[11px] font-medium text-[#667085] mr-1">Popular:</span>
+                    {POPULAR_TAGS.map((tag) => (
+                      <button
+                        key={tag.category}
+                        type="button"
+                        onClick={() => handleTagClick(tag.category)}
+                        className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium border shadow-soft-sm transition-transform hover:-translate-y-0.5 ${tag.bg}`}
+                      >
+                        {tag.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
+              </div>
 
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={`Try: "${SEARCH_PROMPTS[promptIndex]}"`}
-                  className="flex-1 bg-transparent text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-gray-400/70 text-sm sm:text-base outline-none px-2 py-2 font-medium"
+              {/* RIGHT COLUMN: REAL-WORLD PHOTOGRAPHY CONTAINER (Requirement 10 & 11) */}
+              <div className="lg:col-span-5 relative flex items-center justify-center">
+                {/* Requirement 11: Subtle animated pastel blobs behind hero image */}
+                <div 
+                  className="absolute -top-12 -left-12 w-64 h-64 rounded-full blur-[65px] animate-blob-slow pointer-events-none"
+                  style={{ backgroundColor: 'rgba(221, 213, 243, 0.45)' }} // Pale lavender
+                />
+                <div 
+                  className="absolute -bottom-10 -right-10 w-64 h-64 rounded-full blur-[65px] animate-blob-slow pointer-events-none"
+                  style={{ backgroundColor: 'rgba(216, 238, 229, 0.50)', animationDelay: '5s' }} // Mint
+                />
+                <div 
+                  className="absolute top-1/2 -right-8 w-52 h-52 rounded-full blur-[60px] animate-blob-slow pointer-events-none"
+                  style={{ backgroundColor: 'rgba(246, 216, 197, 0.40)', animationDelay: '9s' }} // Soft peach
                 />
 
-                <div className="flex items-center gap-1.5 shrink-0 pr-1">
-                  <button
-                    type="button"
-                    onClick={handleShufflePrompt}
-                    title="Shuffle suggestion"
-                    className="p-2 text-slate-400 hover:text-slate-700 dark:text-gray-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-all"
-                  >
-                    <RotateCcw className="w-4 h-4" />
-                  </button>
-                  <button
-                    type="submit"
-                    className="inline-flex items-center gap-1.5 px-4 sm:px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500 hover:from-primary-600 hover:to-accent-600 text-white font-semibold text-xs sm:text-sm shadow-sm transition-all group/btn"
-                  >
-                    <span>Search</span>
-                    <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
-                  </button>
+                {/* Hero Image in Modern Rounded Container */}
+                <div className="relative w-full max-w-md aspect-[4/3.2] sm:aspect-[4/3.3] rounded-3xl overflow-hidden border border-[#E6E8EC] shadow-soft-lg bg-white z-10">
+                  <img
+                    src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1000&auto=format&fit=crop&q=80"
+                    alt="Volunteers planting native trees in an urban community park"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+
+                  {/* Floating Badges */}
+                  <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white text-xs">
+                    <div className="bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-[#E6E8EC] text-[#26372B] font-semibold flex items-center gap-1.5 shadow-soft-sm">
+                      <ShieldCheck className="w-4 h-4 text-[#54947f]" />
+                      <span>100% Vetted NGOs</span>
+                    </div>
+
+                    <div className="bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-[#E6E8EC] text-[#26372B] font-semibold flex items-center gap-1.5 shadow-soft-sm">
+                      <Award className="w-4 h-4 text-[#8e74d1]" />
+                      <span>Verified Impact</span>
+                    </div>
+                  </div>
                 </div>
-              </form>
-
-              {/* Quick Cause Pill Tags */}
-              <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
-                <span className="text-xs text-slate-500 dark:text-gray-400 font-medium mr-1 hidden sm:inline">Popular:</span>
-                {POPULAR_TAGS.map((tag) => (
-                  <button
-                    key={tag.category}
-                    type="button"
-                    onClick={() => handleTagClick(tag.category)}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-700 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white bg-white/80 dark:bg-white/[0.04] hover:bg-white dark:hover:bg-white/[0.09] border border-slate-200/80 dark:border-white/10 hover:border-primary-300 dark:hover:border-primary-500/40 backdrop-blur-md transition-all shadow-sm hover:scale-105 active:scale-95"
-                  >
-                    <span>{tag.icon}</span>
-                    <span>{tag.label}</span>
-                  </button>
-                ))}
               </div>
-            </motion.div>
 
-            {/* Call to Actions */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.3 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-xl mx-auto mb-8"
-            >
-              <Link
-                to="/opportunities"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-semibold text-white bg-primary-600 hover:bg-primary-500 btn-glow transition-all group shadow-sm"
-              >
-                <span>Find Opportunities</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-
-              <Link
-                to="/register?role=volunteer"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-semibold text-slate-700 dark:text-white bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 backdrop-blur-md transition-all"
-              >
-                <span>Join as a Volunteer</span>
-              </Link>
-            </motion.div>
-
-            {/* NGO Callout */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.7, delay: 0.4 }}
-              className="text-sm text-slate-500 dark:text-gray-400"
-            >
-              Are you an organization?{' '}
-              <Link to="/register?role=ngo" className="text-secondary-600 dark:text-secondary-400 hover:underline font-semibold underline-offset-4">
-                Register Your NGO →
-              </Link>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* 1.2 OPPORTUNITIES NEAR YOU (Real Backend Data) */}
-        <section className="py-14 px-4 sm:px-6 lg:px-8 relative z-10 border-b border-slate-200/70 dark:border-white/10 bg-white/40 dark:bg-white/[0.02]">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-8 gap-4">
-              <div>
-                <span className="text-xs font-bold uppercase tracking-widest text-primary-600 dark:text-primary-400 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5" /> Local Community Impact
-                </span>
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">Opportunities Near You</h3>
-                <p className="text-sm text-slate-500 dark:text-gray-400 mt-1">Directly explore real verified initiatives from local organizations and community drives.</p>
-              </div>
-              <Link 
-                to="/opportunities" 
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/70 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 border border-slate-200/80 dark:border-white/10 text-xs sm:text-sm font-semibold text-primary-700 dark:text-primary-300 hover:text-primary-900 dark:hover:text-white transition-all backdrop-blur-md shadow-sm"
-              >
-                <span>Browse All Causes</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-
-            {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[1, 2, 3].map((i) => <SkeletonCard key={i} />)}
-              </div>
-            ) : opportunities.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {opportunities.slice(0, 3).map((opp) => (
-                  <OpportunityCard key={opp._id} opportunity={opp} />
-                ))}
-              </div>
-            ) : (
-              <div className="glass-card p-10 text-center border border-slate-200/80 dark:border-white/10 max-w-lg mx-auto">
-                <Compass className="w-10 h-10 text-primary-500 dark:text-primary-400 mx-auto mb-3 opacity-60" />
-                <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Connecting Local Causes</h4>
-                <p className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 mb-6">Explore newly launched initiatives or register your non-profit to publish community drives.</p>
-                <Link to="/opportunities" className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-500 text-white text-xs font-semibold shadow-sm transition-all">
-                  <span>Explore Open Opportunities</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            )}
-          </div>
-        </section>
-
-        {/* 1.5 COMMUNITY IN MOTION SHOWCASE (Polaroid & Video Carousel) */}
-        <section className="py-12 px-4 sm:px-6 lg:px-8 relative z-10 border-b border-slate-200/70 dark:border-white/5 bg-transparent">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <span className="text-xs font-bold uppercase tracking-widest text-primary-600 dark:text-primary-400">Real Moments</span>
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">Community in Motion</h3>
-              </div>
-              <Link to="/about" className="text-xs sm:text-sm font-semibold text-slate-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-300 flex items-center gap-1">
-                <span>Our Story</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-center justify-items-center">
-              <PolaroidCard
-                image="https://images.unsplash.com/photo-1618477461853-cf6ed80faba5?w=600&auto=format&fit=crop&q=80"
-                caption="Coastal Cleanup Crew · 450kg plastic removed"
-                tag="Ocean Care"
-                date="March 2026"
-                badge="🌊 Vetted"
-                rotation={-2}
-                width="w-full max-w-[280px]"
-              />
-
-              <MotionVideoCard
-                poster="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=600&auto=format&fit=crop&q=80"
-                title="Community Park Renewal & Gardening"
-                category="Eco Volunteer"
-                badge="LIVE"
-                rotation={2}
-                width="w-full max-w-[280px]"
-              />
-
-              <PolaroidCard
-                image="https://images.unsplash.com/photo-1593113598332-cd288d649433?w=600&auto=format&fit=crop&q=80"
-                caption="Nutrition Kit Packing · 2,400 meals distributed"
-                tag="Food Drive"
-                date="Feb 2026"
-                badge="🍲 Relief"
-                rotation={-3}
-                width="w-full max-w-[280px]"
-              />
-
-              <PolaroidCard
-                image="https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=600&auto=format&fit=crop&q=80"
-                caption="Shelter Pet Rescue & Medical Checkups"
-                tag="Animal Care"
-                date="Ongoing"
-                badge="🐾 Rescue"
-                rotation={3}
-                width="w-full max-w-[280px]"
-              />
             </div>
           </div>
         </section>
 
-        {/* 2. REAL IMPACT SUMMARY (Atlas Backed) */}
-        <section className="relative z-10 py-12 px-4 sm:px-6 lg:px-8 border-b border-slate-200/70 dark:border-white/10 bg-white/30 dark:bg-white/[0.02] backdrop-blur-xl">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-              <div className="p-6 rounded-2xl bg-white/70 dark:bg-white/[0.03] backdrop-blur-md border border-slate-200/80 dark:border-white/10 shadow-sm dark:shadow-glass hover:bg-white/90 dark:hover:bg-white/[0.06] transition-all">
-                <p className="text-3xl sm:text-4xl font-extrabold text-primary-600 dark:text-primary-400 mb-1">
+        {/* 2. REAL IMPACT SUMMARY (Atlas Backed Data) */}
+        <section className="py-6 px-4 sm:px-6 lg:px-8 border-y border-[#E6E8EC] bg-white/50 backdrop-blur-md">
+          <div className="max-w-[1200px] mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+              <div className="p-4 rounded-2xl bg-white/80 border border-[#E6E8EC] shadow-soft-sm">
+                <p className="text-2xl sm:text-3xl font-extrabold text-[#26372B]">
                   {stats.activeOpportunities}
                 </p>
-                <p className="text-xs sm:text-sm font-medium text-slate-600 dark:text-gray-300 uppercase tracking-wider">
+                <p className="text-xs font-semibold uppercase tracking-wider text-[#667085] mt-1">
                   Active Opportunities
                 </p>
               </div>
 
-              <div className="p-6 rounded-2xl bg-white/70 dark:bg-white/[0.03] backdrop-blur-md border border-slate-200/80 dark:border-white/10 shadow-sm dark:shadow-glass hover:bg-white/90 dark:hover:bg-white/[0.06] transition-all">
-                <p className="text-3xl sm:text-4xl font-extrabold text-secondary-600 dark:text-secondary-400 mb-1">
+              <div className="p-4 rounded-2xl bg-white/80 border border-[#E6E8EC] shadow-soft-sm">
+                <p className="text-2xl sm:text-3xl font-extrabold text-[#466c9c]">
                   {stats.verifiedNGOs}
                 </p>
-                <p className="text-xs sm:text-sm font-medium text-slate-600 dark:text-gray-300 uppercase tracking-wider">
+                <p className="text-xs font-semibold uppercase tracking-wider text-[#667085] mt-1">
                   Verified NGOs
                 </p>
               </div>
 
-              <div className="p-6 rounded-2xl bg-white/70 dark:bg-white/[0.03] backdrop-blur-md border border-slate-200/80 dark:border-white/10 shadow-sm dark:shadow-glass hover:bg-white/90 dark:hover:bg-white/[0.06] transition-all">
-                <p className="text-3xl sm:text-4xl font-extrabold text-accent-600 dark:text-accent-400 mb-1">
+              <div className="p-4 rounded-2xl bg-white/80 border border-[#E6E8EC] shadow-soft-sm">
+                <p className="text-2xl sm:text-3xl font-extrabold text-[#54947f]">
                   {stats.totalVolunteers}
                 </p>
-                <p className="text-xs sm:text-sm font-medium text-slate-600 dark:text-gray-300 uppercase tracking-wider">
+                <p className="text-xs font-semibold uppercase tracking-wider text-[#667085] mt-1">
                   Registered Volunteers
                 </p>
               </div>
 
-              <div className="p-6 rounded-2xl bg-white/70 dark:bg-white/[0.03] backdrop-blur-md border border-slate-200/80 dark:border-white/10 shadow-sm dark:shadow-glass hover:bg-white/90 dark:hover:bg-white/[0.06] transition-all">
-                <p className="text-3xl sm:text-4xl font-extrabold text-purple-600 dark:text-purple-400 mb-1">
+              <div className="p-4 rounded-2xl bg-white/80 border border-[#E6E8EC] shadow-soft-sm">
+                <p className="text-2xl sm:text-3xl font-extrabold text-[#7556bf]">
                   {stats.completedEvents}
                 </p>
-                <p className="text-xs sm:text-sm font-medium text-slate-600 dark:text-gray-300 uppercase tracking-wider">
+                <p className="text-xs font-semibold uppercase tracking-wider text-[#667085] mt-1">
                   Completed Events
                 </p>
               </div>
@@ -557,170 +382,215 @@ const Home = () => {
           </div>
         </section>
 
-        {/* 3. HOW IT WORKS (ANIMATED 5-STEP WORKFLOW) */}
-        <section id="how-it-works" className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
-              <span className="text-xs font-bold uppercase tracking-widest text-primary-600 dark:text-primary-400">Step-by-Step Pathway</span>
-              <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mt-2">
-                How VolunteerConnect Works
-              </h2>
-              <p className="text-slate-600 dark:text-gray-400 text-base sm:text-lg mt-4">
-                From finding an initiative that inspires you to receiving certified proof of service, we make volunteering effortless, transparent, and rewarding.
-              </p>
+        {/* 3. CLEAN MODERN REAL-PHOTO CARDS (Requirement 7 & 8: NO FLIP CARDS) */}
+        <section className="py-10 sm:py-14 px-4 sm:px-6 lg:px-8 border-b border-[#E6E8EC]">
+          <div className="max-w-[1200px] mx-auto">
+            <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-8 gap-3">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-widest text-[#556e5a]">
+                  Real Community Moments
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#26372B] mt-1">
+                  Stories of Meaningful Impact
+                </h2>
+                <p className="text-xs sm:text-sm text-[#667085] mt-1">
+                  Genuine photography from recent volunteer initiatives and verified community drives.
+                </p>
+              </div>
+              <Link to="/about" className="text-xs sm:text-sm font-semibold text-[#556e5a] hover:text-[#26372B] flex items-center gap-1">
+                <span>Learn about our mission</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
 
-            {/* 5-Step Cards Grid with Connecting Visual Flow */}
-            <div className="relative">
-              {/* Progressive Connector Line on Desktop */}
-              <div className="hidden lg:block absolute top-1/2 left-8 right-8 h-0.5 bg-gradient-to-r from-primary-400/20 via-purple-400/30 to-secondary-400/20 -translate-y-12 pointer-events-none z-0" />
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 relative z-10">
-                {HOW_IT_WORKS_STEPS.map((step, idx) => (
-                  <FadeUp key={step.num} delay={idx * 0.12} className="h-full">
-                    <div className="glass-card p-6 h-full flex flex-col justify-between border border-slate-200/80 dark:border-white/10 hover:border-primary-400/60 transition-all hover:-translate-y-1.5 group">
-                      <div>
-                        {/* Step Header */}
-                        <div className="flex items-center justify-between mb-4">
-                          <span className="text-3xl font-black font-mono text-primary-400/30 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                            {step.num}
-                          </span>
-                          <div className="p-3 rounded-xl bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-400 border border-primary-200 dark:border-primary-500/20 group-hover:scale-110 transition-transform">
-                            <step.icon className="w-5 h-5" />
-                          </div>
-                        </div>
-
-                        {/* Thumbnail image */}
-                        <div className="relative aspect-[16/9] w-full rounded-xl overflow-hidden mb-4 bg-slate-100 dark:bg-gray-900 border border-slate-200/60 dark:border-white/5">
-                          <img
-                            src={step.image}
-                            alt={step.title}
-                            loading="lazy"
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                          <span className="absolute bottom-1.5 left-2 text-[10px] font-bold text-white/90 uppercase tracking-wider">
-                            {step.tag}
-                          </span>
-                        </div>
-
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-300 transition-colors">
-                          {step.title}
-                        </h3>
-                        <p className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 leading-relaxed">
-                          {step.desc}
-                        </p>
-                      </div>
-
-                      <div className="mt-4 pt-3 border-t border-slate-200/60 dark:border-white/5 flex items-center text-[11px] font-semibold text-primary-600/80 dark:text-primary-400/80 group-hover:text-primary-600 dark:group-hover:text-primary-300">
-                        <span>Step {idx + 1} of 5</span>
-                        <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
-                      </div>
-                    </div>
-                  </FadeUp>
-                ))}
-              </div>
+            {/* Clean non-flipping modern cards with subtle zoom and translateY(-4px) on hover */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {REAL_COMMUNITY_STORIES.map((story, i) => (
+                <div
+                  key={i}
+                  className="glass-card group flex flex-col overflow-hidden transition-all duration-250 hover:-translate-y-1 hover:shadow-soft-hover"
+                >
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
+                    <img
+                      src={story.image}
+                      alt={story.title}
+                      loading="lazy"
+                      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                    <span className={`absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border backdrop-blur-md ${story.tagStyle}`}>
+                      {story.tag}
+                    </span>
+                  </div>
+                  <div className="p-4 flex flex-col flex-1">
+                    <h3 className="text-sm font-bold text-[#26372B] mb-1.5 group-hover:text-[#556e5a] transition-colors">
+                      {story.title}
+                    </h3>
+                    <p className="text-xs text-[#667085] leading-relaxed">
+                      {story.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* 4 & 5. VOLUNTEER & NGO JOURNEYS */}
-        <section className="py-12 sm:py-14 px-4 sm:px-6 lg:px-8 border-t border-slate-200/70 dark:border-white/5 relative z-10">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              {/* Volunteer Card */}
-              <div className="glass-card p-8 sm:p-10 border border-primary-200 dark:border-primary-500/20 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-48 h-48 bg-primary-300/10 dark:bg-primary-500/10 rounded-full blur-3xl pointer-events-none" />
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-50 dark:bg-primary-500/15 text-primary-700 dark:text-primary-300 text-xs font-semibold mb-6">
+        {/* 4. HOW IT WORKS (5-STEP WORKFLOW) */}
+        <section id="how-it-works" className="py-10 sm:py-14 px-4 sm:px-6 lg:px-8 border-b border-[#E6E8EC]">
+          <div className="max-w-[1200px] mx-auto">
+            <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#556e5a]">Step-by-Step Pathway</span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#26372B] mt-1">
+                How VolunteerConnect Works
+              </h2>
+              <p className="text-[#667085] text-xs sm:text-sm mt-2">
+                From finding an initiative that inspires you to receiving certified proof of service, we make volunteering simple and transparent.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              {HOW_IT_WORKS_STEPS.map((step, idx) => (
+                <div 
+                  key={step.num}
+                  className="glass-card p-4 flex flex-col justify-between group hover:-translate-y-1 transition-all"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-2xl font-black font-mono text-[#BFD8C2] group-hover:text-[#556e5a] transition-colors">
+                        {step.num}
+                      </span>
+                      <div className="p-2 rounded-xl bg-[#D8EEE5] text-[#244e44] border border-[#bce1d3]">
+                        <step.icon className="w-4 h-4" />
+                      </div>
+                    </div>
+
+                    <div className="relative aspect-[16/10] w-full rounded-xl overflow-hidden mb-3 bg-slate-100 border border-[#E6E8EC]">
+                      <img
+                        src={step.image}
+                        alt={step.title}
+                        loading="lazy"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                      <span className="absolute bottom-1.5 left-2 text-[10px] font-bold text-white uppercase tracking-wider">
+                        {step.tag}
+                      </span>
+                    </div>
+
+                    <h3 className="text-sm font-bold text-[#26372B] mb-1 group-hover:text-[#556e5a] transition-colors">
+                      {step.title}
+                    </h3>
+                    <p className="text-xs text-[#667085] leading-relaxed">
+                      {step.desc}
+                    </p>
+                  </div>
+
+                  <div className="mt-3 pt-2.5 border-t border-[#E6E8EC] flex items-center text-[11px] font-semibold text-[#556e5a]">
+                    <span>Step {idx + 1} of 5</span>
+                    <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-0.5 transition-transform" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 5. VOLUNTEER & NGO PATHWAYS (Requirement 21) */}
+        <section className="py-10 sm:py-14 px-4 sm:px-6 lg:px-8 border-b border-[#E6E8EC]">
+          <div className="max-w-[1200px] mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+              {/* Volunteer Pathway: Sage + Powder Blue */}
+              <div className="glass-card p-6 sm:p-8 border border-[#BFD8C2]/80 relative overflow-hidden bg-gradient-to-br from-white/95 via-[#f5f9f6]/90 to-[#eef5fa]/90">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D8EEE5] text-[#244e44] border border-[#bce1d3] text-xs font-semibold mb-4">
                   <Users className="w-3.5 h-3.5" /> For Volunteers
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-4">
+                <h3 className="text-xl sm:text-2xl font-bold text-[#26372B] mb-3">
                   Turn Your Passion into Meaningful Change
                 </h3>
-                <ul className="space-y-3.5 text-sm text-slate-600 dark:text-gray-300 mb-8">
-                  <li className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-primary-500 dark:text-primary-400 shrink-0 mt-0.5" />
+                <ul className="space-y-2.5 text-xs sm:text-sm text-[#667085] mb-6">
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#54947f] shrink-0 mt-0.5" />
                     <span>Personalized opportunity recommendations based on your skills and location.</span>
                   </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-primary-500 dark:text-primary-400 shrink-0 mt-0.5" />
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#54947f] shrink-0 mt-0.5" />
                     <span>Real-time status tracking from application to event completion.</span>
                   </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-primary-500 dark:text-primary-400 shrink-0 mt-0.5" />
-                    <span>Verified certificate gallery with unique ID codes for LinkedIn & resumes.</span>
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#54947f] shrink-0 mt-0.5" />
+                    <span>Verified certificate gallery with unique ID codes for LinkedIn and civic resumes.</span>
                   </li>
                 </ul>
                 <Link
-                  to="/register"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white bg-primary-600 hover:bg-primary-500 transition-colors shadow-sm"
+                  to="/register?role=volunteer"
+                  className="btn-primary-pastel inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm"
                 >
                   <span>Start Volunteering</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
 
-              {/* NGO Card */}
-              <div className="glass-card p-8 sm:p-10 border border-secondary-200 dark:border-secondary-500/20 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-48 h-48 bg-secondary-300/10 dark:bg-secondary-500/10 rounded-full blur-3xl pointer-events-none" />
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-50 dark:bg-secondary-500/15 text-secondary-700 dark:text-secondary-300 text-xs font-semibold mb-6">
+              {/* NGO Pathway: Lavender + Blush + Cream */}
+              <div className="glass-card p-6 sm:p-8 border border-[#DDD5F3]/80 relative overflow-hidden bg-gradient-to-br from-white/95 via-[#faf8fe]/90 to-[#fdf7f8]/90">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#DDD5F3] text-[#4d387a] border border-[#c5b8eb] text-xs font-semibold mb-4">
                   <Building2 className="w-3.5 h-3.5" /> For Non-Profits & NGOs
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-4">
-                  Streamline Volunteer Recruitment & Management
+                <h3 className="text-xl sm:text-2xl font-bold text-[#26372B] mb-3">
+                  Streamline Volunteer Recruitment & Events
                 </h3>
-                <ul className="space-y-3.5 text-sm text-slate-600 dark:text-gray-300 mb-8">
-                  <li className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-secondary-500 dark:text-secondary-400 shrink-0 mt-0.5" />
+                <ul className="space-y-2.5 text-xs sm:text-sm text-[#667085] mb-6">
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#8e74d1] shrink-0 mt-0.5" />
                     <span>Official Verified NGO Badge following swift admin document verification.</span>
                   </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-secondary-500 dark:text-secondary-400 shrink-0 mt-0.5" />
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#8e74d1] shrink-0 mt-0.5" />
                     <span>Publish opportunities, review applicant profiles, and approve participants in bulk.</span>
                   </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-secondary-500 dark:text-secondary-400 shrink-0 mt-0.5" />
-                    <span>Built-in attendance checklists that automatically issue participant certificates.</span>
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#8e74d1] shrink-0 mt-0.5" />
+                    <span>Digital attendance checklists that automatically issue serialized certificates.</span>
                   </li>
                 </ul>
                 <Link
                   to="/register?role=ngo"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white bg-secondary-600 hover:bg-secondary-500 transition-colors shadow-sm"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-[#DDD5F3] text-[#4d387a] border border-[#c5b8eb] hover:bg-[#c5b8eb] transition-all shadow-soft-sm"
                 >
                   <span>Register Your Organization</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
             </div>
           </div>
         </section>
 
-        {/* 6. OPPORTUNITY CATEGORIES */}
-        <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
-              <span className="text-xs font-bold uppercase tracking-widest text-primary-600 dark:text-primary-400">Causes That Matter</span>
-              <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mt-2">
+        {/* 6. CAUSES BY CATEGORY */}
+        <section className="py-10 sm:py-14 px-4 sm:px-6 lg:px-8 border-b border-[#E6E8EC]">
+          <div className="max-w-[1200px] mx-auto">
+            <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#556e5a]">Causes That Matter</span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#26372B] mt-1">
                 Explore by Category
               </h2>
-              <p className="text-slate-600 dark:text-gray-400 text-base sm:text-lg mt-4">
-                Find the initiatives where your background, passion, and skills can create the greatest positive outcome.
+              <p className="text-[#667085] text-xs sm:text-sm mt-1.5">
+                Find initiatives where your skills can create the greatest positive outcome.
               </p>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-5">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {CATEGORIES.map((cat) => (
                 <Link
                   key={cat.id}
                   to={`/opportunities?category=${cat.id}`}
-                  className={`group p-6 rounded-2xl bg-gradient-to-br ${cat.color} border ${cat.border} hover:scale-[1.02] transition-all duration-300 flex flex-col items-center text-center shadow-sm`}
+                  className={`p-4 rounded-2xl border ${cat.color} hover:-translate-y-1 transition-all duration-200 flex flex-col items-center text-center shadow-soft-sm group`}
                 >
-                  <div className={`p-4 rounded-xl bg-white/80 dark:bg-white/10 backdrop-blur-md ${cat.text} mb-4 shadow-sm group-hover:rotate-6 transition-transform`}>
-                    <cat.icon className="w-7 h-7" />
+                  <div className={`p-3 rounded-xl bg-white/90 ${cat.text} mb-3 shadow-soft-sm group-hover:scale-105 transition-transform`}>
+                    <cat.icon className="w-5 h-5" />
                   </div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">{cat.name}</h3>
-                  <span className="text-xs text-slate-500 dark:text-gray-400 group-hover:text-primary-600 dark:group-hover:text-white transition-colors">
-                    Explore opportunities →
+                  <h3 className="text-xs sm:text-sm font-bold text-[#26372B] mb-0.5">{cat.name}</h3>
+                  <span className="text-[11px] text-[#667085] group-hover:text-[#26372B] transition-colors">
+                    Explore causes →
                   </span>
                 </Link>
               ))}
@@ -728,122 +598,121 @@ const Home = () => {
           </div>
         </section>
 
-        {/* 7. LIVE OPPORTUNITIES PREVIEW (Real Atlas Data) */}
-        <section className="py-12 sm:py-14 px-4 sm:px-6 lg:px-8 border-t border-slate-200/70 dark:border-white/5 relative z-10">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-8">
+        {/* 7. LIVE OPPORTUNITIES PREVIEW (Real Database Data) */}
+        <section className="py-10 sm:py-14 px-4 sm:px-6 lg:px-8 border-b border-[#E6E8EC]">
+          <div className="max-w-[1200px] mx-auto">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3 mb-8">
               <div>
-                <span className="text-xs font-bold uppercase tracking-widest text-primary-600 dark:text-primary-400">Take Action Today</span>
-                <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-2">
+                <span className="text-xs font-bold uppercase tracking-widest text-[#556e5a]">Take Action Today</span>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#26372B] mt-1">
                   Featured Opportunities
                 </h2>
+                <p className="text-xs sm:text-sm text-[#667085] mt-0.5">Explore real verified initiatives from local organizations and community drives.</p>
               </div>
               <Link
                 to="/opportunities"
-                className="text-sm font-semibold text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 inline-flex items-center gap-1"
+                className="text-xs sm:text-sm font-semibold text-[#556e5a] hover:text-[#26372B] inline-flex items-center gap-1"
               >
                 <span>View All Opportunities</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
             {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 {[1, 2, 3].map((i) => <SkeletonCard key={i} />)}
               </div>
             ) : opportunities.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {opportunities.map((opp) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {opportunities.slice(0, 3).map((opp) => (
                   <OpportunityCard key={opp._id} opportunity={opp} />
                 ))}
               </div>
             ) : (
-              <div className="glass-card p-12 text-center border border-slate-200/80 dark:border-white/10 max-w-xl mx-auto">
-                <EmptyState
-                  title="No opportunities published yet"
-                  description="Be the first verified organization to publish a volunteer opportunity on VolunteerConnect!"
-                  icon={Compass}
-                  action={{
-                    label: 'Register Your NGO',
-                    onClick: () => window.location.href = '/register?role=ngo'
-                  }}
-                />
-              </div>
+              <EmptyState
+                title="No opportunities available yet"
+                description="Be the first verified organization to publish a volunteer opportunity on VolunteerConnect!"
+                icon={Compass}
+                action={{
+                  label: 'Register Your NGO',
+                  onClick: () => navigate('/register?role=ngo')
+                }}
+              />
             )}
           </div>
         </section>
 
         {/* 8. TRUST & VERIFICATION */}
-        <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-              <div className="lg:col-span-6 space-y-6">
-                <span className="text-xs font-bold uppercase tracking-widest text-accent-600 dark:text-accent-400">Uncompromising Integrity</span>
-                <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white">
+        <section className="py-10 sm:py-14 px-4 sm:px-6 lg:px-8 border-b border-[#E6E8EC]">
+          <div className="max-w-[1200px] mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-6 space-y-4">
+                <span className="text-xs font-bold uppercase tracking-widest text-[#54947f]">Uncompromising Integrity</span>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#26372B]">
                   Built on Trust, Verified Authenticity
                 </h2>
-                <p className="text-slate-600 dark:text-gray-300 text-base sm:text-lg leading-relaxed">
+                <p className="text-xs sm:text-sm text-[#667085] leading-relaxed">
                   We believe community service requires absolute safety and credibility. Every organization on VolunteerConnect undergoes formal verification by our administrative board before posting events.
                 </p>
 
-                <div className="space-y-4 pt-2">
-                  <div className="flex items-start gap-4">
-                    <div className="p-2.5 rounded-xl bg-accent-50 dark:bg-accent-500/15 text-accent-600 dark:text-accent-400 border border-accent-200 dark:border-accent-500/25 shrink-0">
-                      <ShieldCheck className="w-5 h-5" />
+                <div className="space-y-3 pt-1">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 rounded-xl bg-[#D8EEE5] text-[#244e44] border border-[#bce1d3] shrink-0">
+                      <ShieldCheck className="w-4 h-4" />
                     </div>
                     <div>
-                      <h4 className="text-base font-bold text-slate-900 dark:text-white">Official Document Verification</h4>
-                      <p className="text-sm text-slate-500 dark:text-gray-400 mt-0.5">Government registration certificates and credentials are confirmed manually.</p>
+                      <h4 className="text-xs sm:text-sm font-bold text-[#26372B]">Official Document Verification</h4>
+                      <p className="text-xs text-[#667085] mt-0.5">Government registration certificates and credentials are confirmed manually.</p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-4">
-                    <div className="p-2.5 rounded-xl bg-primary-50 dark:bg-primary-500/15 text-primary-600 dark:text-primary-400 border border-primary-200 dark:border-primary-500/25 shrink-0">
-                      <Award className="w-5 h-5" />
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 rounded-xl bg-[#C9DDF2] text-[#24426b] border-[#a3c5eb] shrink-0">
+                      <Award className="w-4 h-4" />
                     </div>
                     <div>
-                      <h4 className="text-base font-bold text-slate-900 dark:text-white">Cryptographically Serialized Certificates</h4>
-                      <p className="text-sm text-slate-500 dark:text-gray-400 mt-0.5">Every certificate generated carries a unique verification identifier to prevent fraud.</p>
+                      <h4 className="text-xs sm:text-sm font-bold text-[#26372B]">Serialized Digital Certificates</h4>
+                      <p className="text-xs text-[#667085] mt-0.5">Every certificate generated carries a unique verification identifier to prevent fraud.</p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-4">
-                    <div className="p-2.5 rounded-xl bg-secondary-50 dark:bg-secondary-500/15 text-secondary-600 dark:text-secondary-400 border border-secondary-200 dark:border-secondary-500/25 shrink-0">
-                      <Globe2 className="w-5 h-5" />
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 rounded-xl bg-[#F6D8C5] text-[#7a4221] border-[#eebd9e] shrink-0">
+                      <CalendarCheck className="w-4 h-4" />
                     </div>
                     <div>
-                      <h4 className="text-base font-bold text-slate-900 dark:text-white">Real-Time Attendance Auditing</h4>
-                      <p className="text-sm text-slate-500 dark:text-gray-400 mt-0.5">Event organizers check in volunteers digitally, ensuring accurate hour tracking.</p>
+                      <h4 className="text-xs sm:text-sm font-bold text-[#26372B]">Real-Time Attendance Auditing</h4>
+                      <p className="text-xs text-[#667085] mt-0.5">Event organizers check in volunteers digitally, ensuring accurate hour tracking.</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="lg:col-span-6">
-                <div className="glass-card p-8 border border-slate-200/80 dark:border-white/10 shadow-lg dark:shadow-2xl relative overflow-hidden">
-                  <div className="flex items-center justify-between pb-6 border-b border-slate-200/80 dark:border-white/10">
+                <div className="glass-card p-6 sm:p-8 border border-[#E6E8EC]">
+                  <div className="flex items-center justify-between pb-4 border-b border-[#E6E8EC]">
                     <div>
-                      <span className="text-xs text-primary-600 dark:text-primary-400 font-semibold uppercase">Platform Guarantee</span>
-                      <h3 className="text-xl font-bold text-slate-900 dark:text-white mt-0.5">Certified Organization Badge</h3>
+                      <span className="text-[11px] text-[#556e5a] font-semibold uppercase">Platform Guarantee</span>
+                      <h3 className="text-base sm:text-lg font-bold text-[#26372B] mt-0.5">Certified Organization Badge</h3>
                     </div>
-                    <div className="w-12 h-12 rounded-xl bg-accent-50 dark:bg-accent-500/10 text-accent-600 dark:text-accent-400 border border-accent-200 dark:border-accent-500/20 flex items-center justify-center">
-                      <ShieldCheck className="w-6 h-6" />
+                    <div className="w-10 h-10 rounded-xl bg-[#D8EEE5] text-[#244e44] border border-[#bce1d3] flex items-center justify-center">
+                      <ShieldCheck className="w-5 h-5" />
                     </div>
                   </div>
 
-                  <div className="py-6 space-y-4 text-sm text-slate-600 dark:text-gray-300">
+                  <div className="py-4 space-y-3 text-xs sm:text-sm text-[#667085]">
                     <p>
-                      Volunteers never have to wonder whether an organization is legitimate. When you see the <span className="text-accent-600 dark:text-accent-400 font-semibold">Verified NGO badge</span>, you can be certain that registration documents have been validated.
+                      Volunteers never have to wonder whether an organization is legitimate. When you see the <span className="text-[#556e5a] font-semibold">Verified NGO badge</span>, you can be certain that registration documents have been validated.
                     </p>
-                    <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 flex items-center gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-accent-500 dark:text-accent-400 shrink-0" />
-                      <span className="text-xs text-slate-600 dark:text-gray-300">100% of published events are hosted by approved NGOs.</span>
+                    <div className="p-3 rounded-xl bg-white border border-[#E6E8EC] flex items-center gap-2.5">
+                      <CheckCircle2 className="w-4 h-4 text-[#54947f] shrink-0" />
+                      <span className="text-xs text-[#354052]">100% of published events are hosted by approved NGOs.</span>
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t border-slate-200/80 dark:border-white/10 flex justify-between items-center">
-                    <span className="text-xs text-slate-500 dark:text-gray-400">Questions about verification?</span>
-                    <Link to="/contact" className="text-xs font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300">
+                  <div className="pt-3 border-t border-[#E6E8EC] flex justify-between items-center text-xs">
+                    <span className="text-[#667085]">Questions about verification?</span>
+                    <Link to="/contact" className="font-semibold text-[#556e5a] hover:text-[#26372B]">
                       Speak with our team →
                     </Link>
                   </div>
@@ -854,28 +723,25 @@ const Home = () => {
         </section>
 
         {/* 9. GLOBAL IMPACT CALL TO ACTION */}
-        <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-5xl mx-auto rounded-3xl p-8 sm:p-12 relative overflow-hidden bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-primary-950/40 dark:via-purple-950/30 dark:to-gray-950/40 backdrop-blur-2xl border border-primary-200 dark:border-primary-500/30 shadow-md dark:shadow-glass text-center">
-            <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary-400/15 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent-400/15 rounded-full blur-3xl pointer-events-none" />
-
-            <div className="relative z-10 max-w-2xl mx-auto">
-              <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-6 leading-tight">
+        <section className="py-10 sm:py-14 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-[1200px] mx-auto rounded-3xl p-8 sm:p-12 bg-gradient-to-br from-[#FFF8EF] via-white to-[#F5F1FA] border border-[#E6E8EC] shadow-soft-md text-center">
+            <div className="max-w-xl mx-auto space-y-4">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#26372B] tracking-tight">
                 Ready to Create Real Change in the World?
               </h2>
-              <p className="text-slate-600 dark:text-gray-300 text-base sm:text-lg mb-8 leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#667085] leading-relaxed">
                 Join our community of changemakers today. It takes less than 2 minutes to get started as a volunteer or register your non-profit.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
                 <Link
-                  to="/register"
-                  className="px-8 py-4 rounded-xl text-base font-semibold text-white bg-primary-600 hover:bg-primary-500 btn-glow transition-all shadow-sm"
+                  to="/register?role=volunteer"
+                  className="btn-primary-pastel px-6 py-3 rounded-xl text-sm"
                 >
                   Sign Up as Volunteer
                 </Link>
                 <Link
                   to="/register?role=ngo"
-                  className="px-8 py-4 rounded-xl text-base font-semibold text-slate-700 dark:text-white bg-white/90 hover:bg-white dark:bg-white/10 dark:hover:bg-white/20 border border-slate-200 dark:border-white/20 backdrop-blur-md transition-all shadow-sm"
+                  className="btn-secondary-pastel px-6 py-3 rounded-xl text-sm"
                 >
                   Register Your NGO
                 </Link>
@@ -883,6 +749,7 @@ const Home = () => {
             </div>
           </div>
         </section>
+
       </div>
     </PublicLayout>
   );

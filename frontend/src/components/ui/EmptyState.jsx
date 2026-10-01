@@ -7,33 +7,31 @@ const EmptyState = ({ icon: Icon = Package, title, description, message, action 
   const desc = description || message;
 
   const renderIcon = () => {
-    if (!Icon) return <Package className="w-10 h-10 text-primary-400" />;
+    if (!Icon) return <Package className="w-8 h-8 text-[#556e5a]" />;
     
-    // If Icon is already a JSX element (e.g. <Search className="w-12 h-12" />)
     if (React.isValidElement(Icon)) {
       return Icon;
     }
 
-    // If Icon is a React component (e.g. Package, Search, Calendar)
     if (typeof Icon === 'function' || typeof Icon === 'object') {
       const Component = Icon;
-      return <Component className="w-10 h-10 text-primary-400" />;
+      return <Component className="w-8 h-8 text-[#556e5a]" />;
     }
 
-    return <Package className="w-10 h-10 text-primary-400" />;
+    return <Package className="w-8 h-8 text-[#556e5a]" />;
   };
 
   return (
-    <Card className="flex flex-col items-center justify-center p-12 text-center w-full">
-      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-500/20 to-purple-500/20 flex items-center justify-center mb-6 text-primary-400">
+    <Card className="flex flex-col items-center justify-center p-8 sm:p-12 text-center w-full max-w-lg mx-auto">
+      <div className="w-16 h-16 rounded-2xl bg-[#D8EEE5] border border-[#bce1d3] flex items-center justify-center mb-5 shadow-soft-sm">
         {renderIcon()}
       </div>
-      {title && <h3 className="text-xl font-semibold text-white mb-2">{title}</h3>}
+      {title && <h3 className="text-lg sm:text-xl font-bold text-[#26372B] mb-2">{title}</h3>}
       {desc && (
-        <p className="text-gray-400 max-w-md mb-8">{desc}</p>
+        <p className="text-xs sm:text-sm text-[#667085] max-w-sm mb-6 leading-relaxed">{desc}</p>
       )}
       {action && (
-        <Button onClick={action.onClick} href={action.href}>
+        <Button variant="primary" onClick={action.onClick} href={action.href}>
           {action.label}
         </Button>
       )}

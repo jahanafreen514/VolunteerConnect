@@ -68,18 +68,21 @@ const VolunteerApplications = () => {
   return (
     <DashboardLayout sidebar={<VolunteerSidebar />}>
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <h1 className="text-2xl font-bold text-white">My Applications</h1>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pastel-card p-6 border border-[#E6E8EC]">
+          <div>
+            <h1 className="text-2xl font-bold text-[#354052]">My Applications</h1>
+            <p className="text-xs text-[#667085] mt-1">Track the status and timeline of your volunteer applications</p>
+          </div>
           
           <div className="flex overflow-x-auto pb-2 sm:pb-0 hide-scrollbar gap-2 w-full sm:w-auto">
             {tabs.map(tab => (
               <button
                 key={tab}
                 onClick={() => setFilter(tab)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
                   filter === tab 
-                    ? 'bg-primary-600 text-white' 
-                    : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/10'
+                    ? 'bg-[#BFD8C2]/60 text-[#26372B] border border-[#BFD8C2] shadow-soft-sm' 
+                    : 'bg-white text-[#667085] hover:text-[#354052] hover:bg-[#F5F1FA] border border-[#E6E8EC]'
                 }`}
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -88,13 +91,13 @@ const VolunteerApplications = () => {
           </div>
         </div>
 
-        <Card className="overflow-hidden">
+        <Card className="overflow-hidden border border-[#E6E8EC]">
           {loading ? (
             <div className="p-6"><SkeletonTable columns={5} rows={5} /></div>
           ) : applications.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-gray-300">
-                <thead className="bg-white/5 text-gray-400 uppercase text-xs">
+              <table className="w-full text-left text-sm text-[#354052]">
+                <thead className="bg-[#F5F1FA] text-[#667085] uppercase text-xs border-b border-[#E6E8EC]">
                   <tr>
                     <th className="px-6 py-4">Opportunity</th>
                     <th className="px-6 py-4">NGO</th>
@@ -103,7 +106,7 @@ const VolunteerApplications = () => {
                     <th className="px-6 py-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <tbody className="divide-y divide-[#E6E8EC]">
                   {applications.map((app) => {
                     const opp = app.opportunity || app.opportunityId || {};
                     const ngoName = opp.ngo?.organizationName || opp.ngoId?.name || opp.ngoName || 'NGO Partner';
@@ -112,34 +115,34 @@ const VolunteerApplications = () => {
                     const dateStr = app.appliedAt || app.createdAt;
 
                     return (
-                      <tr key={app._id} className="hover:bg-white/[0.02] transition-colors">
+                      <tr key={app._id} className="hover:bg-[#FFF8EF]/50 transition-colors">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             {opp.image ? (
                               <img src={opp.image} alt="" className="w-10 h-10 rounded-lg object-cover" />
                             ) : (
-                              <div className="w-10 h-10 rounded-lg bg-primary-900/50 flex items-center justify-center text-primary-400 font-bold">
+                              <div className="w-10 h-10 rounded-lg bg-[#D8EEE5] flex items-center justify-center text-[#5b7f63] font-bold">
                                 {oppTitle.charAt(0)}
                               </div>
                             )}
-                            <span className="font-medium text-white line-clamp-1">{oppTitle}</span>
+                            <span className="font-semibold text-[#354052] line-clamp-1">{oppTitle}</span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 truncate max-w-[150px]">{ngoName}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">{formatDateSafe(dateStr, 'MMM d, yyyy', 'Recently')}</td>
+                        <td className="px-6 py-4 text-xs text-[#667085] truncate max-w-[150px]">{ngoName}</td>
+                        <td className="px-6 py-4 text-xs text-[#667085] whitespace-nowrap">{formatDateSafe(dateStr, 'MMM d, yyyy', 'Recently')}</td>
                         <td className="px-6 py-4">{getStatusBadge(app.status)}</td>
                         <td className="px-6 py-4 text-right space-x-3 whitespace-nowrap">
                           {oppId && (
-                            <Link to={`/opportunities/${oppId}`} className="inline-flex items-center gap-1 text-primary-400 hover:text-primary-300 transition-colors">
-                              <Eye className="w-4 h-4" /> View
+                            <Link to={`/opportunities/${oppId}`} className="inline-flex items-center gap-1 text-[#5b7f63] hover:text-[#426048] font-medium text-xs transition-colors">
+                              <Eye className="w-3.5 h-3.5" /> View
                             </Link>
                           )}
                           {app.status === 'pending' && (
                             <button 
                               onClick={() => setCancelDialog({ isOpen: true, id: app._id })}
-                              className="inline-flex items-center gap-1 text-red-400 hover:text-red-300 transition-colors"
+                              className="inline-flex items-center gap-1 text-[#9B5B65] hover:text-[#7f3e48] font-medium text-xs transition-colors"
                             >
-                              <XCircle className="w-4 h-4" /> Cancel
+                              <XCircle className="w-3.5 h-3.5" /> Cancel
                             </button>
                           )}
                         </td>

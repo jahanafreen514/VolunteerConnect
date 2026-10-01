@@ -57,7 +57,7 @@ const NGOVerification = () => {
       approved: 'success',
       rejected: 'error'
     };
-    return <Badge variant={map[status] || 'default'} className="uppercase">{status}</Badge>;
+    return <Badge variant={map[status] || 'default'} className="uppercase font-semibold text-xs">{status}</Badge>;
   };
 
   return (
@@ -65,17 +65,19 @@ const NGOVerification = () => {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-white">NGO Verification</h1>
-            <p className="text-gray-400 mt-1">Review and approve NGO accounts.</p>
+            <h1 className="text-2xl font-bold text-[#354052]">NGO Verification</h1>
+            <p className="text-[#667085] mt-1 text-sm">Review credentials, registered legal documents, and approve NGO accounts.</p>
           </div>
           
-          <div className="flex bg-white/5 border border-white/10 rounded-lg p-1">
+          <div className="flex bg-[#F5F1FA] border border-[#E6E8EC] rounded-xl p-1 shadow-soft-sm">
             {['pending', 'approved', 'rejected'].map(tab => (
               <button
                 key={tab}
                 onClick={() => setFilter(tab)}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                  filter === tab ? 'bg-primary-600 text-white shadow-sm' : 'text-gray-400 hover:text-white hover:bg-white/5'
+                className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
+                  filter === tab 
+                    ? 'bg-white text-[#354052] shadow-soft-sm' 
+                    : 'text-[#667085] hover:text-[#354052]'
                 }`}
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -84,13 +86,13 @@ const NGOVerification = () => {
           </div>
         </div>
 
-        <Card className="overflow-hidden">
+        <div className="pastel-card overflow-hidden">
           {loading ? (
             <div className="p-6"><SkeletonTable columns={5} rows={5} /></div>
           ) : ngos.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-gray-300">
-                <thead className="bg-white/5 text-gray-400 uppercase text-xs">
+              <table className="w-full text-left text-sm text-[#354052]">
+                <thead className="bg-[#F5F1FA]/80 text-[#667085] uppercase text-xs font-semibold border-b border-[#E6E8EC]">
                   <tr>
                     <th className="px-6 py-4">Organization Name</th>
                     <th className="px-6 py-4">Registration No.</th>
@@ -99,21 +101,21 @@ const NGOVerification = () => {
                     <th className="px-6 py-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <tbody className="divide-y divide-[#E6E8EC]">
                   {ngos.map((ngo) => (
-                    <tr key={ngo._id} className="hover:bg-white/[0.02]">
-                      <td className="px-6 py-4 font-medium text-white">{ngo.organizationName}</td>
-                      <td className="px-6 py-4 font-mono text-xs">{ngo.registrationNumber}</td>
-                      <td className="px-6 py-4">{ngo.address?.city}, {ngo.address?.country}</td>
+                    <tr key={ngo._id} className="hover:bg-[#F9FBF9] transition-colors">
+                      <td className="px-6 py-4 font-semibold text-[#354052]">{ngo.organizationName}</td>
+                      <td className="px-6 py-4 font-mono text-xs text-[#667085]">{ngo.registrationNumber}</td>
+                      <td className="px-6 py-4 text-[#667085]">{ngo.address?.city}, {ngo.address?.country}</td>
                       <td className="px-6 py-4">{getStatusBadge(ngo.verificationStatus)}</td>
                       <td className="px-6 py-4 text-right">
                         <Button 
                           size="sm" 
                           variant="outline" 
                           onClick={() => { setSelectedNgo(ngo); setIsModalOpen(true); }}
-                          className="flex items-center gap-1 ml-auto"
+                          className="flex items-center gap-1.5 ml-auto !border-[#E6E8EC] !text-[#354052] hover:!bg-[#F5F1FA]"
                         >
-                          <Eye className="w-4 h-4" /> Review
+                          <Eye className="w-4 h-4 text-[#667085]" /> Review
                         </Button>
                       </td>
                     </tr>
@@ -130,7 +132,7 @@ const NGOVerification = () => {
               />
             </div>
           )}
-        </Card>
+        </div>
       </div>
 
       {/* Details Modal */}
@@ -144,58 +146,65 @@ const NGOVerification = () => {
           <div className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-400">Organization Name</p>
-                <p className="text-white font-medium">{selectedNgo.organizationName}</p>
+                <p className="text-xs font-semibold text-[#667085] uppercase tracking-wider">Organization Name</p>
+                <p className="text-[#354052] font-semibold text-base mt-0.5">{selectedNgo.organizationName}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-400">Registration Number</p>
-                <p className="text-white font-mono">{selectedNgo.registrationNumber}</p>
+                <p className="text-xs font-semibold text-[#667085] uppercase tracking-wider">Registration Number</p>
+                <p className="text-[#354052] font-mono text-sm mt-0.5">{selectedNgo.registrationNumber}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-400">Email</p>
-                <p className="text-white">{selectedNgo.email}</p>
+                <p className="text-xs font-semibold text-[#667085] uppercase tracking-wider">Email</p>
+                <p className="text-[#354052] text-sm mt-0.5">{selectedNgo.email}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-400">Phone</p>
-                <p className="text-white">{selectedNgo.phone}</p>
+                <p className="text-xs font-semibold text-[#667085] uppercase tracking-wider">Phone</p>
+                <p className="text-[#354052] text-sm mt-0.5">{selectedNgo.phone}</p>
               </div>
               <div className="col-span-2">
-                <p className="text-sm text-gray-400">Address</p>
-                <p className="text-white">{selectedNgo.address?.street}, {selectedNgo.address?.city}, {selectedNgo.address?.state}, {selectedNgo.address?.country} - {selectedNgo.address?.postalCode}</p>
+                <p className="text-xs font-semibold text-[#667085] uppercase tracking-wider">Address</p>
+                <p className="text-[#354052] text-sm mt-0.5">{selectedNgo.address?.street}, {selectedNgo.address?.city}, {selectedNgo.address?.state}, {selectedNgo.address?.country} - {selectedNgo.address?.postalCode}</p>
               </div>
               <div className="col-span-2">
-                <p className="text-sm text-gray-400">Description</p>
-                <p className="text-white text-sm bg-white/5 p-3 rounded-lg mt-1">{selectedNgo.description}</p>
+                <p className="text-xs font-semibold text-[#667085] uppercase tracking-wider">Description</p>
+                <p className="text-[#354052] text-sm bg-[#F5F1FA]/60 border border-[#E6E8EC] p-3.5 rounded-xl mt-1.5 leading-relaxed">{selectedNgo.description}</p>
               </div>
             </div>
 
             <div>
-              <h3 className="text-sm font-medium text-gray-300 mb-3 border-b border-white/10 pb-2">Uploaded Documents</h3>
+              <h3 className="text-xs font-semibold text-[#667085] uppercase tracking-wider mb-3 border-b border-[#E6E8EC] pb-2">Uploaded Documents</h3>
               {selectedNgo.documents?.length > 0 ? (
                 <div className="space-y-2">
                   {selectedNgo.documents.map((doc, idx) => (
-                    <div key={idx} className="flex justify-between items-center p-3 bg-white/5 rounded-lg">
+                    <div key={idx} className="flex justify-between items-center p-3 bg-white border border-[#E6E8EC] rounded-xl shadow-soft-sm">
                       <div className="flex items-center gap-2">
-                        <FileText className="w-4 h-4 text-primary-400" />
-                        <span className="text-sm text-white">{doc.name || `Document ${idx+1}`}</span>
+                        <FileText className="w-4 h-4 text-[#4D8256]" />
+                        <span className="text-sm text-[#354052] font-medium">{doc.name || `Document ${idx+1}`}</span>
                       </div>
-                      <a href={doc.url} target="_blank" rel="noopener noreferrer" className="text-primary-400 hover:text-primary-300 flex items-center gap-1 text-sm">
-                        View <ExternalLink className="w-4 h-4" />
+                      <a href={doc.url} target="_blank" rel="noopener noreferrer" className="text-[#3F6B8F] hover:text-[#28486D] flex items-center gap-1 text-xs font-semibold">
+                        View <ExternalLink className="w-3.5 h-3.5" />
                       </a>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-gray-500 italic">No documents uploaded.</p>
+                <p className="text-sm text-[#667085] italic">No documents uploaded.</p>
               )}
             </div>
 
             {selectedNgo.verificationStatus === 'pending' && (
-              <div className="flex justify-end gap-3 pt-4 border-t border-white/10">
-                <Button variant="outline" className="border-red-500/30 text-red-400 hover:bg-red-500/10" onClick={() => { setIsModalOpen(false); setIsRejectModalOpen(true); }}>
+              <div className="flex justify-end gap-3 pt-4 border-t border-[#E6E8EC]">
+                <Button 
+                  variant="outline" 
+                  className="!border-[#F2D6DD] !text-[#9A3445] hover:!bg-[#F2D6DD]/30" 
+                  onClick={() => { setIsModalOpen(false); setIsRejectModalOpen(true); }}
+                >
                   Reject
                 </Button>
-                <Button className="bg-green-600 hover:bg-green-700" onClick={() => handleVerify('approved')}>
+                <Button 
+                  className="!bg-[#BFD8C2] !text-[#26372B] hover:!bg-[#AFCDB5] font-semibold shadow-soft-sm" 
+                  onClick={() => handleVerify('approved')}
+                >
                   Approve NGO
                 </Button>
               </div>
@@ -211,16 +220,23 @@ const NGOVerification = () => {
         title="Reject NGO"
       >
         <div className="space-y-4">
-          <p className="text-sm text-gray-300">Please provide a reason for rejecting this NGO application. This will be visible to the NGO.</p>
+          <p className="text-sm text-[#667085]">Please provide a reason for rejecting this NGO application. This will be visible to the NGO.</p>
           <Textarea 
             value={rejectReason}
             onChange={(e) => setRejectReason(e.target.value)}
             placeholder="E.g., Invalid registration document provided..."
             rows={4}
           />
-          <div className="flex justify-end gap-3">
-            <Button variant="ghost" onClick={() => setIsRejectModalOpen(false)}>Cancel</Button>
-            <Button variant="danger" onClick={() => handleVerify('rejected', rejectReason)} disabled={!rejectReason.trim()}>Confirm Rejection</Button>
+          <div className="flex justify-end gap-3 pt-2">
+            <Button variant="ghost" className="!text-[#667085]" onClick={() => setIsRejectModalOpen(false)}>Cancel</Button>
+            <Button 
+              variant="danger" 
+              className="!bg-[#F2D6DD] !text-[#852E3E] hover:!bg-[#F2D6DD]/80 font-semibold"
+              onClick={() => handleVerify('rejected', rejectReason)} 
+              disabled={!rejectReason.trim()}
+            >
+              Confirm Rejection
+            </Button>
           </div>
         </div>
       </Modal>

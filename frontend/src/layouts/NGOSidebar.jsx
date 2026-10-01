@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, User, Briefcase, Users, UserCheck, ClipboardCheck, PlusCircle, LogOut, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { ThemeToggle } from '../context/ThemeContext';
 import { getMyProfile } from '../services/ngoService';
 import Avatar from '../components/ui/Avatar';
 import Badge from '../components/ui/Badge';
@@ -37,19 +36,19 @@ const NGOSidebar = ({ onNavigate, onClose }) => {
   const statusConfig = badgeConfig[verificationStatus] || badgeConfig.pending;
 
   return (
-    <div className="h-full flex flex-col w-56 sm:w-60 bg-white/90 dark:bg-[#0a0f20]/90 backdrop-blur-2xl border-r border-slate-200/80 dark:border-white/10 shadow-lg dark:shadow-2xl">
-      <div className="p-4 border-b border-slate-200/80 dark:border-white/10 relative flex flex-col items-center text-center shrink-0">
+    <div className="h-full flex flex-col w-56 sm:w-60 bg-white/90 backdrop-blur-2xl border-r border-[#E6E8EC] shadow-soft-sm">
+      <div className="p-4 border-b border-[#E6E8EC] relative flex flex-col items-center text-center shrink-0">
         {handleClose && (
           <button
             onClick={handleClose}
-            className="lg:hidden absolute top-3 right-3 p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:text-gray-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10"
+            className="lg:hidden absolute top-3 right-3 p-1.5 rounded-lg text-[#667085] hover:text-[#354052] hover:bg-[#F5F1FA]"
             aria-label="Close NGO sidebar"
           >
             <X className="w-5 h-5" />
           </button>
         )}
-        <Avatar src={ngoData?.logo} name={user?.name} size="md" className="mb-2 ring-2 ring-primary-300 dark:ring-primary-500/30" />
-        <h3 className="text-slate-900 dark:text-white font-semibold text-xs sm:text-sm w-full truncate">{user?.name || 'NGO Partner'}</h3>
+        <Avatar src={ngoData?.logo} name={user?.name} size="md" className="mb-2 ring-2 ring-[#DDD5F3]" />
+        <h3 className="text-[#354052] font-semibold text-xs sm:text-sm w-full truncate">{user?.name || 'NGO Partner'}</h3>
         <div className="mt-1.5">
           <Badge variant={statusConfig.variant} className="text-[10px] px-2 py-0.5">{statusConfig.label}</Badge>
         </div>
@@ -64,8 +63,8 @@ const NGOSidebar = ({ onNavigate, onClose }) => {
             className={({ isActive }) => `
               flex items-center px-3 py-2 rounded-xl transition-all font-medium text-xs sm:text-sm
               ${isActive 
-                ? 'bg-secondary-50 dark:bg-gradient-to-r dark:from-secondary-500/20 dark:to-secondary-600/10 text-secondary-700 dark:text-white border-l-4 border-secondary-500 shadow-sm' 
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/5'}
+                ? 'bg-[#DDD5F3]/35 text-[#30264A] font-semibold border-l-4 border-[#8e74d1] shadow-soft-sm' 
+                : 'text-[#667085] hover:text-[#354052] hover:bg-[#F5F1FA]'}
             `}
           >
             <link.icon className="w-4 h-4 mr-2.5 shrink-0" />
@@ -74,11 +73,11 @@ const NGOSidebar = ({ onNavigate, onClose }) => {
         ))}
       </nav>
 
-      <div className="p-3 border-t border-slate-200/80 dark:border-white/10 space-y-2 shrink-0">
+      <div className="p-3 border-t border-[#E6E8EC] space-y-2 shrink-0">
         <NavLink
           to="/ngo/opportunities/create"
           onClick={onNavigate}
-          className="flex items-center justify-center gap-1.5 w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white text-xs font-semibold shadow-glow-sm transition-all"
+          className="flex items-center justify-center gap-1.5 w-full py-2.5 px-3 rounded-xl bg-[#AFCDB5] hover:bg-[#9ebfa5] text-[#26372B] text-xs font-semibold shadow-soft-sm transition-all"
         >
           <PlusCircle className="w-3.5 h-3.5" />
           <span>Create Opportunity</span>
@@ -87,12 +86,11 @@ const NGOSidebar = ({ onNavigate, onClose }) => {
         <div className="flex items-center justify-between gap-2 pt-1">
           <button
             onClick={logout}
-            className="flex items-center flex-1 px-3 py-2 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-xs sm:text-sm font-medium"
+            className="flex items-center flex-1 px-3 py-2 rounded-xl text-[#9B5B65] hover:bg-[#F2D6DD]/40 transition-colors text-xs sm:text-sm font-medium"
           >
             <LogOut className="w-4 h-4 mr-2.5 shrink-0" />
             <span>Sign Out</span>
           </button>
-          <ThemeToggle size="sm" />
         </div>
       </div>
     </div>

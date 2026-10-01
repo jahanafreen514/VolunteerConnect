@@ -28,22 +28,23 @@ const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-slate-900/30 backdrop-blur-sm"
             onClick={onClose}
           />
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            initial={{ opacity: 0, scale: 0.96, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className={`relative w-full ${sizes[size]} bg-white/95 dark:bg-[#0a0f28]/95 backdrop-blur-2xl border border-slate-200/80 dark:border-white/15 rounded-2xl shadow-xl dark:shadow-2xl overflow-hidden flex flex-col max-h-[90vh] text-slate-800 dark:text-slate-100`}
+            exit={{ opacity: 0, scale: 0.96, y: 8 }}
+            transition={{ type: 'spring', damping: 26, stiffness: 320 }}
+            className={`relative w-full ${sizes[size]} bg-white/95 backdrop-blur-2xl border border-[#E6E8EC] rounded-2xl shadow-soft-lg overflow-hidden flex flex-col max-h-[90vh] text-[#354052]`}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200/80 dark:border-white/10 bg-slate-50/80 dark:bg-white/5">
-              <h3 className="text-xl font-semibold text-slate-900 dark:text-white">{title}</h3>
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E6E8EC] bg-[#FFF8EF]/40">
+              <h3 className="text-lg font-bold text-[#26372B]">{title}</h3>
               <button
                 onClick={onClose}
-                className="p-2 text-slate-400 hover:text-slate-700 dark:text-gray-400 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 transition-colors"
+                className="p-1.5 text-[#667085] hover:text-[#354052] rounded-xl hover:bg-black/[0.04] transition-colors"
+                aria-label="Close dialog"
               >
                 <X className="w-5 h-5" />
               </button>

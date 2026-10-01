@@ -50,14 +50,16 @@ const VolunteerDashboard = () => {
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6"
+          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pastel-card p-6 border border-[#E6E8EC]"
         >
           <div>
-            <h1 className="text-2xl font-bold text-white">Welcome back, {user?.name}! Ready to make an impact?</h1>
-            <p className="text-gray-400 mt-1">Here's an overview of your volunteering journey.</p>
+            <h1 className="text-2xl font-bold text-[#354052]">Welcome back, {user?.name}! Ready to make an impact?</h1>
+            <p className="text-[#667085] mt-1 text-sm">Here's an overview of your volunteering journey and upcoming contributions.</p>
           </div>
           <div className="flex items-center gap-3">
-            <Link to="/opportunities" className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors font-medium text-sm">Find Opportunities</Link>
+            <Link to="/opportunities" className="btn-primary-pastel text-xs font-semibold px-4 py-2.5">
+              Find Opportunities
+            </Link>
           </div>
         </motion.div>
 
@@ -79,8 +81,8 @@ const VolunteerDashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Upcoming Events */}
           <div className="lg:col-span-2 space-y-4">
-            <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-primary-400" /> Upcoming Events
+            <h2 className="text-lg font-semibold text-[#354052] flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-[#5b7f63]" /> Upcoming Events
             </h2>
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -98,18 +100,18 @@ const VolunteerDashboard = () => {
                   const image = opp.image || event.image;
 
                   return (
-                    <Card key={event._id} className="overflow-hidden hover:border-primary-500/50 transition-colors">
-                      <div className="h-32 bg-gradient-to-br from-primary-900/50 to-purple-900/50 p-4 relative">
-                        {image && <img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover opacity-50" />}
+                    <Card key={event._id} className="overflow-hidden hover:border-[#BFD8C2] transition-all">
+                      <div className="h-32 bg-gradient-to-br from-[#D8EEE5] to-[#C9DDF2] p-4 relative overflow-hidden">
+                        {image && <img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover opacity-60" />}
                         <div className="relative z-10 flex flex-col justify-end h-full">
-                          <h3 className="font-semibold text-white truncate text-lg">{title}</h3>
-                          <p className="text-sm text-gray-300 truncate">{ngoName}</p>
+                          <h3 className="font-semibold text-[#26372B] truncate text-base bg-white/70 backdrop-blur-xs px-2.5 py-1 rounded-lg inline-block w-fit max-w-full">{title}</h3>
+                          <p className="text-xs text-[#354052] font-medium truncate mt-1 bg-white/70 backdrop-blur-xs px-2 py-0.5 rounded-md inline-block w-fit">{ngoName}</p>
                         </div>
                       </div>
-                      <div className="p-4 bg-white/[0.02] border-t border-white/10 flex justify-between items-center">
-                        <span className="text-sm text-gray-400">{formatDateSafe(eventDate, 'MMM d, yyyy h:mm a')}</span>
+                      <div className="p-4 bg-white/60 border-t border-[#E6E8EC] flex justify-between items-center">
+                        <span className="text-xs text-[#667085]">{formatDateSafe(eventDate, 'MMM d, yyyy h:mm a')}</span>
                         {oppId && (
-                          <Link to={`/opportunities/${oppId}`} className="text-primary-400 hover:text-primary-300 text-sm font-medium">View</Link>
+                          <Link to={`/opportunities/${oppId}`} className="text-[#5b7f63] hover:text-[#426048] text-xs font-semibold">View Details</Link>
                         )}
                       </div>
                     </Card>
@@ -123,8 +125,8 @@ const VolunteerDashboard = () => {
 
           {/* Recent Applications */}
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-              <Clock className="w-5 h-5 text-primary-400" /> Recent Applications
+            <h2 className="text-lg font-semibold text-[#354052] flex items-center gap-2">
+              <Clock className="w-5 h-5 text-[#5b7f63]" /> Recent Applications
             </h2>
             {loading ? (
               <div className="space-y-3">
@@ -141,21 +143,21 @@ const VolunteerDashboard = () => {
                   const status = app.status || 'pending';
 
                   return (
-                    <Card key={app._id} className="p-4 hover:bg-white/[0.07] transition-colors">
+                    <Card key={app._id} className="p-4 hover:border-[#BFD8C2] transition-all">
                       <div className="flex justify-between items-start mb-2">
-                        <h3 className="font-medium text-white truncate pr-2">{oppTitle}</h3>
-                        <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${
-                          status === 'accepted' ? 'bg-green-500/10 text-green-400 border border-green-500/20' :
-                          status === 'rejected' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
-                          'bg-orange-500/10 text-orange-400 border border-orange-500/20'
+                        <h3 className="font-semibold text-[#354052] text-sm truncate pr-2">{oppTitle}</h3>
+                        <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full whitespace-nowrap ${
+                          status === 'accepted' ? 'bg-[#D8EEE5] text-[#26372B] border border-[#BFD8C2]' :
+                          status === 'rejected' ? 'bg-[#F2D6DD] text-[#9B5B65] border border-[#F2D6DD]' :
+                          'bg-[#FFF8EF] text-[#854D27] border border-[#F6D8C5]'
                         }`}>
                           {status.charAt(0).toUpperCase() + status.slice(1)}
                         </span>
                       </div>
-                      <p className="text-xs text-gray-400 truncate mb-2">{ngoName}</p>
+                      <p className="text-xs text-[#667085] truncate mb-2">{ngoName}</p>
                       <div className="flex justify-between items-center text-xs">
-                        <span className="text-gray-500">Applied {formatDateSafe(appDate, 'MMM d')}</span>
-                        <Link to="/volunteer/applications" className="text-primary-400 hover:text-primary-300">Details</Link>
+                        <span className="text-[#667085]">Applied {formatDateSafe(appDate, 'MMM d')}</span>
+                        <Link to="/volunteer/applications" className="text-[#5b7f63] hover:text-[#426048] font-medium">Details</Link>
                       </div>
                     </Card>
                   );

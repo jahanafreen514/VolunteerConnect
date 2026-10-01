@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { format } from 'date-fns';
 import { formatDateSafe } from '../../utils/date';
 import { Plus, Edit2, Trash2, Eye, Calendar, Users, MapPin } from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -25,7 +24,7 @@ const NGOOpportunities = () => {
     setLoading(true);
     try {
       const [oppsData, profileData] = await Promise.all([
-        opportunityService.getOpportunities({ isNgo: true, limit: 100 }), // Assuming API returns my opps if auth'd as NGO
+        opportunityService.getOpportunities({ isNgo: true, limit: 100 }),
         ngoService.getMyProfile()
       ]);
       const oppList = oppsData?.data?.opportunities || oppsData?.opportunities || (Array.isArray(oppsData?.data) ? oppsData.data : (Array.isArray(oppsData) ? oppsData : []));
@@ -62,7 +61,7 @@ const NGOOpportunities = () => {
       completed: 'purple',
       cancelled: 'error'
     };
-    return <Badge variant={map[status] || 'default'}>{status}</Badge>;
+    return <Badge variant={map[status] || 'default'} className="font-semibold text-xs">{status}</Badge>;
   };
 
   const isVerified = profile?.verificationStatus === 'approved';
@@ -72,23 +71,23 @@ const NGOOpportunities = () => {
       <div className="relative z-10 w-full px-2 sm:px-4 lg:px-6 py-6 space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">Manage Opportunities</h1>
-            <p className="text-sm text-gray-400 mt-1">Create, edit, and organize your volunteering events and civic initiatives.</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#354052] tracking-tight">Manage Opportunities</h1>
+            <p className="text-sm text-[#667085] mt-1">Create, edit, and organize your volunteering events and civic initiatives.</p>
           </div>
           <Link to="/ngo/opportunities/create">
-            <Button className="flex items-center gap-2 shadow-glow-sm px-5 py-2.5 font-semibold text-sm">
+            <Button className="flex items-center gap-2 px-5 py-2.5 font-semibold text-sm !bg-[#AFCDB5] !text-[#26372B] hover:!bg-[#9EBEA4] shadow-soft-sm">
               <Plus className="w-4 h-4" /> Create Opportunity
             </Button>
           </Link>
         </div>
 
-        <Card className="overflow-hidden">
+        <div className="pastel-card overflow-hidden">
           {loading ? (
             <div className="p-6"><SkeletonTable columns={6} rows={5} /></div>
           ) : opportunities.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-gray-300">
-                <thead className="bg-white/5 text-gray-400 uppercase text-xs">
+              <table className="w-full text-left text-sm text-[#354052]">
+                <thead className="bg-[#F5F1FA]/80 text-[#667085] uppercase text-xs font-semibold border-b border-[#E6E8EC]">
                   <tr>
                     <th className="px-6 py-4">Title</th>
                     <th className="px-6 py-4">Date & Time</th>
@@ -98,27 +97,27 @@ const NGOOpportunities = () => {
                     <th className="px-6 py-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <tbody className="divide-y divide-[#E6E8EC]">
                   {opportunities.map((opp) => (
-                    <tr key={opp._id} className="hover:bg-white/[0.02]">
+                    <tr key={opp._id} className="hover:bg-[#F9FBF9] transition-colors">
                       <td className="px-6 py-4">
-                        <div className="font-medium text-white line-clamp-1">{opp.title}</div>
-                        <div className="text-xs text-gray-500 mt-1">{opp.category}</div>
+                        <div className="font-semibold text-[#354052] line-clamp-1">{opp.title}</div>
+                        <div className="text-xs text-[#667085] mt-0.5">{opp.category}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-primary-400"/> {formatDateSafe(opp.eventDate || opp.date, 'MMM d, yyyy')}</div>
+                      <td className="px-6 py-4 whitespace-nowrap text-[#667085]">
+                        <div className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-[#28486D]"/> {formatDateSafe(opp.eventDate || opp.date, 'MMM d, yyyy')}</div>
                       </td>
-                      <td className="px-6 py-4 truncate max-w-[150px]">
-                        <div className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-gray-400"/> {opp.location?.city || 'Online'}</div>
+                      <td className="px-6 py-4 truncate max-w-[150px] text-[#667085]">
+                        <div className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-[#4D8256]"/> {opp.location?.city || 'Online'}</div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5 text-purple-400"/> {opp.applicationsCount || 0} / {opp.volunteerCapacity}</div>
+                      <td className="px-6 py-4 text-[#28486D] font-semibold">
+                        <div className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5 text-[#4D3A7A]"/> {opp.applicationsCount || 0} / {opp.volunteerCapacity}</div>
                       </td>
                       <td className="px-6 py-4">{getStatusBadge(opp.status)}</td>
                       <td className="px-6 py-4 text-right space-x-2 whitespace-nowrap">
-                        <Link to={`/opportunities/${opp._id}`}><Button size="icon" variant="ghost" className="text-gray-400 hover:text-white"><Eye className="w-4 h-4"/></Button></Link>
-                        <Link to={`/ngo/opportunities/${opp._id}/edit`}><Button size="icon" variant="ghost" className="text-blue-400 hover:text-blue-300"><Edit2 className="w-4 h-4"/></Button></Link>
-                        <Button size="icon" variant="ghost" className="text-red-400 hover:text-red-300" onClick={() => setDeleteDialog({ isOpen: true, id: opp._id })}><Trash2 className="w-4 h-4"/></Button>
+                        <Link to={`/opportunities/${opp._id}`}><Button size="icon" variant="ghost" className="!text-[#667085] hover:!text-[#354052] hover:!bg-[#F5F1FA]"><Eye className="w-4 h-4"/></Button></Link>
+                        <Link to={`/ngo/opportunities/${opp._id}/edit`}><Button size="icon" variant="ghost" className="!text-[#28486D] hover:!bg-[#C9DDF2]/30"><Edit2 className="w-4 h-4"/></Button></Link>
+                        <Button size="icon" variant="ghost" className="!text-[#9A3445] hover:!bg-[#F2D6DD]/30" onClick={() => setDeleteDialog({ isOpen: true, id: opp._id })}><Trash2 className="w-4 h-4"/></Button>
                       </td>
                     </tr>
                   ))}
@@ -134,7 +133,7 @@ const NGOOpportunities = () => {
               />
             </div>
           )}
-        </Card>
+        </div>
       </div>
 
       <ConfirmDialog

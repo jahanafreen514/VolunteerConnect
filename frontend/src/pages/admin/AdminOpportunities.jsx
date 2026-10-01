@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Briefcase, Eye } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { format } from 'date-fns';
 import { formatDateSafe } from '../../utils/date';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import AdminSidebar from '../../components/layouts/AdminSidebar';
@@ -66,7 +65,7 @@ const AdminOpportunities = () => {
       completed: 'purple',
       cancelled: 'error'
     };
-    return <Badge variant={map[status] || 'default'}>{status}</Badge>;
+    return <Badge variant={map[status] || 'default'} className="font-semibold text-xs">{status}</Badge>;
   };
 
   return (
@@ -74,49 +73,49 @@ const AdminOpportunities = () => {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-white">All Opportunities</h1>
-            <p className="text-gray-400 mt-1">Monitor platform activities and events.</p>
+            <h1 className="text-2xl font-bold text-[#354052]">All Opportunities</h1>
+            <p className="text-[#667085] mt-1 text-sm">Monitor platform activities, capacity, and upcoming initiatives.</p>
           </div>
           
           <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
             <div className="relative w-full sm:w-48">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#667085]" />
               <input
                 type="text"
                 placeholder="Search title..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-white focus:ring-2 focus:ring-primary-500 outline-none text-sm"
+                className="w-full bg-white border border-[#E6E8EC] rounded-xl pl-10 pr-4 py-2 text-[#354052] focus:border-[#BFD8C2] focus:ring-2 focus:ring-[#BFD8C2]/40 outline-none text-sm shadow-soft-sm transition-all"
               />
             </div>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white text-sm focus:ring-2 focus:ring-primary-500 outline-none"
+              className="bg-white border border-[#E6E8EC] rounded-xl px-4 py-2 text-[#354052] text-sm focus:border-[#BFD8C2] focus:ring-2 focus:ring-[#BFD8C2]/40 outline-none shadow-soft-sm transition-all"
             >
-              <option value="" className="bg-gray-900">All Statuses</option>
-              <option value="published" className="bg-gray-900">Published</option>
-              <option value="ongoing" className="bg-gray-900">Ongoing</option>
-              <option value="completed" className="bg-gray-900">Completed</option>
+              <option value="" className="text-[#667085]">All Statuses</option>
+              <option value="published" className="text-[#354052]">Published</option>
+              <option value="ongoing" className="text-[#354052]">Ongoing</option>
+              <option value="completed" className="text-[#354052]">Completed</option>
             </select>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white text-sm focus:ring-2 focus:ring-primary-500 outline-none"
+              className="bg-white border border-[#E6E8EC] rounded-xl px-4 py-2 text-[#354052] text-sm focus:border-[#BFD8C2] focus:ring-2 focus:ring-[#BFD8C2]/40 outline-none shadow-soft-sm transition-all"
             >
-              <option value="" className="bg-gray-900">All Categories</option>
-              {CATEGORIES.map(c => <option key={c} value={c} className="bg-gray-900">{c}</option>)}
+              <option value="" className="text-[#667085]">All Categories</option>
+              {CATEGORIES.map(c => <option key={c} value={c} className="text-[#354052]">{c}</option>)}
             </select>
           </div>
         </div>
 
-        <Card className="overflow-hidden">
+        <div className="pastel-card overflow-hidden">
           {loading ? (
             <div className="p-6"><SkeletonTable columns={6} rows={8} /></div>
           ) : opportunities.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-gray-300">
-                <thead className="bg-white/5 text-gray-400 uppercase text-xs">
+              <table className="w-full text-left text-sm text-[#354052]">
+                <thead className="bg-[#F5F1FA]/80 text-[#667085] uppercase text-xs font-semibold border-b border-[#E6E8EC]">
                   <tr>
                     <th className="px-6 py-4">Title & NGO</th>
                     <th className="px-6 py-4">Category</th>
@@ -126,25 +125,25 @@ const AdminOpportunities = () => {
                     <th className="px-6 py-4 text-right">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <tbody className="divide-y divide-[#E6E8EC]">
                   {opportunities.map((opp) => {
                     const ngoName = opp.ngoId?.name || opp.ngo?.organizationName || opp.ngoName || 'NGO Partner';
                     const eventDate = opp.eventDate || opp.date;
 
                     return (
-                      <tr key={opp._id} className="hover:bg-white/[0.02]">
+                      <tr key={opp._id} className="hover:bg-[#F9FBF9] transition-colors">
                         <td className="px-6 py-4">
-                          <div className="font-medium text-white line-clamp-1">{opp.title}</div>
-                          <div className="text-xs text-gray-500 mt-1 line-clamp-1">{ngoName}</div>
+                          <div className="font-semibold text-[#354052] line-clamp-1">{opp.title}</div>
+                          <div className="text-xs text-[#667085] mt-0.5 line-clamp-1">{ngoName}</div>
                         </td>
                         <td className="px-6 py-4"><Badge variant="default" className="text-xs">{opp.category}</Badge></td>
-                        <td className="px-6 py-4 whitespace-nowrap">{formatDateSafe(eventDate, 'MMM d, yyyy')}</td>
-                        <td className="px-6 py-4 text-purple-400 font-medium">{opp.applicationsCount || 0} / {opp.volunteerCapacity}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-[#667085]">{formatDateSafe(eventDate, 'MMM d, yyyy')}</td>
+                        <td className="px-6 py-4 text-[#28486D] font-semibold">{opp.applicationsCount || 0} / {opp.volunteerCapacity}</td>
                         <td className="px-6 py-4">{getStatusBadge(opp.status)}</td>
                         <td className="px-6 py-4 text-right">
                           <Link to={`/opportunities/${opp._id}`}>
-                            <Button size="sm" variant="outline" className="flex items-center gap-1 ml-auto">
-                              <Eye className="w-4 h-4" /> View
+                            <Button size="sm" variant="outline" className="flex items-center gap-1.5 ml-auto !border-[#E6E8EC] !text-[#354052] hover:!bg-[#F5F1FA] text-xs">
+                              <Eye className="w-4 h-4 text-[#667085]" /> View
                             </Button>
                           </Link>
                         </td>
@@ -163,7 +162,7 @@ const AdminOpportunities = () => {
               />
             </div>
           )}
-        </Card>
+        </div>
       </div>
     </DashboardLayout>
   );

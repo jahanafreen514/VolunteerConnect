@@ -9,7 +9,7 @@ import { userService } from '../../services/userService';
 import Card from '../../components/ui/Card';
 import Badge from '../../components/ui/Badge';
 import EmptyState from '../../components/ui/EmptyState';
-import SkeletonCard from '../../components/ui/SkeletonCard';
+import { SkeletonCard } from '../../components/ui/Skeleton';
 
 const Participation = () => {
   const navigate = useNavigate();
@@ -49,8 +49,10 @@ const Participation = () => {
   return (
     <DashboardLayout sidebar={<VolunteerSidebar />}>
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        <h1 className="text-2xl font-bold text-white mb-2">Participation History</h1>
-        <p className="text-gray-400 mb-6">Track your volunteering hours and attendance.</p>
+        <div className="pastel-card p-6 border border-[#E6E8EC]">
+          <h1 className="text-2xl font-bold text-[#354052]">Participation History</h1>
+          <p className="text-xs text-[#667085] mt-1">Track your verified volunteering hours, attendance, and impact milestones.</p>
+        </div>
 
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -69,43 +71,43 @@ const Participation = () => {
               const status = record.status || 'present';
 
               return (
-                <Card key={record._id} className="flex flex-col h-full hover:border-primary-500/50 transition-colors">
+                <Card key={record._id} className="flex flex-col h-full hover:border-[#BFD8C2] transition-all border border-[#E6E8EC]">
                   <div className="p-5 flex-1">
                     <div className="flex justify-between items-start mb-4">
                       <Badge variant={status === 'present' ? 'success' : status === 'absent' ? 'error' : 'warning'}>
                         {status.charAt(0).toUpperCase() + status.slice(1)}
                       </Badge>
                       {record.certificateIssued && (
-                        <Award className="w-5 h-5 text-yellow-400" />
+                        <Award className="w-5 h-5 text-[#854D27]" />
                       )}
                     </div>
                     
-                    <h3 className="text-lg font-bold text-white mb-1 line-clamp-2">{title}</h3>
-                    <p className="text-sm text-gray-400 mb-4">{ngoName}</p>
+                    <h3 className="text-base font-bold text-[#354052] mb-1 line-clamp-2">{title}</h3>
+                    <p className="text-xs text-[#667085] mb-4">{ngoName}</p>
                     
-                    <div className="space-y-2 text-sm text-gray-300">
+                    <div className="space-y-2 text-xs text-[#667085]">
                       {eventDate && (
                         <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-primary-400" />
+                          <Calendar className="w-3.5 h-3.5 text-[#5b7f63]" />
                           <span>{formatDateSafe(eventDate, 'MMM d, yyyy')}</span>
                         </div>
                       )}
                       {hours > 0 && (
                         <div className="flex items-center gap-2">
-                          <Timer className="w-4 h-4 text-purple-400" />
-                          <span>{hours} hours logged</span>
+                          <Timer className="w-3.5 h-3.5 text-[#8e74d1]" />
+                          <span className="font-semibold text-[#354052]">{hours} hours logged</span>
                         </div>
                       )}
                     </div>
                   </div>
                   
-                  <div className="p-4 border-t border-white/10 bg-white/[0.02] mt-auto">
+                  <div className="p-4 border-t border-[#E6E8EC] bg-[#F5F1FA] mt-auto">
                     {record.certificateIssued ? (
-                      <Link to="/volunteer/certificates" className="text-sm font-medium text-primary-400 hover:text-primary-300 flex items-center justify-center gap-2">
+                      <Link to="/volunteer/certificates" className="text-xs font-semibold text-[#5b7f63] hover:text-[#426048] flex items-center justify-center gap-2">
                         <Award className="w-4 h-4" /> View Certificate
                       </Link>
                     ) : (
-                      <span className="text-sm text-gray-500 flex items-center justify-center gap-2">
+                      <span className="text-xs text-[#667085] flex items-center justify-center gap-2 font-medium">
                         {status === 'present' ? 'Verified Attendance' : 'Attendance Recorded'}
                       </span>
                     )}

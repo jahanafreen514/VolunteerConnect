@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Heart, Menu, X, LogOut, User, Bell, Sparkles, ChevronDown } from 'lucide-react';
+import { Heart, Menu, X, LogOut, User, Bell, ChevronDown, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
-import { useTheme, ThemeToggle } from '../context/ThemeContext';
 import { useScrollPosition } from '../hooks/useScrollPosition';
 import Avatar from '../components/ui/Avatar';
 import NotificationDropdown from '../components/NotificationDropdown';
@@ -13,13 +12,11 @@ const Navbar = () => {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const scrollY = useScrollPosition();
   const { user, logout } = useAuth();
-  const { isDark } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isScrolled = scrollY > 20;
+  const isScrolled = scrollY > 15;
 
-  // Close menus on route change
   useEffect(() => {
     setIsMobileMenuOpen(false);
     setIsProfileMenuOpen(false);
@@ -35,7 +32,6 @@ const Navbar = () => {
       return [
         { label: 'Home', path: '/' },
         { label: 'About', path: '/about' },
-        { label: 'How It Works', path: '/#how-it-works' },
         { label: 'Contact', path: '/contact' },
       ];
     }
@@ -73,27 +69,33 @@ const Navbar = () => {
   const links = getNavLinks();
 
   return (
-    <nav 
+    <header 
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-white/85 dark:bg-[#0b0f19]/85 backdrop-blur-xl border-b border-slate-200/80 dark:border-white/10 py-3 shadow-sm dark:shadow-glass' 
-          : 'bg-transparent py-4'
+          ? 'py-2.5 shadow-soft-sm' 
+          : 'py-3.5'
       }`}
+      style={{
+        background: 'rgba(255, 255, 255, 0.78)',
+        backdropFilter: 'blur(14px)',
+        WebkitBackdropFilter: 'blur(14px)',
+        borderBottom: '1px solid rgba(230, 232, 236, 0.85)'
+      }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="p-2 rounded-xl bg-gradient-to-tr from-primary-500 via-secondary-400 to-accent-400 shadow-glow-sm group-hover:scale-105 transition-all">
-              <Heart className="w-5 h-5 text-white" />
+            <div className="w-9 h-9 rounded-xl bg-[#BFD8C2] border border-[#AFCDB5] flex items-center justify-center shadow-soft-sm group-hover:scale-105 transition-transform">
+              <Heart className="w-5 h-5 text-[#26372B] fill-[#9fc2a6]" />
             </div>
-            <span className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center">
-              Volunteer<span className="gradient-text">Connect</span>
+            <span className="text-lg sm:text-xl font-bold tracking-tight text-[#26372B]">
+              Volunteer<span className="text-[#556e5a]">Connect</span>
             </span>
           </Link>
 
-          {/* Desktop Nav Links */}
-          <div className="hidden lg:flex items-center space-x-1">
+          {/* Desktop Navigation Links */}
+          <nav className="hidden lg:flex items-center space-x-1.5" aria-label="Main Navigation">
             {links.map((link) => {
               const isHash = link.path.includes('#');
               const isActive = !isHash && (location.pathname === link.path || (link.path !== '/' && location.pathname.startsWith(link.path)));
@@ -103,7 +105,7 @@ const Navbar = () => {
                   <a
                     key={link.label}
                     href={link.path}
-                    className="px-3.5 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/70 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/5 transition-all"
+                    className="px-3.5 py-1.5 rounded-full text-xs font-medium text-[#354052] hover:text-[#26372B] hover:bg-black/[0.04] transition-all"
                   >
                     {link.label}
                   </a>
@@ -114,35 +116,33 @@ const Navbar = () => {
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-all ${
+                  className={`px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 ${
                     isActive 
-                      ? 'bg-primary-50 dark:bg-primary-500/15 text-primary-600 dark:text-primary-300 border border-primary-200 dark:border-primary-500/30' 
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/5'
+                      ? 'bg-[#BFD8C2]/45 text-[#26372B] font-semibold border border-[#AFCDB5]/60 shadow-soft-sm' 
+                      : 'text-[#354052] hover:text-[#26372B] hover:bg-black/[0.03]'
                   }`}
                 >
                   {link.label}
                 </Link>
               );
             })}
-          </div>
+          </nav>
 
-          {/* Right Actions */}
+          {/* Desktop Right Actions */}
           <div className="hidden lg:flex items-center gap-3">
-            {/* Theme Switcher Toggle */}
-            <ThemeToggle size="md" />
-
             {user ? (
               <div className="flex items-center gap-3">
                 <NotificationDropdown />
                 
-                {/* Profile dropdown */}
+                {/* Profile menu */}
                 <div className="relative">
                   <button 
                     onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-                    className="flex items-center gap-2 p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-white/5 border border-slate-200 dark:border-white/10 transition-all focus:outline-none"
+                    className="flex items-center gap-2 p-1 rounded-full hover:bg-black/[0.04] border border-[#E6E8EC] transition-all focus:outline-none"
+                    aria-label="User profile options"
                   >
                     <Avatar name={user.name} size="sm" />
-                    <ChevronDown className={`w-3.5 h-3.5 text-slate-400 dark:text-gray-400 transition-transform ${isProfileMenuOpen ? 'rotate-180' : ''}`} />
+                    <ChevronDown className={`w-3.5 h-3.5 text-[#667085] transition-transform mr-1 ${isProfileMenuOpen ? 'rotate-180' : ''}`} />
                   </button>
 
                   <AnimatePresence>
@@ -152,12 +152,12 @@ const Navbar = () => {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 8, scale: 0.96 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute right-0 mt-2 w-56 bg-white/95 dark:bg-[#0d1324]/95 backdrop-blur-2xl border border-slate-200 dark:border-white/10 rounded-2xl shadow-xl dark:shadow-2xl py-2 z-50 overflow-hidden"
+                        className="absolute right-0 mt-2 w-56 bg-white/95 backdrop-blur-2xl border border-[#E6E8EC] rounded-2xl shadow-soft-lg py-2 z-50 overflow-hidden text-left"
                       >
-                        <div className="px-4 py-3 border-b border-slate-200 dark:border-white/10">
-                          <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{user.name}</p>
-                          <p className="text-xs text-slate-500 dark:text-gray-400 truncate">{user.email}</p>
-                          <span className="inline-block mt-1.5 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded-md bg-primary-100 dark:bg-primary-500/20 text-primary-700 dark:text-primary-300 border border-primary-200 dark:border-primary-500/30">
+                        <div className="px-4 py-3 border-b border-[#E6E8EC] bg-[#FFF8EF]/40">
+                          <p className="text-sm font-bold text-[#26372B] truncate">{user.name}</p>
+                          <p className="text-xs text-[#667085] truncate">{user.email}</p>
+                          <span className="inline-block mt-1.5 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded-md bg-[#D8EEE5] text-[#244e44] border border-[#bce1d3]">
                             {user.role}
                           </span>
                         </div>
@@ -165,28 +165,17 @@ const Navbar = () => {
                         <Link 
                           to={`/${user.role}/profile`} 
                           onClick={() => setIsProfileMenuOpen(false)}
-                          className="flex items-center px-4 py-2.5 text-sm text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white transition-colors"
+                          className="flex items-center px-4 py-2.5 text-xs sm:text-sm text-[#354052] hover:bg-black/[0.03] hover:text-[#26372B] transition-colors"
                         >
-                          <User className="w-4 h-4 mr-2.5 text-slate-400 dark:text-gray-400" />
+                          <User className="w-4 h-4 mr-2.5 text-[#667085]" />
                           <span>My Profile</span>
                         </Link>
 
-                        {user.role === 'volunteer' && (
-                          <Link 
-                            to="/volunteer/notifications" 
-                            onClick={() => setIsProfileMenuOpen(false)}
-                            className="flex items-center px-4 py-2.5 text-sm text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white transition-colors"
-                          >
-                            <Bell className="w-4 h-4 mr-2.5 text-slate-400 dark:text-gray-400" />
-                            <span>Notifications</span>
-                          </Link>
-                        )}
-
-                        <div className="border-t border-slate-200 dark:border-white/10 my-1"></div>
+                        <div className="border-t border-[#E6E8EC] my-1"></div>
 
                         <button 
                           onClick={handleLogout}
-                          className="w-full flex items-center px-4 py-2.5 text-sm text-red-500 hover:bg-red-500/10 transition-colors"
+                          className="w-full flex items-center px-4 py-2 text-xs sm:text-sm text-[#8C3B4A] hover:bg-[#F2D6DD]/40 transition-colors"
                         >
                           <LogOut className="w-4 h-4 mr-2.5" />
                           <span>Sign Out</span>
@@ -197,34 +186,33 @@ const Navbar = () => {
                 </div>
               </div>
             ) : (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2.5">
                 <Link
                   to="/login"
-                  className="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/70 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/5 transition-all"
+                  className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-[#354052] hover:text-[#26372B] hover:bg-black/[0.04] transition-all"
                 >
                   Sign In
                 </Link>
                 <Link
                   to="/register"
-                  className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500 hover:opacity-95 shadow-glow-sm transition-all"
+                  className="btn-primary-pastel inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm"
                 >
-                  <Sparkles className="w-4 h-4" />
+                  <Sparkles className="w-3.5 h-3.5" />
                   <span>Get Started</span>
                 </Link>
               </div>
             )}
           </div>
 
-          {/* Mobile Menu Button & Theme Toggle */}
+          {/* Mobile Menu Button */}
           <div className="flex lg:hidden items-center gap-2">
-            <ThemeToggle size="sm" />
             {user && <NotificationDropdown />}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white focus:outline-none"
+              className="p-2 rounded-xl bg-white/80 border border-[#E6E8EC] text-[#354052] hover:text-[#26372B] focus:outline-none shadow-soft-sm"
               aria-label="Toggle mobile menu"
             >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
@@ -237,14 +225,14 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-white/95 dark:bg-[#0b0f19]/95 backdrop-blur-2xl border-b border-slate-200 dark:border-white/10 px-4 pt-3 pb-6 space-y-3 overflow-hidden shadow-lg"
+            className="lg:hidden bg-white/95 backdrop-blur-2xl border-b border-[#E6E8EC] px-4 pt-3 pb-6 space-y-3 overflow-hidden shadow-soft-lg"
           >
             {user && (
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 mb-3">
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-[#FFF8EF]/50 border border-[#E6E8EC] mb-3">
                 <Avatar name={user.name} size="md" />
                 <div className="overflow-hidden">
-                  <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{user.name}</p>
-                  <p className="text-xs text-primary-600 dark:text-primary-400 capitalize">{user.role}</p>
+                  <p className="text-sm font-bold text-[#26372B] truncate">{user.name}</p>
+                  <p className="text-xs text-[#556e5a] capitalize font-medium">{user.role}</p>
                 </div>
               </div>
             )}
@@ -260,7 +248,7 @@ const Navbar = () => {
                       key={link.label}
                       href={link.path}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="block px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5"
+                      className="block px-4 py-2 rounded-xl text-sm font-medium text-[#354052] hover:text-[#26372B] hover:bg-black/[0.03]"
                     >
                       {link.label}
                     </a>
@@ -272,10 +260,10 @@ const Navbar = () => {
                     key={link.path}
                     to={link.path}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`block px-4 py-2.5 rounded-xl text-sm font-medium ${
+                    className={`block px-4 py-2 rounded-xl text-sm font-medium ${
                       isActive 
-                        ? 'bg-primary-50 dark:bg-primary-500/20 text-primary-600 dark:text-primary-300 border border-primary-200 dark:border-primary-500/30' 
-                        : 'text-slate-700 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'
+                        ? 'bg-[#BFD8C2]/45 text-[#26372B] font-semibold border border-[#AFCDB5]/60' 
+                        : 'text-[#354052] hover:text-[#26372B] hover:bg-black/[0.03]'
                     }`}
                   >
                     {link.label}
@@ -287,18 +275,18 @@ const Navbar = () => {
                 <Link
                   to={`/${user.role}/profile`}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5"
+                  className="block px-4 py-2 rounded-xl text-sm font-medium text-[#354052] hover:text-[#26372B] hover:bg-black/[0.03]"
                 >
                   My Profile
                 </Link>
               )}
             </div>
 
-            <div className="pt-3 border-t border-slate-200 dark:border-white/10">
+            <div className="pt-3 border-t border-[#E6E8EC]">
               {user ? (
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-red-500 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-[#8C3B4A] bg-[#F2D6DD]/40 hover:bg-[#F2D6DD]/70 transition-colors"
                 >
                   <LogOut className="w-4 h-4" />
                   <span>Sign Out</span>
@@ -308,14 +296,14 @@ const Navbar = () => {
                   <Link
                     to="/login"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center justify-center px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-gray-300 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10"
+                    className="flex items-center justify-center px-4 py-2.5 rounded-xl text-sm font-medium text-[#354052] bg-white border border-[#E6E8EC] hover:bg-[#FFF8EF]"
                   >
                     Sign In
                   </Link>
                   <Link
                     to="/register"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center justify-center px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-primary-600 hover:bg-primary-500"
+                    className="btn-primary-pastel flex items-center justify-center px-4 py-2.5 rounded-xl text-sm"
                   >
                     Get Started
                   </Link>
@@ -325,7 +313,7 @@ const Navbar = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </header>
   );
 };
 

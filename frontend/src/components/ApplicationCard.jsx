@@ -18,21 +18,21 @@ const ApplicationCard = ({ application, onCancel }) => {
   const status = statusConfig[application?.status] || statusConfig.pending;
 
   return (
-    <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row gap-4 items-start sm:items-center hover:bg-white/8 transition-colors">
-      <div className="w-full sm:w-24 h-24 rounded-xl overflow-hidden shrink-0 bg-gradient-to-br from-primary-600/30 to-purple-600/30">
+    <div className="pastel-card border border-[#E6E8EC] p-4 flex flex-col sm:flex-row gap-4 items-start sm:items-center hover:border-[#BFD8C2] transition-all">
+      <div className="w-full sm:w-24 h-24 rounded-xl overflow-hidden shrink-0 bg-gradient-to-br from-[#D8EEE5] to-[#C9DDF2]">
         {opp.image ? (
           <img src={opp.image} alt={opp.title} className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-primary-400 font-semibold text-xs">
+          <div className="w-full h-full flex items-center justify-center text-[#5b7f63] font-semibold text-xs text-center p-2">
             {opp.category || 'Event'}
           </div>
         )}
       </div>
 
       <div className="flex-1">
-        <h4 className="text-lg font-semibold text-white mb-1 line-clamp-1">{opp.title || 'Volunteer Opportunity'}</h4>
-        <p className="text-sm text-gray-400 mb-2">{ngoName}</p>
-        <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs text-gray-500">
+        <h4 className="text-base font-bold text-[#354052] mb-1 line-clamp-1">{opp.title || 'Volunteer Opportunity'}</h4>
+        <p className="text-xs text-[#667085] mb-2">{ngoName}</p>
+        <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-[#667085]">
           <span>Applied: {formatDateSafe(application?.appliedAt || application?.createdAt, 'MMM d, yyyy')}</span>
           <span>Event: {formatDateSafe(opp.eventDate || opp.date, 'MMM d, yyyy')}</span>
         </div>
@@ -45,9 +45,9 @@ const ApplicationCard = ({ application, onCancel }) => {
             variant="ghost" 
             size="sm" 
             onClick={() => onCancel(application._id)}
-            className="text-red-400 hover:text-red-300 hover:bg-red-500/10 px-2"
+            className="text-[#9B5B65] hover:text-[#7f3e48] hover:bg-[#F2D6DD]/40 px-2 text-xs"
           >
-            <Trash2 className="w-4 h-4 mr-1" />
+            <Trash2 className="w-3.5 h-3.5 mr-1" />
             Cancel
           </Button>
         )}

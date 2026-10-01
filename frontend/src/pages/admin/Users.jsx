@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Search, UserCheck, UserX, User } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { format } from 'date-fns';
 import { formatDateSafe } from '../../utils/date';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import AdminSidebar from '../../components/layouts/AdminSidebar';
@@ -10,7 +9,6 @@ import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Badge from '../../components/ui/Badge';
 import Avatar from '../../components/ui/Avatar';
-import Input from '../../components/ui/Input';
 import SkeletonTable from '../../components/ui/SkeletonTable';
 import ConfirmDialog from '../../components/ui/ConfirmDialog';
 import EmptyState from '../../components/ui/EmptyState';
@@ -67,41 +65,41 @@ const Users = () => {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-white">User Management</h1>
-            <p className="text-gray-400 mt-1">Manage volunteers, NGOs, and admins.</p>
+            <h1 className="text-2xl font-bold text-[#354052]">User Management</h1>
+            <p className="text-[#667085] mt-1 text-sm">Directory of registered volunteers, NGOs, and platform administrators.</p>
           </div>
           
           <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
             <div className="relative w-full sm:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#667085]" />
               <input
                 type="text"
                 placeholder="Search by name or email..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-white focus:ring-2 focus:ring-primary-500 outline-none text-sm"
+                className="w-full bg-white border border-[#E6E8EC] rounded-xl pl-10 pr-4 py-2 text-[#354052] focus:border-[#BFD8C2] focus:ring-2 focus:ring-[#BFD8C2]/40 outline-none text-sm shadow-soft-sm transition-all"
               />
             </div>
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white text-sm focus:ring-2 focus:ring-primary-500 outline-none"
+              className="bg-white border border-[#E6E8EC] rounded-xl px-4 py-2 text-[#354052] text-sm focus:border-[#BFD8C2] focus:ring-2 focus:ring-[#BFD8C2]/40 outline-none shadow-soft-sm transition-all"
             >
-              <option value="" className="bg-gray-900">All Roles</option>
-              <option value="volunteer" className="bg-gray-900">Volunteers</option>
-              <option value="ngo" className="bg-gray-900">NGOs</option>
-              <option value="admin" className="bg-gray-900">Admins</option>
+              <option value="" className="text-[#667085]">All Roles</option>
+              <option value="volunteer" className="text-[#354052]">Volunteers</option>
+              <option value="ngo" className="text-[#354052]">NGOs</option>
+              <option value="admin" className="text-[#354052]">Admins</option>
             </select>
           </div>
         </div>
 
-        <Card className="overflow-hidden">
+        <div className="pastel-card overflow-hidden">
           {loading ? (
             <div className="p-6"><SkeletonTable columns={5} rows={8} /></div>
           ) : users.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-gray-300">
-                <thead className="bg-white/5 text-gray-400 uppercase text-xs">
+              <table className="w-full text-left text-sm text-[#354052]">
+                <thead className="bg-[#F5F1FA]/80 text-[#667085] uppercase text-xs font-semibold border-b border-[#E6E8EC]">
                   <tr>
                     <th className="px-6 py-4">User</th>
                     <th className="px-6 py-4">Role</th>
@@ -110,26 +108,26 @@ const Users = () => {
                     <th className="px-6 py-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <tbody className="divide-y divide-[#E6E8EC]">
                   {users.map((user) => (
-                    <tr key={user._id} className="hover:bg-white/[0.02]">
+                    <tr key={user._id} className="hover:bg-[#F9FBF9] transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <Avatar src={user.profileImage} alt={user.name} size="sm" />
                           <div>
-                            <p className="font-medium text-white">{user.name}</p>
-                            <p className="text-xs text-gray-500">{user.email}</p>
+                            <p className="font-semibold text-[#354052]">{user.name}</p>
+                            <p className="text-xs text-[#667085]">{user.email}</p>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <Badge variant={user.role === 'admin' ? 'primary' : user.role === 'ngo' ? 'warning' : 'default'} className="uppercase">
+                        <Badge variant={user.role === 'admin' ? 'primary' : user.role === 'ngo' ? 'warning' : 'default'} className="uppercase font-semibold text-xs">
                           {user.role}
                         </Badge>
                       </td>
-                      <td className="px-6 py-4 text-gray-400">{formatDateSafe(user.createdAt, 'MMM d, yyyy')}</td>
+                      <td className="px-6 py-4 text-[#667085]">{formatDateSafe(user.createdAt, 'MMM d, yyyy')}</td>
                       <td className="px-6 py-4">
-                        <Badge variant={user.isActive !== false ? 'success' : 'error'}>
+                        <Badge variant={user.isActive !== false ? 'success' : 'error'} className="font-medium text-xs">
                           {user.isActive !== false ? 'Active' : 'Inactive'}
                         </Badge>
                       </td>
@@ -138,10 +136,12 @@ const Users = () => {
                           <Button 
                             size="sm" 
                             variant="outline" 
-                            className={user.isActive !== false ? 'border-red-500/30 text-red-400 hover:bg-red-500/10' : 'border-green-500/30 text-green-400 hover:bg-green-500/10'}
+                            className={user.isActive !== false 
+                              ? '!border-[#F2D6DD] !text-[#9A3445] hover:!bg-[#F2D6DD]/30 text-xs' 
+                              : '!border-[#BFD8C2] !text-[#26372B] hover:!bg-[#D8EEE5] text-xs'}
                             onClick={() => setActionDialog({ isOpen: true, id: user._id, isActive: user.isActive !== false })}
                           >
-                            {user.isActive !== false ? <UserX className="w-4 h-4 mr-1" /> : <UserCheck className="w-4 h-4 mr-1" />}
+                            {user.isActive !== false ? <UserX className="w-3.5 h-3.5 mr-1" /> : <UserCheck className="w-3.5 h-3.5 mr-1" />}
                             {user.isActive !== false ? 'Deactivate' : 'Activate'}
                           </Button>
                         )}
@@ -160,7 +160,7 @@ const Users = () => {
               />
             </div>
           )}
-        </Card>
+        </div>
       </div>
 
       <ConfirmDialog

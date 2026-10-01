@@ -121,26 +121,26 @@ const NGODashboard = () => {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         
         {profile?.verificationStatus === 'pending' && (
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 flex items-start sm:items-center gap-3">
-            <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5 sm:mt-0" />
+          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="bg-[#FFF8EF] border border-[#F6D8C5] rounded-2xl p-4 flex items-start sm:items-center gap-3">
+            <AlertTriangle className="w-5 h-5 text-[#854D27] flex-shrink-0 mt-0.5 sm:mt-0" />
             <div className="flex-1">
-              <h3 className="text-amber-500 font-medium text-sm">Verification Pending</h3>
-              <p className="text-amber-500/80 text-xs mt-1">Your NGO profile is currently under review by administrators. Some features like creating opportunities may be restricted until verified.</p>
+              <h3 className="text-[#854D27] font-semibold text-sm">Verification Pending</h3>
+              <p className="text-[#854D27]/80 text-xs mt-1">Your NGO profile is currently under review by administrators. Some features like creating opportunities may be restricted until verified.</p>
             </div>
             <Link to="/ngo/profile">
-              <Button size="sm" variant="outline" className="border-amber-500/30 text-amber-500 hover:bg-amber-500/10">View Profile</Button>
+              <Button size="sm" variant="outline" className="border-[#F6D8C5] text-[#854D27] hover:bg-[#FFF8EF]">View Profile</Button>
             </Link>
           </motion.div>
         )}
 
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pastel-card p-6 border border-[#E6E8EC]">
           <div>
-            <h1 className="text-2xl font-bold text-white">Dashboard Overview</h1>
-            <p className="text-gray-400 mt-1">{profile?.organizationName || 'Welcome to your NGO dashboard'}</p>
+            <h1 className="text-2xl font-bold text-[#354052]">Dashboard Overview</h1>
+            <p className="text-[#667085] mt-1 text-sm">{profile?.organizationName || 'Welcome to your NGO dashboard'}</p>
           </div>
           {profile?.verificationStatus === 'approved' && (
             <Link to="/ngo/opportunities/create">
-              <Button className="flex items-center gap-2"><Briefcase className="w-4 h-4" /> Create Opportunity</Button>
+              <Button className="flex items-center gap-2 btn-primary-pastel"><Briefcase className="w-4 h-4" /> Create Opportunity</Button>
             </Link>
           )}
         </div>
@@ -164,15 +164,15 @@ const NGODashboard = () => {
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                <Newspaper className="w-5 h-5 text-primary-400" />
+              <h2 className="text-lg font-semibold text-[#354052] flex items-center gap-2">
+                <Newspaper className="w-5 h-5 text-[#8e74d1]" />
                 Nearby Real-World Events & Community Needs
               </h2>
-              <p className="text-xs text-gray-400 mt-0.5">
+              <p className="text-xs text-[#667085] mt-0.5">
                 Real-time humanitarian reports and local situations detected in your region. Lead volunteer action or confirm community needs.
               </p>
             </div>
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-[#667085]">
               {newsEvents.length} event{newsEvents.length !== 1 ? 's' : ''} detected
             </span>
           </div>
@@ -184,27 +184,27 @@ const NGODashboard = () => {
                 return (
                   <div
                     key={ev._id}
-                    className="p-5 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl flex flex-col justify-between hover:border-white/20 transition-all space-y-4"
+                    className="p-5 pastel-card border border-[#E6E8EC] flex flex-col justify-between hover:border-[#DDD5F3] transition-all space-y-4"
                   >
                     <div>
                       <div className="flex items-start justify-between gap-2 mb-2">
-                        <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-500/20 text-red-400 border border-red-500/30 uppercase tracking-wider">
+                        <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#F2D6DD] text-[#9B5B65] border border-[#F2D6DD] uppercase tracking-wider">
                           {ev.event_type?.replace('_', ' ') || 'Emergency Alert'}
                         </span>
                         {ev.distanceKm !== undefined && (
-                          <span className="text-xs text-emerald-400 font-medium flex items-center gap-1 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                            <Navigation className="w-3 h-3" />
+                          <span className="text-xs text-[#26372B] font-medium flex items-center gap-1 bg-[#D8EEE5] px-2.5 py-0.5 rounded-full border border-[#BFD8C2]">
+                            <Navigation className="w-3 h-3 text-[#5b7f63]" />
                             {ev.distanceKm < 1 ? '< 1 km from you' : `${ev.distanceKm.toFixed(1)} km from your organization`}
                           </span>
                         )}
                       </div>
 
-                      <h3 className="text-base font-semibold text-white mb-1.5">{ev.title}</h3>
-                      <p className="text-xs text-gray-300 line-clamp-2 mb-3">{ev.summary}</p>
+                      <h3 className="text-base font-semibold text-[#354052] mb-1.5">{ev.title}</h3>
+                      <p className="text-xs text-[#667085] line-clamp-2 mb-3 leading-relaxed">{ev.summary}</p>
 
-                      <div className="flex flex-wrap items-center gap-4 text-xs text-gray-400 mb-3">
-                        <span className="flex items-center gap-1 text-gray-300">
-                          <MapPin className="w-3.5 h-3.5 text-gray-400" />
+                      <div className="flex flex-wrap items-center gap-4 text-xs text-[#667085] mb-3">
+                        <span className="flex items-center gap-1 text-[#354052]">
+                          <MapPin className="w-3.5 h-3.5 text-[#5b7f63]" />
                           {[ev.location?.city, ev.location?.state].filter(Boolean).join(', ') || 'Local Region'}
                         </span>
                         {ev.source_name && (
@@ -212,7 +212,7 @@ const NGODashboard = () => {
                             href={ev.source_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-primary-400 hover:text-primary-300 underline"
+                            className="flex items-center gap-1 text-[#5b7f63] hover:text-[#426048] underline font-medium"
                           >
                             <span>{ev.source_name}</span>
                             <ExternalLink className="w-3 h-3" />
@@ -221,11 +221,11 @@ const NGODashboard = () => {
                       </div>
 
                       {ev.potential_activities && ev.potential_activities.length > 0 && (
-                        <div className="p-3 bg-white/[0.03] rounded-xl border border-white/5 text-xs text-gray-300">
-                          <strong className="text-gray-200 block mb-1">Potential volunteer support:</strong>
+                        <div className="p-3 bg-[#F5F1FA] rounded-xl border border-[#E6E8EC] text-xs text-[#354052]">
+                          <strong className="text-[#354052] block mb-1">Potential volunteer support:</strong>
                           <div className="flex flex-wrap gap-1.5">
                             {ev.potential_activities.map((act, idx) => (
-                              <span key={idx} className="px-2 py-0.5 rounded-md bg-white/5 text-gray-300 border border-white/10 text-[11px]">
+                              <span key={idx} className="px-2 py-0.5 rounded-md bg-white text-[#354052] border border-[#E6E8EC] text-[11px]">
                                 {act}
                               </span>
                             ))}
@@ -234,24 +234,24 @@ const NGODashboard = () => {
                       )}
                     </div>
 
-                    <div className="flex items-center justify-between gap-3 pt-3 border-t border-white/10">
+                    <div className="flex items-center justify-between gap-3 pt-3 border-t border-[#E6E8EC]">
                       <div className="flex items-center gap-2">
                         {isConfirmed ? (
-                          <span className="text-xs text-emerald-400 flex items-center gap-1 font-medium">
-                            <CheckCircle className="w-3.5 h-3.5" /> Confirmed / Adopted
+                          <span className="text-xs text-[#26372B] bg-[#D8EEE5] px-2.5 py-1 rounded-lg border border-[#BFD8C2] flex items-center gap-1 font-medium">
+                            <CheckCircle className="w-3.5 h-3.5 text-[#5b7f63]" /> Confirmed / Adopted
                           </span>
                         ) : (
                           <button
                             onClick={() => handleConfirmEvent(ev)}
                             disabled={adoptingId === ev._id}
-                            className="px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-medium transition-all"
+                            className="px-3 py-1.5 rounded-lg bg-[#D8EEE5] hover:bg-[#BFD8C2] text-[#26372B] border border-[#BFD8C2] text-xs font-medium transition-all"
                           >
                             {adoptingId === ev._id ? 'Confirming...' : 'Confirm Need'}
                           </button>
                         )}
                         <button
                           onClick={() => handleDismissEvent(ev._id)}
-                          className="px-2.5 py-1.5 text-xs text-gray-400 hover:text-gray-200 transition-colors"
+                          className="px-2.5 py-1.5 text-xs text-[#667085] hover:text-[#354052] transition-colors"
                         >
                           Dismiss
                         </button>
@@ -259,7 +259,7 @@ const NGODashboard = () => {
 
                       <button
                         onClick={() => navigate(`/ngo/opportunities/create?adoptEvent=${ev._id}&title=${encodeURIComponent(ev.title)}&description=${encodeURIComponent(ev.summary)}&category=Disaster Relief&city=${encodeURIComponent(ev.location?.city || '')}&lat=${ev.location?.latitude || ''}&lng=${ev.location?.longitude || ''}`)}
-                        className="px-3.5 py-1.5 rounded-lg bg-primary-600 hover:bg-primary-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-all shadow-glow-sm"
+                        className="px-3.5 py-1.5 rounded-xl bg-[#AFCDB5] hover:bg-[#9ebfa5] text-[#26372B] text-xs font-semibold flex items-center gap-1.5 transition-all shadow-soft-sm"
                       >
                         <Sparkles className="w-3.5 h-3.5" />
                         <span>Create Opportunity</span>
@@ -270,7 +270,7 @@ const NGODashboard = () => {
               })}
             </div>
           ) : (
-            <Card className="p-6 text-center text-gray-400 text-xs">
+            <Card className="p-6 text-center text-[#667085] text-xs">
               No immediate disaster or community alerts within your organization's proximity. We automatically scan public feeds every 30 minutes.
             </Card>
           )}
@@ -279,19 +279,19 @@ const NGODashboard = () => {
         {/* Recent Pending Applications */}
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-              <Users className="w-5 h-5 text-primary-400" /> Pending Applications
+            <h2 className="text-lg font-semibold text-[#354052] flex items-center gap-2">
+              <Users className="w-5 h-5 text-[#8e74d1]" /> Pending Applications
             </h2>
-            <Link to="/ngo/applications" className="text-sm text-primary-400 hover:text-primary-300">View All</Link>
+            <Link to="/ngo/applications" className="text-xs font-semibold text-[#5b7f63] hover:text-[#426048]">View All</Link>
           </div>
           
           <Card className="overflow-hidden">
             {loading ? (
-              <div className="p-8 text-center text-gray-400">Loading...</div>
+              <div className="p-8 text-center text-[#667085]">Loading...</div>
             ) : recentApps.length > 0 ? (
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm text-gray-300">
-                  <thead className="bg-white/5 text-gray-400 uppercase text-xs">
+                <table className="w-full text-left text-sm text-[#354052]">
+                  <thead className="bg-[#F5F1FA] text-[#667085] uppercase text-xs border-b border-[#E6E8EC]">
                     <tr>
                       <th className="px-6 py-4">Volunteer</th>
                       <th className="px-6 py-4">Opportunity</th>
@@ -299,7 +299,7 @@ const NGODashboard = () => {
                       <th className="px-6 py-4 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/5">
+                  <tbody className="divide-y divide-[#E6E8EC]">
                     {recentApps.map((app) => {
                       const vol = app.volunteerId || app.user || {};
                       const opp = app.opportunityId || app.opportunity || {};
@@ -309,24 +309,24 @@ const NGODashboard = () => {
                       const appDate = app.appliedAt || app.createdAt;
 
                       return (
-                        <tr key={app._id} className="hover:bg-white/[0.02]">
+                        <tr key={app._id} className="hover:bg-[#FFF8EF]/50 transition-colors">
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
                               <Avatar src={vol.profileImage} alt={volName} size="sm" />
                               <div>
-                                <p className="font-medium text-white">{volName}</p>
-                                <p className="text-xs text-gray-500">{volEmail}</p>
+                                <p className="font-semibold text-[#354052]">{volName}</p>
+                                <p className="text-xs text-[#667085]">{volEmail}</p>
                               </div>
                             </div>
                           </td>
-                          <td className="px-6 py-4 text-white font-medium">{oppTitle}</td>
-                          <td className="px-6 py-4 text-gray-400">{formatDateSafe(appDate, 'MMM d, yyyy')}</td>
+                          <td className="px-6 py-4 text-[#354052] font-medium">{oppTitle}</td>
+                          <td className="px-6 py-4 text-[#667085] text-xs">{formatDateSafe(appDate, 'MMM d, yyyy')}</td>
                           <td className="px-6 py-4 text-right space-x-2">
-                            <Button size="sm" variant="outline" className="border-green-500/30 text-green-400 hover:bg-green-500/10" onClick={() => setActionDialog({ isOpen: true, id: app._id, action: 'accepted' })}>
-                              <CheckCircle className="w-4 h-4 mr-1" /> Accept
+                            <Button size="sm" variant="outline" className="border-[#BFD8C2] bg-[#D8EEE5] text-[#26372B] hover:bg-[#BFD8C2]" onClick={() => setActionDialog({ isOpen: true, id: app._id, action: 'accepted' })}>
+                              <CheckCircle className="w-4 h-4 mr-1 text-[#5b7f63]" /> Accept
                             </Button>
-                            <Button size="sm" variant="outline" className="border-red-500/30 text-red-400 hover:bg-red-500/10" onClick={() => setActionDialog({ isOpen: true, id: app._id, action: 'rejected' })}>
-                              <XCircle className="w-4 h-4 mr-1" /> Reject
+                            <Button size="sm" variant="outline" className="border-[#F2D6DD] bg-[#F2D6DD]/60 text-[#9B5B65] hover:bg-[#F2D6DD]" onClick={() => setActionDialog({ isOpen: true, id: app._id, action: 'rejected' })}>
+                              <XCircle className="w-4 h-4 mr-1 text-[#9B5B65]" /> Reject
                             </Button>
                           </td>
                         </tr>
@@ -341,16 +341,16 @@ const NGODashboard = () => {
           </Card>
         </div>
 
-        {/* Active & Registered Volunteers (Phase 6 & 7) */}
+        {/* Active & Registered Volunteers */}
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                <UserCheck className="w-5 h-5 text-emerald-400" /> Active & Registered Volunteers
+              <h2 className="text-lg font-semibold text-[#354052] flex items-center gap-2">
+                <UserCheck className="w-5 h-5 text-[#5b7f63]" /> Active & Registered Volunteers
               </h2>
-              <p className="text-xs text-gray-400 mt-0.5">Volunteers who registered for your initiatives</p>
+              <p className="text-xs text-[#667085] mt-0.5">Volunteers who registered for your initiatives</p>
             </div>
-            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#D8EEE5] text-[#26372B] border border-[#BFD8C2]">
               {activeVolunteers.length} Active
             </span>
           </div>
@@ -358,8 +358,8 @@ const NGODashboard = () => {
           <Card className="overflow-hidden">
             {activeVolunteers.length > 0 ? (
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm text-gray-300">
-                  <thead className="bg-white/5 text-gray-400 uppercase text-xs">
+                <table className="w-full text-left text-sm text-[#354052]">
+                  <thead className="bg-[#F5F1FA] text-[#667085] uppercase text-xs border-b border-[#E6E8EC]">
                     <tr>
                       <th className="px-6 py-4">Volunteer</th>
                       <th className="px-6 py-4">Opportunity & Category</th>
@@ -368,27 +368,27 @@ const NGODashboard = () => {
                       <th className="px-6 py-4 text-right">Details</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/5">
+                  <tbody className="divide-y divide-[#E6E8EC]">
                     {activeVolunteers.map((vol) => (
-                      <tr key={vol.applicationId || vol.volunteerId} className="hover:bg-white/[0.02] transition-colors">
+                      <tr key={vol.applicationId || vol.volunteerId} className="hover:bg-[#FFF8EF]/50 transition-colors">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             <Avatar src={vol.profileImage} alt={vol.name} size="sm" />
                             <div>
-                              <p className="font-medium text-white">{vol.name}</p>
-                              <p className="text-xs text-gray-400">{vol.availability || 'Available'}</p>
+                              <p className="font-semibold text-[#354052]">{vol.name}</p>
+                              <p className="text-xs text-[#667085]">{vol.availability || 'Available'}</p>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <p className="text-white font-medium">{vol.opportunityTitle}</p>
-                          <span className="inline-block text-[11px] px-2 py-0.5 mt-0.5 rounded-full bg-primary-500/20 text-primary-300 border border-primary-500/30 capitalize">
+                          <p className="text-[#354052] font-medium">{vol.opportunityTitle}</p>
+                          <span className="inline-block text-[11px] px-2 py-0.5 mt-0.5 rounded-full bg-[#DDD5F3] text-[#30264A] border border-[#DDD5F3] capitalize">
                             {vol.category}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-gray-300">
+                        <td className="px-6 py-4 text-[#667085]">
                           <div className="flex items-center gap-1.5">
-                            <MapPin className="w-3.5 h-3.5 text-primary-400 shrink-0" />
+                            <MapPin className="w-3.5 h-3.5 text-[#5b7f63] shrink-0" />
                             <span>{vol.location}</span>
                           </div>
                         </td>
@@ -401,10 +401,10 @@ const NGODashboard = () => {
                           <Button 
                             size="sm" 
                             variant="outline" 
-                            className="border-white/20 text-gray-200 hover:text-white"
+                            className="border-[#E6E8EC] text-[#354052] hover:bg-[#F5F1FA]"
                             onClick={() => setSelectedVolunteer(vol)}
                           >
-                            <Eye className="w-3.5 h-3.5 mr-1" /> View Profile
+                            <Eye className="w-3.5 h-3.5 mr-1 text-[#5b7f63]" /> View Profile
                           </Button>
                         </td>
                       </tr>
@@ -422,14 +422,14 @@ const NGODashboard = () => {
           </Card>
         </div>
 
-        {/* Suggested Volunteers for NGOs (Phase 8) */}
+        {/* Suggested Volunteers for NGOs */}
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-amber-400" /> Suggested Volunteers
+              <h2 className="text-lg font-semibold text-[#354052] flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-[#854D27]" /> Suggested Volunteers
               </h2>
-              <p className="text-xs text-gray-400 mt-0.5">Matched based on proximity, cause categories, skills, and availability</p>
+              <p className="text-xs text-[#667085] mt-0.5">Matched based on proximity, cause categories, skills, and availability</p>
             </div>
           </div>
 
@@ -440,22 +440,22 @@ const NGODashboard = () => {
                 return (
                   <div 
                     key={vol._id} 
-                    className="p-5 rounded-2xl bg-white/[0.04] backdrop-blur-xl border border-white/10 hover:border-primary-500/40 transition-all flex flex-col justify-between group"
+                    className="p-5 rounded-2xl pastel-card border border-[#E6E8EC] hover:border-[#DDD5F3] transition-all flex flex-col justify-between group"
                   >
                     <div>
                       <div className="flex items-start justify-between gap-3 mb-3">
                         <div className="flex items-center gap-3">
                           <Avatar src={vol.profileImage} alt={vol.name} size="md" />
                           <div>
-                            <h4 className="text-base font-bold text-white group-hover:text-primary-300 transition-colors">{vol.name}</h4>
-                            <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
-                              <MapPin className="w-3 h-3 text-emerald-400" />
+                            <h4 className="text-base font-bold text-[#354052] group-hover:text-[#5b7f63] transition-colors">{vol.name}</h4>
+                            <p className="text-xs text-[#667085] flex items-center gap-1 mt-0.5">
+                              <MapPin className="w-3 h-3 text-[#5b7f63]" />
                               <span>{vol.location}</span>
                             </p>
                           </div>
                         </div>
                         {vol.matchScore > 0 && (
-                          <span className="px-2 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shrink-0">
+                          <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#D8EEE5] text-[#26372B] border border-[#BFD8C2] shrink-0">
                             {vol.matchScore}% Match
                           </span>
                         )}
@@ -463,7 +463,7 @@ const NGODashboard = () => {
 
                       {/* Match reason notice */}
                       {vol.matchReasons && vol.matchReasons.length > 0 && (
-                        <p className="text-[11px] text-amber-300/90 mb-3 bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20">
+                        <p className="text-[11px] text-[#854D27] mb-3 bg-[#FFF8EF] px-2.5 py-1 rounded-lg border border-[#F6D8C5]">
                           {vol.matchReasons[0]}
                         </p>
                       )}
@@ -472,37 +472,37 @@ const NGODashboard = () => {
                       <div className="space-y-2 mb-4">
                         {vol.skills && vol.skills.length > 0 && (
                           <div>
-                            <span className="text-[11px] text-gray-400 uppercase tracking-wider block mb-1">Skills:</span>
+                            <span className="text-[11px] text-[#667085] uppercase tracking-wider block mb-1 font-semibold">Skills:</span>
                             <div className="flex flex-wrap gap-1.5">
                               {vol.skills.slice(0, 3).map((skill, idx) => (
-                                <span key={idx} className="px-2 py-0.5 rounded-md bg-white/5 text-gray-300 border border-white/10 text-xs">
+                                <span key={idx} className="px-2 py-0.5 rounded-md bg-[#F5F1FA] text-[#354052] border border-[#E6E8EC] text-xs">
                                   {skill}
                                 </span>
                               ))}
                               {vol.skills.length > 3 && (
-                                <span className="px-2 py-0.5 text-xs text-gray-500">+{vol.skills.length - 3}</span>
+                                <span className="px-2 py-0.5 text-xs text-[#667085]">+{vol.skills.length - 3}</span>
                               )}
                             </div>
                           </div>
                         )}
 
                         {vol.availability && (
-                          <p className="text-xs text-gray-400">
-                            <span className="text-gray-500">Availability:</span> <strong className="text-gray-300">{vol.availability}</strong>
+                          <p className="text-xs text-[#667085]">
+                            <span className="text-[#667085]">Availability:</span> <strong className="text-[#354052] font-semibold">{vol.availability}</strong>
                           </p>
                         )}
                       </div>
                     </div>
 
                     {/* Actions */}
-                    <div className="flex items-center gap-2 pt-3 border-t border-white/10">
+                    <div className="flex items-center gap-2 pt-3 border-t border-[#E6E8EC]">
                       <Button 
                         size="sm" 
                         variant="outline" 
-                        className="flex-1 text-xs" 
+                        className="flex-1 text-xs border-[#E6E8EC] text-[#354052] hover:bg-[#F5F1FA]" 
                         onClick={() => setSelectedVolunteer(vol)}
                       >
-                        <Eye className="w-3.5 h-3.5 mr-1" /> View Profile
+                        <Eye className="w-3.5 h-3.5 mr-1 text-[#5b7f63]" /> View Profile
                       </Button>
                       <Button 
                         size="sm" 
@@ -516,7 +516,7 @@ const NGODashboard = () => {
                       >
                         {isInvited ? (
                           <>
-                            <CheckCircle className="w-3.5 h-3.5 mr-1 text-emerald-400" /> Invited
+                            <CheckCircle className="w-3.5 h-3.5 mr-1 text-[#5b7f63]" /> Invited
                           </>
                         ) : (
                           <>
@@ -530,20 +530,20 @@ const NGODashboard = () => {
               })}
             </div>
           ) : (
-            <Card className="p-6 text-center text-gray-400 text-xs">
+            <Card className="p-6 text-center text-[#667085] text-xs">
               Complete your organization's causes in profile to see personalized volunteer recommendations.
             </Card>
           )}
         </div>
       </div>
 
-      {/* Volunteer Profile Modal (Phase 7 - Privacy Safe) */}
+      {/* Volunteer Profile Modal */}
       {selectedVolunteer && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
-          <div className="bg-[#0c1230] border border-white/15 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#354052]/40 backdrop-blur-sm">
+          <div className="bg-white border border-[#E6E8EC] rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-soft-hover relative animate-in fade-in zoom-in-95 duration-200">
             <button 
               onClick={() => setSelectedVolunteer(null)}
-              className="absolute top-5 right-5 p-2 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+              className="absolute top-5 right-5 p-2 rounded-full text-[#667085] hover:text-[#354052] hover:bg-[#F5F1FA] transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -551,20 +551,20 @@ const NGODashboard = () => {
             <div className="flex items-center gap-4 mb-6">
               <Avatar src={selectedVolunteer.profileImage} alt={selectedVolunteer.name} size="lg" />
               <div>
-                <h3 className="text-xl font-bold text-white">{selectedVolunteer.name}</h3>
-                <p className="text-xs text-emerald-400 flex items-center gap-1 mt-0.5">
+                <h3 className="text-xl font-bold text-[#354052]">{selectedVolunteer.name}</h3>
+                <p className="text-xs text-[#5b7f63] flex items-center gap-1 mt-0.5 font-medium">
                   <MapPin className="w-3.5 h-3.5" />
                   <span>{selectedVolunteer.location || 'Location upon participation'}</span>
                 </p>
-                <p className="text-xs text-gray-400 mt-0.5">
-                  Availability: <strong className="text-gray-200">{selectedVolunteer.availability || 'Weekends'}</strong>
+                <p className="text-xs text-[#667085] mt-0.5">
+                  Availability: <strong className="text-[#354052]">{selectedVolunteer.availability || 'Weekends'}</strong>
                 </p>
               </div>
             </div>
 
             {selectedVolunteer.bio && (
-              <div className="mb-5 p-3.5 rounded-2xl bg-white/[0.03] border border-white/5 text-xs text-gray-300 leading-relaxed">
-                <span className="block text-[11px] font-semibold uppercase tracking-wider text-primary-300 mb-1">About the Volunteer</span>
+              <div className="mb-5 p-3.5 rounded-2xl bg-[#F5F1FA] border border-[#E6E8EC] text-xs text-[#667085] leading-relaxed">
+                <span className="block text-[11px] font-semibold uppercase tracking-wider text-[#354052] mb-1">About the Volunteer</span>
                 {selectedVolunteer.bio}
               </div>
             )}
@@ -572,10 +572,10 @@ const NGODashboard = () => {
             <div className="space-y-4 text-xs">
               {selectedVolunteer.skills && selectedVolunteer.skills.length > 0 && (
                 <div>
-                  <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block mb-1.5">Skills</span>
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-[#667085] block mb-1.5">Skills</span>
                   <div className="flex flex-wrap gap-1.5">
                     {selectedVolunteer.skills.map((s, idx) => (
-                      <span key={idx} className="px-2.5 py-1 rounded-lg bg-primary-500/15 text-primary-300 border border-primary-500/25">
+                      <span key={idx} className="px-2.5 py-1 rounded-lg bg-[#D8EEE5] text-[#26372B] border border-[#BFD8C2]">
                         {s}
                       </span>
                     ))}
@@ -585,10 +585,10 @@ const NGODashboard = () => {
 
               {selectedVolunteer.interests && selectedVolunteer.interests.length > 0 && (
                 <div>
-                  <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block mb-1.5">Interests & Causes</span>
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-[#667085] block mb-1.5">Interests & Causes</span>
                   <div className="flex flex-wrap gap-1.5">
                     {selectedVolunteer.interests.map((intr, idx) => (
-                      <span key={idx} className="px-2.5 py-1 rounded-lg bg-secondary-500/15 text-secondary-300 border border-secondary-500/25">
+                      <span key={idx} className="px-2.5 py-1 rounded-lg bg-[#DDD5F3] text-[#30264A] border border-[#DDD5F3]">
                         {intr}
                       </span>
                     ))}
@@ -597,18 +597,19 @@ const NGODashboard = () => {
               )}
             </div>
 
-            <div className="mt-8 pt-4 border-t border-white/10 flex justify-end gap-3">
+            <div className="mt-8 pt-4 border-t border-[#E6E8EC] flex justify-end gap-3">
               <Button 
                 variant="outline" 
                 size="sm" 
                 onClick={() => setSelectedVolunteer(null)}
+                className="border-[#E6E8EC] text-[#354052] hover:bg-[#F5F1FA]"
               >
                 Close
               </Button>
               {selectedVolunteer.email && (
                 <a 
                   href={`mailto:${selectedVolunteer.email}`} 
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary-600 hover:bg-primary-500 text-white text-xs font-semibold shadow-glow-sm transition-all"
+                  className="btn-primary-pastel inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold shadow-soft-sm"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>Contact Volunteer</span>

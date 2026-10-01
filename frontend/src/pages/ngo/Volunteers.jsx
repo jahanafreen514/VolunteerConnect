@@ -87,15 +87,15 @@ const NGOVolunteers = () => {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         
         {/* Top Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pastel-card p-6 border border-[#E6E8EC]">
           <div>
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-glow-sm">
-                <UserCheck className="w-6 h-6" />
+              <div className="p-2.5 rounded-2xl bg-[#D8EEE5] text-[#26372B] border border-[#BFD8C2] shadow-soft-sm">
+                <UserCheck className="w-6 h-6 text-[#5b7f63]" />
               </div>
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">Active Volunteers</h1>
-                <p className="text-sm text-gray-400 mt-0.5">
+                <h1 className="text-2xl sm:text-3xl font-bold text-[#354052] tracking-tight">Active Volunteers</h1>
+                <p className="text-sm text-[#667085] mt-0.5">
                   Direct directory of registered volunteers, active civic champions, and community network talent.
                 </p>
               </div>
@@ -103,7 +103,7 @@ const NGOVolunteers = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+            <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-[#D8EEE5] text-[#26372B] border border-[#BFD8C2]">
               {volunteers.length} Active in Network
             </span>
           </div>
@@ -111,48 +111,48 @@ const NGOVolunteers = () => {
 
         {/* Quick Summary Metrics */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="p-4 rounded-2xl bg-white/[0.03] backdrop-blur-xl border border-white/10 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary-500/20 text-primary-400 flex items-center justify-center font-bold">
-              <Users className="w-5 h-5" />
+          <div className="p-4 rounded-2xl pastel-card border border-[#E6E8EC] flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#C9DDF2]/50 text-[#22456C] flex items-center justify-center font-bold">
+              <Users className="w-5 h-5 text-[#4A7BB0]" />
             </div>
             <div>
-              <p className="text-xl font-bold text-white">{volunteers.length}</p>
-              <p className="text-xs text-gray-400">Total Active Contacts</p>
+              <p className="text-xl font-bold text-[#354052]">{volunteers.length}</p>
+              <p className="text-xs text-[#667085]">Total Active Contacts</p>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white/[0.03] backdrop-blur-xl border border-white/10 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
-              <UserCheck className="w-5 h-5" />
+          <div className="p-4 rounded-2xl pastel-card border border-[#E6E8EC] flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#D8EEE5] text-[#26372B] flex items-center justify-center font-bold">
+              <UserCheck className="w-5 h-5 text-[#5b7f63]" />
             </div>
             <div>
-              <p className="text-xl font-bold text-white">{registeredCount}</p>
-              <p className="text-xs text-gray-400">Registered on Initiatives</p>
+              <p className="text-xl font-bold text-[#354052]">{registeredCount}</p>
+              <p className="text-xs text-[#667085]">Registered on Initiatives</p>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white/[0.03] backdrop-blur-xl border border-white/10 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
-              <Sparkles className="w-5 h-5" />
+          <div className="p-4 rounded-2xl pastel-card border border-[#E6E8EC] flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#FFF8EF] text-[#854D27] flex items-center justify-center font-bold border border-[#F6D8C5]">
+              <Sparkles className="w-5 h-5 text-[#854D27]" />
             </div>
             <div>
-              <p className="text-xl font-bold text-white">{suggestedVolunteers.length}</p>
-              <p className="text-xs text-gray-400">Suggested by Match</p>
+              <p className="text-xl font-bold text-[#354052]">{suggestedVolunteers.length}</p>
+              <p className="text-xs text-[#667085]">Suggested by Match</p>
             </div>
           </div>
         </div>
 
         {/* Search & Filter Bar */}
-        <div className="p-4 rounded-2xl bg-white/[0.04] backdrop-blur-xl border border-white/10 flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
+        <div className="p-4 rounded-2xl pastel-card border border-[#E6E8EC] flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
           {/* Search */}
           <div className="relative flex-1">
-            <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search className="w-4 h-4 text-[#667085] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               placeholder="Search volunteers by name, skill, email, or initiative..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-400 outline-none focus:border-primary-500 transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#E6E8EC] rounded-xl text-sm text-[#354052] placeholder-[#667085]/60 outline-none focus:border-[#BFD8C2] focus:ring-2 focus:ring-[#BFD8C2]/40 transition-all"
             />
           </div>
 
@@ -163,21 +163,21 @@ const NGOVolunteers = () => {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="py-2.5 px-3 bg-white/5 border border-white/10 rounded-xl text-xs text-gray-200 outline-none focus:border-primary-500"
+                className="py-2.5 px-3 bg-white border border-[#E6E8EC] rounded-xl text-xs text-[#354052] outline-none focus:border-[#BFD8C2]"
               >
-                <option value="all" className="bg-[#0b1120]">All Categories</option>
+                <option value="all">All Categories</option>
                 {categories.map(c => (
-                  <option key={c} value={c} className="bg-[#0b1120]">{c}</option>
+                  <option key={c} value={c}>{c}</option>
                 ))}
               </select>
             )}
 
             {/* Type tabs */}
-            <div className="flex rounded-xl bg-white/5 p-1 border border-white/10">
+            <div className="flex rounded-xl bg-[#F5F1FA] p-1 border border-[#E6E8EC]">
               <button
                 onClick={() => setActiveTab('all')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeTab === 'all' ? 'bg-primary-600 text-white shadow-sm' : 'text-gray-400 hover:text-white'
+                  activeTab === 'all' ? 'bg-white text-[#26372B] shadow-soft-sm' : 'text-[#667085] hover:text-[#354052]'
                 }`}
               >
                 All ({volunteers.length})
@@ -185,7 +185,7 @@ const NGOVolunteers = () => {
               <button
                 onClick={() => setActiveTab('registered')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeTab === 'registered' ? 'bg-primary-600 text-white shadow-sm' : 'text-gray-400 hover:text-white'
+                  activeTab === 'registered' ? 'bg-white text-[#26372B] shadow-soft-sm' : 'text-[#667085] hover:text-[#354052]'
                 }`}
               >
                 Registered ({registeredCount})
@@ -193,7 +193,7 @@ const NGOVolunteers = () => {
               <button
                 onClick={() => setActiveTab('network')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeTab === 'network' ? 'bg-primary-600 text-white shadow-sm' : 'text-gray-400 hover:text-white'
+                  activeTab === 'network' ? 'bg-white text-[#26372B] shadow-soft-sm' : 'text-[#667085] hover:text-[#354052]'
                 }`}
               >
                 Network ({networkCount})
@@ -205,7 +205,7 @@ const NGOVolunteers = () => {
         {/* Volunteers Directory List / Cards */}
         {loading ? (
           <div className="p-12 flex justify-center items-center">
-            <div className="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-2 border-[#5b7f63] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : filteredVolunteers.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -214,19 +214,19 @@ const NGOVolunteers = () => {
                 key={vol.applicationId || vol.volunteerId}
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="p-5 rounded-3xl bg-[#0a0f28]/60 backdrop-blur-2xl border border-white/10 hover:border-emerald-500/40 transition-all flex flex-col justify-between group shadow-[0_12px_30px_rgba(0,0,0,0.35)]"
+                className="p-5 rounded-3xl pastel-card border border-[#E6E8EC] hover:border-[#DDD5F3] transition-all flex flex-col justify-between group shadow-soft-sm"
               >
                 <div>
                   {/* Top Row: Avatar & Status Badge */}
                   <div className="flex items-start justify-between gap-3 mb-4">
                     <div className="flex items-center gap-3">
-                      <Avatar src={vol.profileImage} alt={vol.name} size="md" className="ring-2 ring-emerald-500/20" />
+                      <Avatar src={vol.profileImage} alt={vol.name} size="md" className="ring-2 ring-[#D8EEE5]" />
                       <div>
-                        <h3 className="text-base font-bold text-white group-hover:text-emerald-300 transition-colors">
+                        <h3 className="text-base font-bold text-[#354052] group-hover:text-[#5b7f63] transition-colors">
                           {vol.name}
                         </h3>
-                        <div className="flex items-center gap-1.5 text-xs text-gray-400 mt-0.5">
-                          <MapPin className="w-3 h-3 text-primary-400 shrink-0" />
+                        <div className="flex items-center gap-1.5 text-xs text-[#667085] mt-0.5">
+                          <MapPin className="w-3 h-3 text-[#5b7f63] shrink-0" />
                           <span className="truncate max-w-[140px]">{vol.location}</span>
                         </div>
                       </div>
@@ -238,12 +238,12 @@ const NGOVolunteers = () => {
                   </div>
 
                   {/* Initiative & Category */}
-                  <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/5 mb-4">
-                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+                  <div className="p-3 rounded-2xl bg-[#F5F1FA] border border-[#E6E8EC] mb-4">
+                    <span className="text-[10px] font-bold text-[#667085] uppercase tracking-wider block mb-1">
                       {vol.type === 'registered' ? 'Enrolled Initiative' : 'Area of Focus'}
                     </span>
-                    <p className="text-xs font-semibold text-white truncate">{vol.opportunityTitle}</p>
-                    <span className="inline-block mt-1 text-[10px] px-2 py-0.5 rounded-full bg-primary-500/20 text-primary-300 border border-primary-500/30">
+                    <p className="text-xs font-semibold text-[#354052] truncate">{vol.opportunityTitle}</p>
+                    <span className="inline-block mt-1 text-[10px] px-2 py-0.5 rounded-full bg-[#DDD5F3] text-[#30264A] border border-[#DDD5F3]">
                       {vol.category}
                     </span>
                   </div>
@@ -253,12 +253,12 @@ const NGOVolunteers = () => {
                     <div className="mb-4">
                       <div className="flex flex-wrap gap-1">
                         {vol.skills.slice(0, 3).map((skill, idx) => (
-                          <span key={idx} className="text-[10px] px-2 py-0.5 rounded-md bg-white/5 text-gray-300 border border-white/10">
+                          <span key={idx} className="text-[10px] px-2 py-0.5 rounded-md bg-white text-[#354052] border border-[#E6E8EC]">
                             {skill}
                           </span>
                         ))}
                         {vol.skills.length > 3 && (
-                          <span className="text-[10px] px-1.5 py-0.5 text-gray-500">
+                          <span className="text-[10px] px-1.5 py-0.5 text-[#667085]">
                             +{vol.skills.length - 3}
                           </span>
                         )}
@@ -267,20 +267,20 @@ const NGOVolunteers = () => {
                   )}
 
                   {/* Availability */}
-                  <div className="text-xs text-gray-400 mb-4 flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-gray-500" />
-                    <span>Availability: <strong className="text-gray-200">{vol.availability || 'Weekends'}</strong></span>
+                  <div className="text-xs text-[#667085] mb-4 flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-[#667085]" />
+                    <span>Availability: <strong className="text-[#354052]">{vol.availability || 'Weekends'}</strong></span>
                   </div>
                 </div>
 
                 {/* Card Actions */}
-                <div className="pt-3 border-t border-white/10 flex items-center justify-between gap-2">
+                <div className="pt-3 border-t border-[#E6E8EC] flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     {vol.email && (
                       <a
                         href={`mailto:${vol.email}`}
                         title="Send Email"
-                        className="p-2 rounded-xl bg-white/5 text-gray-300 hover:text-white hover:bg-white/10 transition-colors border border-white/10"
+                        className="p-2 rounded-xl bg-white text-[#667085] hover:text-[#354052] hover:bg-[#F5F1FA] transition-colors border border-[#E6E8EC]"
                       >
                         <Mail className="w-4 h-4" />
                       </a>
@@ -289,9 +289,9 @@ const NGOVolunteers = () => {
                       <a
                         href={`tel:${vol.phone}`}
                         title="Call Volunteer"
-                        className="p-2 rounded-xl bg-white/5 text-emerald-400 hover:text-white hover:bg-emerald-500/20 transition-colors border border-white/10"
+                        className="p-2 rounded-xl bg-[#D8EEE5] text-[#26372B] hover:bg-[#BFD8C2] transition-colors border border-[#BFD8C2]"
                       >
-                        <Phone className="w-4 h-4" />
+                        <Phone className="w-4 h-4 text-[#5b7f63]" />
                       </a>
                     )}
                   </div>
@@ -300,19 +300,19 @@ const NGOVolunteers = () => {
                     size="sm"
                     variant="outline"
                     onClick={() => setSelectedVolunteer(vol)}
-                    className="border-white/20 text-xs text-white hover:bg-white/10 gap-1"
+                    className="border-[#E6E8EC] text-xs text-[#354052] hover:bg-[#F5F1FA] gap-1"
                   >
-                    <Eye className="w-3.5 h-3.5" /> View Profile
+                    <Eye className="w-3.5 h-3.5 text-[#5b7f63]" /> View Profile
                   </Button>
                 </div>
               </motion.div>
             ))}
           </div>
         ) : (
-          <Card className="p-12 text-center">
-            <Users className="w-12 h-12 text-gray-500 mx-auto mb-3" />
-            <h3 className="text-lg font-semibold text-white">No matching volunteers found</h3>
-            <p className="text-xs text-gray-400 mt-1 max-w-md mx-auto">
+          <Card className="p-12 text-center border border-[#E6E8EC]">
+            <Users className="w-12 h-12 text-[#667085] mx-auto mb-3" />
+            <h3 className="text-lg font-semibold text-[#354052]">No matching volunteers found</h3>
+            <p className="text-xs text-[#667085] mt-1 max-w-md mx-auto">
               Try adjusting your search criteria or filter tags to discover active community volunteers.
             </p>
           </Card>
@@ -320,13 +320,13 @@ const NGOVolunteers = () => {
 
         {/* Suggested Matched Volunteers Section */}
         {suggestedVolunteers.length > 0 && (
-          <div className="space-y-4 pt-6 border-t border-white/10">
+          <div className="space-y-4 pt-6 border-t border-[#E6E8EC]">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-amber-400" /> Matched Volunteers in Your Community
+                <h2 className="text-lg font-bold text-[#354052] flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-[#854D27]" /> Matched Volunteers in Your Community
                 </h2>
-                <p className="text-xs text-gray-400 mt-0.5">
+                <p className="text-xs text-[#667085] mt-0.5">
                   Suggested based on cause categories, skills, and proximity to your NGO headquarters.
                 </p>
               </div>
@@ -338,30 +338,30 @@ const NGOVolunteers = () => {
                 return (
                   <div
                     key={vol._id || vol.volunteerId}
-                    className="p-5 rounded-3xl bg-white/[0.03] backdrop-blur-xl border border-white/10 hover:border-primary-500/30 transition-all flex flex-col justify-between"
+                    className="p-5 rounded-3xl pastel-card border border-[#E6E8EC] hover:border-[#DDD5F3] transition-all flex flex-col justify-between"
                   >
                     <div>
                       <div className="flex items-start justify-between gap-2 mb-3">
                         <div className="flex items-center gap-3">
                           <Avatar src={vol.profileImage} alt={vol.name} size="md" />
                           <div>
-                            <h4 className="text-sm font-bold text-white">{vol.name}</h4>
-                            <p className="text-xs text-gray-400">{vol.location?.city || 'Local Region'}</p>
+                            <h4 className="text-sm font-bold text-[#354052]">{vol.name}</h4>
+                            <p className="text-xs text-[#667085]">{vol.location?.city || 'Local Region'}</p>
                           </div>
                         </div>
                         {vol.matchScore && (
-                          <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                          <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#D8EEE5] text-[#26372B] border border-[#BFD8C2]">
                             {vol.matchScore}% Match
                           </span>
                         )}
                       </div>
 
-                      <p className="text-xs text-gray-300 line-clamp-2 mb-3">
+                      <p className="text-xs text-[#667085] line-clamp-2 mb-3 leading-relaxed">
                         {vol.bio || 'Experienced community volunteer eager to support impactful non-profit drives.'}
                       </p>
 
                       {vol.matchReasons && vol.matchReasons.length > 0 && (
-                        <div className="p-2.5 rounded-xl bg-primary-500/10 border border-primary-500/20 text-[11px] text-primary-300 mb-3 space-y-1">
+                        <div className="p-2.5 rounded-xl bg-[#FFF8EF] border border-[#F6D8C5] text-[11px] text-[#854D27] mb-3 space-y-1">
                           {vol.matchReasons.slice(0, 2).map((r, i) => (
                             <p key={i}>• {r}</p>
                           ))}
@@ -369,12 +369,12 @@ const NGOVolunteers = () => {
                       )}
                     </div>
 
-                    <div className="pt-3 border-t border-white/5 flex items-center justify-between">
+                    <div className="pt-3 border-t border-[#E6E8EC] flex items-center justify-between">
                       <Button
                         size="sm"
                         variant="ghost"
                         onClick={() => setSelectedVolunteer(vol)}
-                        className="text-xs text-gray-400 hover:text-white"
+                        className="text-xs text-[#667085] hover:text-[#354052]"
                       >
                         Profile
                       </Button>
@@ -383,7 +383,7 @@ const NGOVolunteers = () => {
                         size="sm"
                         disabled={isInvited}
                         onClick={() => handleInvite(vol)}
-                        className={`text-xs ${isInvited ? 'bg-emerald-600/30 text-emerald-300' : 'bg-primary-600 hover:bg-primary-500 text-white'}`}
+                        className={`text-xs ${isInvited ? 'bg-[#D8EEE5] text-[#26372B] border border-[#BFD8C2]' : 'btn-primary-pastel'}`}
                       >
                         {isInvited ? '✓ Invited' : 'Invite Volunteer'}
                       </Button>
@@ -398,27 +398,27 @@ const NGOVolunteers = () => {
         {/* Volunteer Profile Modal */}
         <AnimatePresence>
           {selectedVolunteer && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#354052]/40 backdrop-blur-sm">
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-[#0b1120] border border-white/15 rounded-3xl p-6 sm:p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto custom-scrollbar relative shadow-2xl"
+                className="bg-white border border-[#E6E8EC] rounded-3xl p-6 sm:p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto custom-scrollbar relative shadow-soft-hover"
               >
                 <button
                   onClick={() => setSelectedVolunteer(null)}
-                  className="absolute top-4 right-4 p-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/10"
+                  className="absolute top-4 right-4 p-2 rounded-xl text-[#667085] hover:text-[#354052] hover:bg-[#F5F1FA] transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
 
                 <div className="flex items-center gap-4 mb-6">
-                  <Avatar src={selectedVolunteer.profileImage} alt={selectedVolunteer.name} size="lg" className="ring-4 ring-primary-500/30" />
+                  <Avatar src={selectedVolunteer.profileImage} alt={selectedVolunteer.name} size="lg" className="ring-4 ring-[#DDD5F3]" />
                   <div>
-                    <h3 className="text-xl font-bold text-white">{selectedVolunteer.name}</h3>
-                    <p className="text-xs text-primary-400 font-medium">Volunteer Profile</p>
-                    <div className="flex items-center gap-1 text-xs text-gray-400 mt-1">
-                      <MapPin className="w-3.5 h-3.5 text-rose-400" />
+                    <h3 className="text-xl font-bold text-[#354052]">{selectedVolunteer.name}</h3>
+                    <p className="text-xs text-[#5b7f63] font-medium">Volunteer Profile</p>
+                    <div className="flex items-center gap-1 text-xs text-[#667085] mt-1">
+                      <MapPin className="w-3.5 h-3.5 text-[#5b7f63]" />
                       <span>{selectedVolunteer.location || 'Location provided upon contact'}</span>
                     </div>
                   </div>
@@ -426,19 +426,19 @@ const NGOVolunteers = () => {
 
                 <div className="space-y-4">
                   {selectedVolunteer.bio && (
-                    <div className="p-3.5 rounded-2xl bg-white/[0.04] border border-white/5">
-                      <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-1">About</span>
-                      <p className="text-xs text-gray-200 leading-relaxed">{selectedVolunteer.bio}</p>
+                    <div className="p-3.5 rounded-2xl bg-[#F5F1FA] border border-[#E6E8EC]">
+                      <span className="text-[11px] font-bold text-[#667085] uppercase tracking-wider block mb-1">About</span>
+                      <p className="text-xs text-[#354052] leading-relaxed">{selectedVolunteer.bio}</p>
                     </div>
                   )}
 
                   {/* Skills */}
                   {selectedVolunteer.skills && selectedVolunteer.skills.length > 0 && (
                     <div>
-                      <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Verified Skills</span>
+                      <span className="text-[11px] font-bold text-[#667085] uppercase tracking-wider block mb-2">Verified Skills</span>
                       <div className="flex flex-wrap gap-1.5">
                         {selectedVolunteer.skills.map((s, i) => (
-                          <span key={i} className="text-xs px-2.5 py-1 rounded-lg bg-primary-500/15 text-primary-300 border border-primary-500/25 font-medium">
+                          <span key={i} className="text-xs px-2.5 py-1 rounded-lg bg-[#D8EEE5] text-[#26372B] border border-[#BFD8C2] font-medium">
                             {s}
                           </span>
                         ))}
@@ -449,10 +449,10 @@ const NGOVolunteers = () => {
                   {/* Interests */}
                   {selectedVolunteer.interests && selectedVolunteer.interests.length > 0 && (
                     <div>
-                      <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Causes & Interests</span>
+                      <span className="text-[11px] font-bold text-[#667085] uppercase tracking-wider block mb-2">Causes & Interests</span>
                       <div className="flex flex-wrap gap-1.5">
                         {selectedVolunteer.interests.map((s, i) => (
-                          <span key={i} className="text-xs px-2.5 py-1 rounded-lg bg-white/5 text-gray-200 border border-white/10 font-medium">
+                          <span key={i} className="text-xs px-2.5 py-1 rounded-lg bg-[#DDD5F3] text-[#30264A] border border-[#DDD5F3] font-medium">
                             {s}
                           </span>
                         ))}
@@ -461,41 +461,41 @@ const NGOVolunteers = () => {
                   )}
 
                   {/* Contact Methods */}
-                  <div className="pt-4 border-t border-white/10 space-y-2">
-                    <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Direct Contact</span>
+                  <div className="pt-4 border-t border-[#E6E8EC] space-y-2">
+                    <span className="text-[11px] font-bold text-[#667085] uppercase tracking-wider block mb-2">Direct Contact</span>
                     
                     {selectedVolunteer.email && (
                       <a
                         href={`mailto:${selectedVolunteer.email}`}
-                        className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 text-xs text-gray-200"
+                        className="flex items-center justify-between p-3 rounded-xl bg-white hover:bg-[#F5F1FA] transition-colors border border-[#E6E8EC] text-xs text-[#354052]"
                       >
                         <div className="flex items-center gap-2">
-                          <Mail className="w-4 h-4 text-primary-400" />
+                          <Mail className="w-4 h-4 text-[#5b7f63]" />
                           <span>{selectedVolunteer.email}</span>
                         </div>
-                        <ArrowUpRight className="w-4 h-4 text-gray-400" />
+                        <ArrowUpRight className="w-4 h-4 text-[#667085]" />
                       </a>
                     )}
 
                     {selectedVolunteer.phone && (
                       <a
                         href={`tel:${selectedVolunteer.phone}`}
-                        className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 text-xs text-gray-200"
+                        className="flex items-center justify-between p-3 rounded-xl bg-white hover:bg-[#F5F1FA] transition-colors border border-[#E6E8EC] text-xs text-[#354052]"
                       >
                         <div className="flex items-center gap-2">
-                          <Phone className="w-4 h-4 text-emerald-400" />
+                          <Phone className="w-4 h-4 text-[#5b7f63]" />
                           <span>{selectedVolunteer.phone}</span>
                         </div>
-                        <ArrowUpRight className="w-4 h-4 text-gray-400" />
+                        <ArrowUpRight className="w-4 h-4 text-[#667085]" />
                       </a>
                     )}
                   </div>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-white/10">
+                <div className="mt-6 pt-4 border-t border-[#E6E8EC]">
                   <Button
                     onClick={() => setSelectedVolunteer(null)}
-                    className="w-full bg-white/10 hover:bg-white/20 text-white"
+                    className="w-full btn-secondary-pastel"
                   >
                     Close Directory Card
                   </Button>

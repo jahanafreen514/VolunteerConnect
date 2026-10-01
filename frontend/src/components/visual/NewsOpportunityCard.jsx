@@ -34,150 +34,112 @@ const NewsOpportunityCard = ({
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      className="relative overflow-hidden rounded-3xl bg-[#0a0f28]/60 hover:bg-[#0a0f28]/80 backdrop-blur-2xl border border-amber-500/30 p-6 shadow-[0_16px_40px_rgba(0,0,0,0.45)] hover:border-amber-400/60 transition-all flex flex-col justify-between group"
-    >
+    <div className="glass-card p-5 flex flex-col justify-between group overflow-hidden border border-[#E6E8EC]">
       <div>
-        {/* Category Image Banner with Gradient */}
-        <div className="relative h-44 -mx-6 -mt-6 mb-5 overflow-hidden bg-slate-900 border-b border-white/10">
+        {/* Category Image Banner with Subtle Gradient */}
+        <div className="relative h-40 -mx-5 -mt-5 mb-4 overflow-hidden bg-slate-100 border-b border-[#E6E8EC]">
           <img
             src={getOpportunityImage(event)}
             alt={event.title}
             loading="lazy"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f28] via-[#0a0f28]/30 to-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
           {/* Top Header Overlay Badges */}
-          <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between pointer-events-none">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/90 text-slate-950 text-xs font-bold uppercase tracking-wider shadow-md backdrop-blur-md">
+          <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#F6D8C5] text-[#7a4221] border border-[#eebd9e] text-xs font-semibold backdrop-blur-md shadow-soft-sm">
               <Newspaper className="w-3.5 h-3.5" />
-              <span>NEWS-DERIVED</span>
+              <span>Community Alert</span>
             </div>
 
-            <div className="flex items-center gap-1.5 text-xs text-white/95 font-medium px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10">
-              <Clock className="w-3.5 h-3.5 text-amber-400" />
+            <div className="flex items-center gap-1 text-[11px] text-white font-medium px-2 py-0.5 rounded-full bg-black/50 backdrop-blur-md">
+              <Clock className="w-3 h-3 text-[#F6D8C5]" />
               <span>{timeAgo}</span>
             </div>
           </div>
         </div>
 
         {/* Title */}
-        <h3 className="text-xl font-bold text-white mb-2 group-hover:text-amber-300 transition-colors leading-snug">
+        <h3 className="text-base font-bold text-[#26372B] mb-1.5 group-hover:text-[#556e5a] transition-colors leading-snug">
           {event.title}
         </h3>
 
         {/* Location & Distance */}
-        <div className="flex items-center gap-2 text-xs font-semibold text-gray-300 mb-4">
-          <MapPin className="w-4 h-4 text-rose-400 shrink-0" />
+        <div className="flex items-center gap-2 text-xs font-medium text-[#667085] mb-3">
+          <MapPin className="w-3.5 h-3.5 text-[#54947f] shrink-0" />
           <span>{event.location?.city || 'Local Region'}{event.location?.state ? `, ${event.location.state}` : ''}</span>
           {event.distanceKm !== undefined && (
-            <span className="px-2 py-0.5 rounded-full bg-white/10 text-cyan-300 text-[11px]">
-              📍 {event.distanceKm} km away
+            <span className="px-2 py-0.5 rounded-full bg-[#D8EEE5] text-[#244e44] text-[11px]">
+              {event.distanceKm < 1 ? '< 1 km' : `${event.distanceKm.toFixed(1)} km`}
             </span>
           )}
         </div>
 
         {/* Summary Description */}
-        <p className="text-xs sm:text-sm text-gray-300/90 leading-relaxed mb-5 line-clamp-3">
+        <p className="text-xs text-[#667085] leading-relaxed mb-4 line-clamp-2">
           {event.summary}
         </p>
 
         {/* Potential Activities */}
         {event.potential_activities && event.potential_activities.length > 0 && (
-          <div className="mb-5">
-            <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">
-              Potential Volunteer Support:
+          <div className="mb-4">
+            <span className="text-[11px] font-semibold text-[#354052] block mb-1.5">
+              Identified Needs:
             </span>
             <div className="flex flex-wrap gap-1.5">
-              {event.potential_activities.map((act, i) => (
+              {event.potential_activities.slice(0, 3).map((act, i) => (
                 <span
                   key={i}
-                  className="px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/10 text-xs text-gray-200 font-medium"
+                  className="px-2 py-0.5 rounded-lg bg-white border border-[#E6E8EC] text-[11px] text-[#354052] font-medium"
                 >
-                  • {act}
+                  {act}
                 </span>
               ))}
             </div>
           </div>
         )}
-
-        {/* Nearby NGOs Status or Missing Fallback */}
-        <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 mb-5">
-          {hasNearbyNGOs ? (
-            <div>
-              <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-400 mb-1.5">
-                <ShieldCheck className="w-4 h-4" />
-                <span>{event.nearbyNGOs.length} Registered NGO{event.nearbyNGOs.length > 1 ? 's' : ''} in Region</span>
-              </div>
-              <p className="text-xs text-gray-400">
-                {event.nearbyNGOs.map(n => `${n.organizationName} (${n.distanceKm} km)`).join(' · ')}
-              </p>
-            </div>
-          ) : (
-            <div>
-              <div className="flex items-center gap-1.5 text-xs font-bold text-amber-400 mb-1.5">
-                <AlertCircle className="w-4 h-4" />
-                <span>No active Volunteer Connect NGO found nearby</span>
-              </div>
-              <p className="text-xs text-gray-400 leading-relaxed mb-3">
-                Recent reports indicate a community need in this area. Status: <span className="font-semibold text-gray-300">Needs local organization verification</span>.
-              </p>
-
-              <button
-                type="button"
-                onClick={handleRequestSupport}
-                disabled={requesting || requested}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-200 text-xs font-semibold transition-all disabled:opacity-50"
-              >
-                {requested ? (
-                  <>
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Support Requested ({event.supportRequestsCount + 1})</span>
-                  </>
-                ) : (
-                  <>
-                    <BellRing className="w-3.5 h-3.5" />
-                    <span>Request NGO Support</span>
-                  </>
-                )}
-              </button>
-            </div>
-          )}
-        </div>
       </div>
 
-      {/* Footer: Source Transparency & Disclaimer */}
-      <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
-        <div className="flex items-center gap-2 text-gray-400">
-          <span>Source: <strong className="text-white">{event.source_name}</strong></span>
+      {/* Footer Actions */}
+      <div className="pt-3 border-t border-[#E6E8EC] flex items-center justify-between gap-2">
+        {event.source_url ? (
           <a
             href={event.source_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-primary-400 hover:text-primary-300 font-semibold hover:underline"
+            className="text-xs font-semibold text-[#466c9c] hover:underline inline-flex items-center gap-1"
           >
-            View Article <ExternalLink className="w-3 h-3" />
+            <span>Read Report</span>
+            <ExternalLink className="w-3 h-3" />
           </a>
-        </div>
+        ) : (
+          <span className="text-xs text-[#667085]">Verified by Community</span>
+        )}
 
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
-          <Link
-            to={`/events/${event._id}`}
-            className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-md shadow-primary-600/20 transition-all text-center"
-          >
-            <span>Open Incident & Discussion</span>
-            <ExternalLink className="w-3.5 h-3.5" />
-          </Link>
-          <span className="text-[10px] text-gray-400 italic text-center sm:text-right">
-            * Check official guidance before travelling.
-          </span>
-        </div>
+        <button
+          onClick={handleRequestSupport}
+          disabled={requesting || requested}
+          className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
+            requested
+              ? 'bg-[#D8EEE5] text-[#244e44] border border-[#bce1d3]'
+              : 'btn-primary-pastel'
+          }`}
+        >
+          {requested ? (
+            <>
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#54947f]" />
+              <span>Support Flagged</span>
+            </>
+          ) : (
+            <>
+              <BellRing className="w-3.5 h-3.5" />
+              <span>Flag for NGOs</span>
+            </>
+          )}
+        </button>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

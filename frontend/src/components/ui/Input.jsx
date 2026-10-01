@@ -17,19 +17,18 @@ const Input = forwardRef(({
 
   return (
     <div className="w-full flex flex-col gap-1.5">
-      {label && <label className="text-sm font-medium text-gray-200">{label}</label>}
+      {label && <label className="text-xs sm:text-sm font-semibold text-[#354052]">{label}</label>}
       <div className="relative">
         {Icon && (
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-            <Icon className="h-5 w-5" />
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#667085]">
+            <Icon className="h-4 w-4" />
           </div>
         )}
         <input
           ref={ref}
           type={inputType}
-          className={`w-full bg-white/5 border rounded-xl px-4 py-3 text-white placeholder-gray-500 outline-none transition-all
-            ${error ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500/20' : 'border-white/10 focus:border-primary-500 focus:ring-primary-500/20'}
-            focus:ring-2
+          className={`w-full bg-white/95 border rounded-xl px-4 py-2.5 sm:py-3 text-sm text-[#354052] placeholder-[#98A2B3] outline-none transition-all duration-200 shadow-soft-sm
+            ${error ? 'border-[#F2D6DD] focus:border-[#d48ea0] focus:ring-2 focus:ring-[#F2D6DD]/40' : 'border-[#E6E8EC] focus:border-[#BFD8C2] focus:ring-2 focus:ring-[#BFD8C2]/40'}
             ${Icon ? 'pl-10' : ''}
             ${(RightIcon || isPassword) ? 'pr-10' : ''}
             ${className}`}
@@ -39,19 +38,19 @@ const Input = forwardRef(({
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-200 transition-colors"
+            className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#667085] hover:text-[#354052] transition-colors"
           >
-            {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         )}
         {!isPassword && RightIcon && (
-          <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-gray-400">
-            <RightIcon className="h-5 w-5" />
+          <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-[#667085]">
+            <RightIcon className="h-4 w-4" />
           </div>
         )}
       </div>
-      {error && <p className="text-sm text-red-400 mt-1">{error}</p>}
-      {helperText && !error && <p className="text-sm text-gray-400 mt-1">{helperText}</p>}
+      {error && <p className="text-xs text-[#8C3B4A] mt-0.5">{error}</p>}
+      {helperText && !error && <p className="text-xs text-[#667085] mt-0.5">{helperText}</p>}
     </div>
   );
 });

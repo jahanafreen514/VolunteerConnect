@@ -85,12 +85,12 @@ const NotificationDropdown = () => {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/10 rounded-full transition-colors"
+        className="relative p-2 text-[#667085] hover:text-[#354052] hover:bg-[#F5F1FA] rounded-full transition-colors"
         aria-label="Notifications"
       >
         <Bell className="w-5 h-5 sm:w-6 sm:h-6" />
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-rose-500 text-[10px] font-bold text-white rounded-full flex items-center justify-center border-2 border-white dark:border-[#0b0f19] shadow-sm">
+          <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-[#F2D6DD] text-[#9B5B65] text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white shadow-soft-sm">
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         )}
@@ -103,14 +103,14 @@ const NotificationDropdown = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute right-0 mt-2 w-80 sm:w-96 max-w-[calc(100vw-32px)] bg-white/95 dark:bg-[#070b24]/95 backdrop-blur-2xl border border-slate-200/80 dark:border-white/10 rounded-2xl shadow-xl dark:shadow-2xl overflow-hidden z-50"
+            className="absolute right-0 mt-2 w-80 sm:w-96 max-w-[calc(100vw-32px)] bg-white/95 backdrop-blur-2xl border border-[#E6E8EC] rounded-2xl shadow-soft-hover overflow-hidden z-50"
           >
-            <div className="p-4 border-b border-slate-200/80 dark:border-white/10 flex justify-between items-center bg-slate-50/80 dark:bg-white/5">
-              <h3 className="font-semibold text-slate-900 dark:text-white text-sm">Notifications</h3>
+            <div className="p-4 border-b border-[#E6E8EC] flex justify-between items-center bg-[#F5F1FA]">
+              <h3 className="font-semibold text-[#354052] text-sm">Notifications</h3>
               {unreadCount > 0 && (
                 <button
                   onClick={handleMarkAllRead}
-                  className="text-xs text-primary-600 dark:text-primary-400 hover:underline flex items-center"
+                  className="text-xs text-[#5b7f63] hover:text-[#426048] font-medium hover:underline flex items-center"
                 >
                   <Check className="w-3 h-3 mr-1" />
                   Mark all read
@@ -124,21 +124,21 @@ const NotificationDropdown = () => {
                   <div
                     key={notif._id}
                     onClick={() => !notif.isRead && handleMarkRead(notif._id)}
-                    className={`p-4 border-b border-slate-100 dark:border-white/5 last:border-0 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors cursor-pointer flex gap-3 ${
-                      !notif.isRead ? 'bg-primary-50/40 dark:bg-white/[0.02]' : ''
+                    className={`p-4 border-b border-[#E6E8EC] last:border-0 hover:bg-[#FFF8EF]/50 transition-colors cursor-pointer flex gap-3 ${
+                      !notif.isRead ? 'bg-[#D8EEE5]/20' : ''
                     }`}
                   >
                     <div className="mt-1">
-                      {!notif.isRead && <div className="w-2 h-2 rounded-full bg-primary-500" />}
+                      {!notif.isRead && <div className="w-2 h-2 rounded-full bg-[#5b7f63]" />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm mb-1 ${notif.isRead ? 'text-slate-600 dark:text-gray-300' : 'text-slate-900 dark:text-white font-medium'}`}>
+                      <p className={`text-sm mb-1 ${notif.isRead ? 'text-[#667085]' : 'text-[#354052] font-semibold'}`}>
                         {notif.title}
                       </p>
-                      <p className="text-xs text-slate-500 dark:text-gray-400 mb-2 line-clamp-2">
+                      <p className="text-xs text-[#667085] mb-2 line-clamp-2">
                         {notif.message}
                       </p>
-                      <div className="flex items-center text-xs text-slate-400 dark:text-gray-500">
+                      <div className="flex items-center text-xs text-[#667085]">
                         <Clock className="w-3 h-3 mr-1" />
                         {formatDistanceToNowSafe(notif.createdAt)}
                       </div>
@@ -146,18 +146,18 @@ const NotificationDropdown = () => {
                   </div>
                 ))
               ) : (
-                <div className="p-8 text-center text-slate-400 dark:text-gray-500">
-                  <Bell className="w-8 h-8 mx-auto mb-3 opacity-30" />
+                <div className="p-8 text-center text-[#667085]">
+                  <Bell className="w-8 h-8 mx-auto mb-3 opacity-30 text-[#667085]" />
                   <p className="text-xs sm:text-sm">No new notifications</p>
                 </div>
               )}
             </div>
 
-            <div className="p-3 border-t border-slate-200/80 dark:border-white/10 bg-slate-50/80 dark:bg-white/5 text-center">
+            <div className="p-3 border-t border-[#E6E8EC] bg-[#F5F1FA] text-center">
               <Link
                 to={user?.role === 'volunteer' ? '/volunteer/notifications' : (user?.role === 'ngo' ? '/ngo/dashboard' : '/admin/dashboard')}
                 onClick={() => setIsOpen(false)}
-                className="text-xs sm:text-sm text-primary-600 dark:text-primary-400 hover:underline font-medium"
+                className="text-xs sm:text-sm text-[#5b7f63] hover:text-[#426048] hover:underline font-semibold"
               >
                 View all notifications
               </Link>

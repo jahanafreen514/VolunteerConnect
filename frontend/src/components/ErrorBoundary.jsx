@@ -31,34 +31,36 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-transparent flex flex-col items-center justify-center p-6 text-center text-slate-800 dark:text-white relative z-10">
-          <div className="w-16 h-16 rounded-full bg-red-500/20 text-red-500 dark:text-red-400 flex items-center justify-center mb-4 text-2xl font-bold border border-red-500/30">
-            !
-          </div>
-          <h1 className="text-2xl font-bold mb-2">Something went wrong</h1>
-          <p className="text-slate-600 dark:text-gray-400 max-w-md mb-6 text-sm">
-            The application encountered an unexpected issue while rendering this page.
-          </p>
-          <div className="flex gap-4">
-            <button
-              onClick={() => {
-                sessionStorage.removeItem('vc_eb_chunk_retry');
-                sessionStorage.removeItem('vc_chunk_refreshed');
-                window.location.reload();
-              }}
-              className="px-6 py-2.5 bg-primary-600 hover:bg-primary-500 text-white rounded-xl font-medium text-sm transition-colors shadow-sm"
-            >
-              Reload Page
-            </button>
-            <button
-              onClick={() => {
-                this.setState({ hasError: false, error: null });
-                window.location.href = '/';
-              }}
-              className="px-6 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/20 text-slate-700 dark:text-white rounded-xl font-medium text-sm transition-colors border border-slate-200 dark:border-white/10"
-            >
-              Go to Home
-            </button>
+        <div className="min-h-screen bg-transparent flex flex-col items-center justify-center p-6 text-center text-[#354052] relative z-10">
+          <div className="pastel-card p-8 border border-[#E6E8EC] rounded-3xl max-w-md shadow-soft-md flex flex-col items-center">
+            <div className="w-14 h-14 rounded-2xl bg-[#F2D6DD] text-[#9B5B65] flex items-center justify-center mb-4 text-xl font-bold border border-[#F2D6DD]">
+              !
+            </div>
+            <h1 className="text-xl font-bold text-[#354052] mb-2">Something went wrong</h1>
+            <p className="text-[#667085] max-w-sm mb-6 text-xs leading-relaxed">
+              The application encountered an unexpected issue while rendering this page.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  sessionStorage.removeItem('vc_eb_chunk_retry');
+                  sessionStorage.removeItem('vc_chunk_refreshed');
+                  window.location.reload();
+                }}
+                className="btn-primary-pastel text-xs font-semibold px-4 py-2.5 shadow-soft-sm"
+              >
+                Reload Page
+              </button>
+              <button
+                onClick={() => {
+                  this.setState({ hasError: false, error: null });
+                  window.location.href = '/';
+                }}
+                className="btn-secondary-pastel text-xs font-semibold px-4 py-2.5"
+              >
+                Go to Home
+              </button>
+            </div>
           </div>
         </div>
       );

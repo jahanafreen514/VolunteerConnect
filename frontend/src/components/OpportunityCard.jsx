@@ -7,13 +7,14 @@ import Button from './ui/Button';
 import Badge from './ui/Badge';
 import { getOpportunityImage } from '../utils/categoryImages';
 
-const categoryColors = {
-  Environment: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-500/30',
-  Education: 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-500/20 dark:text-indigo-300 dark:border-indigo-500/30',
-  Health: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/20 dark:text-rose-300 dark:border-rose-500/30',
-  Community: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/30',
-  Animals: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-500/20 dark:text-purple-300 dark:border-purple-500/30',
-  Default: 'bg-primary-50 text-primary-700 border-primary-200 dark:bg-primary-500/20 dark:text-primary-300 dark:border-primary-500/30'
+const categoryTagStyles = {
+  Environment: 'bg-[#D8EEE5] text-[#244e44] border-[#bce1d3]',
+  Education: 'bg-[#C9DDF2] text-[#24426b] border-[#a3c5eb]',
+  Health: 'bg-[#F2D6DD] text-[#8C3B4A] border-[#e6b5c1]',
+  Healthcare: 'bg-[#F2D6DD] text-[#8C3B4A] border-[#e6b5c1]',
+  Community: 'bg-[#F6D8C5] text-[#7a4221] border-[#eebd9e]',
+  Animals: 'bg-[#DDD5F3] text-[#4d387a] border-[#c5b8eb]',
+  Default: 'bg-[#BFD8C2] text-[#26372B] border-[#AFCDB5]'
 };
 
 const OpportunityCard = ({ opportunity = {}, onApply, showNGOActions = false }) => {
@@ -25,10 +26,10 @@ const OpportunityCard = ({ opportunity = {}, onApply, showNGOActions = false }) 
   const isVerified = typeof ngo === 'object' ? (ngo?.isVerified || ngo?.verificationStatus === 'approved') : false;
   
   const location = opportunity.location || {};
-  const locationText = [location.city, location.state].filter(Boolean).join(', ') || location.address || 'Remote / TBA';
+  const locationText = [location.city, location.state].filter(Boolean).join(', ') || location.address || 'Remote / Local';
   
   const rawDate = opportunity.eventDate || opportunity.date;
-  let formattedDate = 'TBA';
+  let formattedDate = 'Upcoming';
   if (rawDate) {
     try {
       const parsed = new Date(rawDate);
@@ -36,7 +37,7 @@ const OpportunityCard = ({ opportunity = {}, onApply, showNGOActions = false }) 
         formattedDate = format(parsed, 'MMM d, yyyy');
       }
     } catch {
-      formattedDate = 'TBA';
+      formattedDate = 'Upcoming';
     }
   }
 
@@ -59,12 +60,15 @@ const OpportunityCard = ({ opportunity = {}, onApply, showNGOActions = false }) 
     }
   };
 
+  const tagStyle = categoryTagStyles[category] || categoryTagStyles.Default;
+
   return (
-    <motion.div
-      whileHover={{ scale: 1.02 }}
-      className="bg-white/80 dark:bg-white/[0.04] backdrop-blur-xl border border-slate-200/80 dark:border-white/10 rounded-2xl overflow-hidden flex flex-col hover:bg-white/95 dark:hover:bg-white/[0.08] hover:border-primary-300 dark:hover:border-white/20 shadow-sm hover:shadow-md dark:shadow-glass transition-all duration-300"
+    <div
+      onClick={handleAction}
+      className="glass-card group flex flex-col overflow-hidden cursor-pointer"
     >
-      <div className="h-48 w-full relative">
+      {/* Real-world Photography Window */}
+      <div className="h-44 w-full relative overflow-hidden bg-slate-100">
         <img 
           src={image} 
           alt={title} 
@@ -75,96 +79,103 @@ const OpportunityCard = ({ opportunity = {}, onApply, showNGOActions = false }) 
           }}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
         
-        <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+        {/* Category tag */}
+        <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
           {category && (
-            <Badge className={`${categoryColors[category] || categoryColors.Default} backdrop-blur-md`}>
+            <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border backdrop-blur-md shadow-soft-sm ${tagStyle}`}>
               {category}
-            </Badge>
+            </span>
           )}
           {isNewsDerived && (
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase tracking-wider backdrop-blur-md">
-              News-Derived
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#F6D8C5] text-[#7a4221] border border-[#eebd9e] backdrop-blur-md">
+              Community Alert
             </span>
           )}
         </div>
 
         {distanceKm !== null && (
-          <div className="absolute top-4 right-4 px-2.5 py-1 rounded-full text-xs font-medium bg-black/60 backdrop-blur-md text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
-            <MapPin className="w-3 h-3 text-emerald-400" />
-            <span>{distanceKm < 1 ? '< 1 km away' : `${distanceKm.toFixed(1)} km away`}</span>
+          <div className="absolute top-3 right-3 px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/90 backdrop-blur-md text-[#244e44] border border-[#bce1d3] flex items-center gap-1 shadow-soft-sm">
+            <MapPin className="w-3 h-3 text-[#54947f]" />
+            <span>{distanceKm < 1 ? '< 1 km' : `${distanceKm.toFixed(1)} km`}</span>
           </div>
         )}
       </div>
 
-      <div className="p-5 flex flex-col flex-1">
-        <div className="flex items-center gap-1 mb-2">
-          <span className="text-xs text-slate-500 dark:text-gray-400">
-            {isNewsDerived ? `Reported via ${opportunity.source_name || 'Public News'}` : ngoName}
+      {/* Card Content */}
+      <div className="p-4 sm:p-5 flex flex-col flex-1">
+        <div className="flex items-center gap-1.5 mb-1.5">
+          <span className="text-xs font-medium text-[#667085] truncate">
+            {isNewsDerived ? `Via ${opportunity.source_name || 'Public News'}` : ngoName}
           </span>
-          {isVerified && <CheckCircle className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400" />}
+          {isVerified && <CheckCircle className="w-3.5 h-3.5 text-[#54947f] shrink-0" />}
         </div>
         
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3 line-clamp-2">{title}</h3>
+        <h3 className="text-base font-bold text-[#26372B] mb-2 line-clamp-2 leading-snug group-hover:text-[#556e5a] transition-colors">
+          {title}
+        </h3>
         
-        <div className="space-y-2 mb-4 text-sm text-slate-500 dark:text-gray-400 flex-1">
-          <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 shrink-0 text-slate-400 dark:text-gray-400" />
+        <div className="space-y-1.5 mb-3 text-xs text-[#667085] flex-1">
+          <div className="flex items-center gap-1.5">
+            <MapPin className="w-3.5 h-3.5 shrink-0 text-[#98A2B3]" />
             <span className="truncate">{locationText}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 shrink-0 text-slate-400 dark:text-gray-400" />
+          <div className="flex items-center gap-1.5">
+            <Calendar className="w-3.5 h-3.5 shrink-0 text-[#98A2B3]" />
             <span>{formattedDate}</span>
           </div>
         </div>
 
         {Array.isArray(skills) && skills.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="flex flex-wrap gap-1.5 mb-3.5">
             {skills.slice(0, 2).map((skill, i) => (
-              <span key={i} className="text-xs px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-gray-300 border border-slate-200 dark:border-white/10">
+              <span key={i} className="text-[11px] px-2 py-0.5 rounded-md bg-white text-[#354052] border border-[#E6E8EC]">
                 {skill}
               </span>
             ))}
             {skills.length > 2 && (
-              <span className="text-xs px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-gray-300 border border-slate-200 dark:border-white/10">
-                +{skills.length - 2} more
+              <span className="text-[11px] px-1.5 py-0.5 rounded-md bg-white text-[#667085] border border-[#E6E8EC]">
+                +{skills.length - 2}
               </span>
             )}
           </div>
         )}
 
-        <div className="mb-4">
-          <div className="flex justify-between text-xs text-slate-500 dark:text-gray-400 mb-1">
+        {/* Spots progress */}
+        <div className="mb-3.5">
+          <div className="flex justify-between text-[11px] text-[#667085] mb-1">
             <span>{registeredCount} / {capacity} volunteers</span>
-            <span>{isFull ? 'Full' : `${capacity - registeredCount} spots left`}</span>
+            <span className="font-medium text-[#26372B]">{isFull ? 'Filled' : `${capacity - registeredCount} spots left`}</span>
           </div>
-          <div className="w-full h-1.5 bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden">
+          <div className="w-full h-1.5 bg-[#E6E8EC] rounded-full overflow-hidden">
             <div 
-              className={`h-full rounded-full transition-all duration-500 ${isFull ? 'bg-red-400' : 'bg-primary-500'}`}
+              className={`h-full rounded-full transition-all duration-500 ${isFull ? 'bg-[#d48ea0]' : 'bg-[#AFCDB5]'}`}
               style={{ width: `${progress}%` }}
             />
           </div>
         </div>
 
-        <div className="mt-auto pt-4 border-t border-slate-200/80 dark:border-white/10">
+        {/* CTA */}
+        <div className="mt-auto pt-3 border-t border-[#E6E8EC]">
           {showNGOActions ? (
-            <Button variant="outline" className="w-full" onClick={() => onApply?.(opportunity._id)}>
-              Manage
+            <Button variant="outline" size="sm" className="w-full" onClick={(e) => { e.stopPropagation(); onApply?.(opportunity._id); }}>
+              Manage Opportunity
             </Button>
           ) : (
             <Button 
               variant={isFull ? 'secondary' : 'primary'} 
+              size="sm"
               className="w-full" 
               disabled={isFull}
-              onClick={handleAction}
+              onClick={(e) => { e.stopPropagation(); handleAction(); }}
             >
-              {isFull ? 'Filled' : 'View Details'}
+              {isFull ? 'Opportunity Filled' : 'View Opportunity'}
             </Button>
           )}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

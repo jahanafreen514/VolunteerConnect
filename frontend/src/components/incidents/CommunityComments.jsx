@@ -28,7 +28,7 @@ const CommentItem = ({
   cancelEdit,
   cancelReply
 }) => {
-  const isOwner = currentUser && currentUser._id === comment.user_id;
+  const isOwner = currentUser && (currentUser._id === comment.user_id || currentUser.id === comment.user_id);
   const isReplying = replyingId === comment._id;
   const isEditing = editingId === comment._id;
 
@@ -40,8 +40,8 @@ const CommentItem = ({
     <div className="space-y-3">
       <div className={`p-4 rounded-2xl border transition-all ${
         comment.is_deleted 
-          ? 'bg-white/[0.01] border-white/5 opacity-60' 
-          : 'bg-white/[0.03] hover:bg-white/[0.05] border-white/10'
+          ? 'bg-[#F5F1FA]/30 border-[#E6E8EC] opacity-60' 
+          : 'bg-white hover:bg-[#F9FBF9] border-[#E6E8EC] shadow-soft-sm'
       }`}>
         {/* Header */}
         <div className="flex items-center justify-between gap-3 mb-2">
@@ -50,45 +50,45 @@ const CommentItem = ({
               src={comment.user_profile_image} 
               name={comment.user_name} 
               size="sm" 
-              className="ring-1 ring-white/20"
+              className="ring-1 ring-[#E6E8EC]"
             />
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-xs font-bold text-white leading-none">
+                <span className="text-xs font-bold text-[#354052] leading-none">
                   {comment.user_name}
                 </span>
                 {comment.user_role === 'ngo' && (
-                  <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-[#D8EEE5] text-[#26372B] border border-[#BFD8C2]">
                     NGO Partner
                   </span>
                 )}
                 {comment.user_role === 'admin' && (
-                  <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-[#DDD5F3] text-[#4D3A7A] border border-[#DDD5F3]">
                     Moderator
                   </span>
                 )}
               </div>
-              <span className="text-[10px] text-gray-400 mt-0.5 block">{timeAgo}</span>
+              <span className="text-[10px] text-[#667085] mt-0.5 block">{timeAgo}</span>
             </div>
           </div>
 
           {/* Comment Action Icons */}
           {!comment.is_deleted && (
-            <div className="flex items-center gap-1 text-gray-400">
+            <div className="flex items-center gap-1 text-[#667085]">
               <button
                 type="button"
                 onClick={() => onHelpful(comment._id)}
-                className="inline-flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-white/10 text-[11px] text-gray-300 transition-colors"
+                className="inline-flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[#F5F1FA] text-[11px] text-[#667085] hover:text-[#354052] transition-colors"
                 title="Mark helpful"
               >
-                <ThumbsUp className="w-3.5 h-3.5 text-primary-400" />
+                <ThumbsUp className="w-3.5 h-3.5 text-[#28486D]" />
                 <span>{comment.helpful_count || 0}</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => onReport(comment._id)}
-                className="p-1 rounded-lg hover:bg-white/10 hover:text-rose-400 text-gray-400 transition-colors"
+                className="p-1 rounded-lg hover:bg-[#F2D6DD]/30 hover:text-[#9A3445] text-[#667085] transition-colors"
                 title="Report comment"
               >
                 <Flag className="w-3.5 h-3.5" />
@@ -99,7 +99,7 @@ const CommentItem = ({
                   <button
                     type="button"
                     onClick={() => onEdit(comment)}
-                    className="p-1 rounded-lg hover:bg-white/10 hover:text-cyan-400 text-gray-400 transition-colors"
+                    className="p-1 rounded-lg hover:bg-[#F5F1FA] hover:text-[#28486D] text-[#667085] transition-colors"
                     title="Edit comment"
                   >
                     <Edit2 className="w-3.5 h-3.5" />
@@ -107,7 +107,7 @@ const CommentItem = ({
                   <button
                     type="button"
                     onClick={() => onDelete(comment._id)}
-                    className="p-1 rounded-lg hover:bg-white/10 hover:text-rose-400 text-gray-400 transition-colors"
+                    className="p-1 rounded-lg hover:bg-[#F2D6DD]/30 hover:text-[#9A3445] text-[#667085] transition-colors"
                     title="Delete comment"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -125,20 +125,20 @@ const CommentItem = ({
               rows={2}
               value={editText}
               onChange={(e) => setEditText(e.target.value)}
-              className="w-full bg-white/[0.06] border border-white/15 rounded-xl p-2.5 text-xs text-white outline-none focus:border-primary-400 resize-none"
+              className="w-full bg-[#F5F1FA]/60 border border-[#E6E8EC] rounded-xl p-2.5 text-xs text-[#354052] outline-none focus:border-[#BFD8C2] resize-none"
             />
             <div className="flex items-center justify-end gap-2">
               <button
                 type="button"
                 onClick={cancelEdit}
-                className="px-2.5 py-1 text-xs text-gray-400 hover:text-white"
+                className="px-2.5 py-1 text-xs text-[#667085] hover:text-[#354052]"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={() => onSubmitEdit(comment._id)}
-                className="px-3 py-1 rounded-lg bg-primary-600 hover:bg-primary-500 text-white text-xs font-semibold"
+                className="px-3 py-1 rounded-lg bg-[#AFCDB5] hover:bg-[#9EBEA4] text-[#26372B] text-xs font-semibold"
               >
                 Save
               </button>
@@ -146,7 +146,7 @@ const CommentItem = ({
           </div>
         ) : (
           <p className={`text-xs sm:text-sm leading-relaxed ${
-            comment.is_deleted ? 'italic text-gray-500' : 'text-gray-200'
+            comment.is_deleted ? 'italic text-[#667085]' : 'text-[#354052]'
           }`}>
             {comment.content}
           </p>
@@ -154,11 +154,11 @@ const CommentItem = ({
 
         {/* Reply Trigger */}
         {!comment.is_deleted && currentUser && !isReplying && (
-          <div className="mt-2 pt-2 border-t border-white/5 flex items-center justify-end">
+          <div className="mt-2 pt-2 border-t border-[#E6E8EC] flex items-center justify-end">
             <button
               type="button"
               onClick={() => onReply(comment._id)}
-              className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary-400 hover:text-primary-300 transition-colors"
+              className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#28486D] hover:underline transition-colors"
             >
               <CornerDownRight className="w-3 h-3" />
               <span>Reply</span>
@@ -168,19 +168,19 @@ const CommentItem = ({
 
         {/* Inline Reply Box */}
         {isReplying && (
-          <div className="mt-3 pt-3 border-t border-white/10 space-y-2">
+          <div className="mt-3 pt-3 border-t border-[#E6E8EC] space-y-2">
             <div className="flex items-center gap-2">
               <input
                 type="text"
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
                 placeholder={`Reply to ${comment.user_name}...`}
-                className="flex-1 bg-white/[0.05] border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 outline-none focus:border-primary-400"
+                className="flex-1 bg-[#F5F1FA]/60 border border-[#E6E8EC] rounded-xl px-3 py-2 text-xs text-[#354052] placeholder-[#667085] outline-none focus:border-[#BFD8C2]"
               />
               <button
                 type="button"
                 onClick={cancelReply}
-                className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/10"
+                className="p-2 rounded-xl text-[#667085] hover:text-[#354052] hover:bg-[#F5F1FA]"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -188,7 +188,7 @@ const CommentItem = ({
                 type="button"
                 disabled={!replyText.trim()}
                 onClick={() => onSubmitReply(comment._id)}
-                className="px-3 py-2 rounded-xl bg-primary-600 hover:bg-primary-500 text-white text-xs font-semibold disabled:opacity-50 inline-flex items-center gap-1 shadow-sm"
+                className="px-3 py-2 rounded-xl bg-[#AFCDB5] hover:bg-[#9EBEA4] text-[#26372B] text-xs font-semibold disabled:opacity-50 inline-flex items-center gap-1 shadow-soft-sm"
               >
                 <Send className="w-3 h-3" />
                 <span>Send</span>
@@ -200,7 +200,7 @@ const CommentItem = ({
 
       {/* Render Nested Replies */}
       {comment.replies && comment.replies.length > 0 && (
-        <div className="pl-6 sm:pl-8 border-l-2 border-primary-500/20 space-y-3">
+        <div className="pl-6 sm:pl-8 border-l-2 border-[#BFD8C2] space-y-3">
           {comment.replies.map((reply) => (
             <CommentItem
               key={reply._id}
@@ -344,13 +344,13 @@ const CommunityComments = ({ eventId, currentUser }) => {
   };
 
   return (
-    <div className="glass-card p-5 sm:p-6 border border-white/10 rounded-2xl bg-white/[0.03]">
+    <div className="pastel-card p-5 sm:p-6">
       <div className="flex items-center justify-between mb-5">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <MessageSquare className="w-5 h-5 text-primary-400" />
+        <h3 className="text-lg font-bold text-[#354052] flex items-center gap-2">
+          <MessageSquare className="w-5 h-5 text-[#28486D]" />
           Community Discussion ({comments.length})
         </h3>
-        <span className="text-xs text-gray-400">Threaded replies supported</span>
+        <span className="text-xs text-[#667085]">Threaded replies supported</span>
       </div>
 
       {/* Main Comment Box */}
@@ -369,13 +369,13 @@ const CommunityComments = ({ eventId, currentUser }) => {
                 value={newCommentText}
                 onChange={(e) => setNewCommentText(e.target.value)}
                 placeholder="Add your observation, question, or situational update..."
-                className="w-full bg-white/[0.04] border border-white/10 rounded-2xl p-3 text-xs sm:text-sm text-white placeholder-gray-500 focus:border-primary-400 focus:ring-1 focus:ring-primary-500/20 outline-none resize-none transition-all"
+                className="w-full bg-white border border-[#E6E8EC] rounded-2xl p-3.5 text-xs sm:text-sm text-[#354052] placeholder-[#667085] focus:border-[#BFD8C2] focus:ring-2 focus:ring-[#BFD8C2]/40 outline-none resize-none transition-all shadow-soft-sm"
               />
               <div className="flex justify-end">
                 <button
                   type="submit"
                   disabled={posting || !newCommentText.trim()}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary-600 hover:bg-primary-500 text-white text-xs font-semibold disabled:opacity-50 transition-all shadow-md"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#AFCDB5] hover:bg-[#9EBEA4] text-[#26372B] text-xs font-semibold disabled:opacity-50 transition-all shadow-soft-sm"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>{posting ? 'Posting...' : 'Post Comment'}</span>
@@ -385,21 +385,21 @@ const CommunityComments = ({ eventId, currentUser }) => {
           </div>
         </form>
       ) : (
-        <div className="p-4 rounded-xl bg-white/[0.02] border border-white/10 text-center mb-6">
-          <p className="text-xs text-gray-300">
-            Join the conversation. Please <a href="/login" className="text-primary-400 underline font-semibold">log in</a> to post comments or reply to others.
+        <div className="p-4 rounded-xl bg-[#F5F1FA]/60 border border-[#E6E8EC] text-center mb-6">
+          <p className="text-xs text-[#667085]">
+            Join the conversation. Please <a href="/login" className="text-[#28486D] underline font-semibold">log in</a> to post comments or reply to others.
           </p>
         </div>
       )}
 
       {/* Comments List */}
       {loading ? (
-        <div className="py-8 text-center text-xs text-gray-400">
+        <div className="py-8 text-center text-xs text-[#667085]">
           Loading community comments...
         </div>
       ) : comments.length === 0 ? (
-        <div className="py-8 text-center rounded-xl bg-white/[0.01] border border-dashed border-white/10">
-          <p className="text-xs text-gray-400">
+        <div className="py-8 text-center rounded-xl bg-[#F5F1FA]/40 border border-dashed border-[#E6E8EC]">
+          <p className="text-xs text-[#667085]">
             No comments yet. Be the first to share local context or ask a question!
           </p>
         </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { ClipboardCheck, Search } from 'lucide-react';
+import { ClipboardCheck, Search, Users } from 'lucide-react';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import NGOSidebar from '../../components/layouts/NGOSidebar';
 import { opportunityService } from '../../services/opportunityService';
@@ -83,39 +83,39 @@ const Attendance = () => {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-white">Attendance Tracking</h1>
-            <p className="text-gray-400 mt-1">Mark attendance and log hours for your volunteers.</p>
+            <h1 className="text-2xl font-bold text-[#354052]">Attendance Tracking</h1>
+            <p className="text-[#667085] mt-1 text-sm">Mark attendance and log hours for your volunteers.</p>
           </div>
-          <div className="w-full md:w-auto min-w-[250px]">
+          <div className="w-full md:w-auto min-w-[280px]">
             <select
               value={selectedOpp}
               onChange={(e) => setSelectedOpp(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-primary-500 outline-none"
+              className="w-full bg-white border border-[#E6E8EC] rounded-xl px-4 py-2.5 text-[#354052] font-medium shadow-soft-sm focus:border-[#BFD8C2] focus:ring-2 focus:ring-[#BFD8C2]/40 outline-none transition-all"
             >
-              <option value="" className="bg-gray-900">Select an Opportunity</option>
+              <option value="" className="text-[#667085]">Select an Opportunity</option>
               {opportunities.map(opp => (
-                <option key={opp._id} value={opp._id} className="bg-gray-900">{opp.title}</option>
+                <option key={opp._id} value={opp._id} className="text-[#354052]">{opp.title}</option>
               ))}
             </select>
           </div>
         </div>
 
         {!selectedOpp ? (
-          <Card className="p-12">
+          <div className="pastel-card p-12 text-center">
             <EmptyState 
               title="Select an opportunity" 
               description="Please select an opportunity from the dropdown above to view and manage attendance." 
               icon={ClipboardCheck} 
             />
-          </Card>
+          </div>
         ) : (
-          <Card className="overflow-hidden">
+          <div className="pastel-card overflow-hidden">
             {loading ? (
               <div className="p-6"><SkeletonTable columns={5} rows={5} /></div>
             ) : attendance.length > 0 ? (
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm text-gray-300">
-                  <thead className="bg-white/5 text-gray-400 uppercase text-xs">
+                <table className="w-full text-left text-sm text-[#354052]">
+                  <thead className="bg-[#F5F1FA]/80 text-[#667085] uppercase text-xs font-semibold border-b border-[#E6E8EC]">
                     <tr>
                       <th className="px-6 py-4">Volunteer</th>
                       <th className="px-6 py-4">Check In</th>
@@ -124,20 +124,20 @@ const Attendance = () => {
                       <th className="px-6 py-4 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/5">
+                  <tbody className="divide-y divide-[#E6E8EC]">
                     {attendance.map((item) => {
                       const vol = item.user || item.volunteer || {};
                       const volName = vol.name || 'Volunteer';
                       const volEmail = vol.email || '';
 
                       return (
-                        <tr key={item._id} className="hover:bg-white/[0.02]">
+                        <tr key={item._id} className="hover:bg-[#F9FBF9] transition-colors">
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
                               <Avatar src={vol.profileImage} alt={volName} size="sm" />
                               <div>
-                                <p className="font-medium text-white">{volName}</p>
-                                <p className="text-xs text-gray-500">{volEmail}</p>
+                                <p className="font-semibold text-[#354052]">{volName}</p>
+                                <p className="text-xs text-[#667085]">{volEmail}</p>
                               </div>
                             </div>
                           </td>
@@ -146,7 +146,7 @@ const Attendance = () => {
                             type="time" 
                             value={item.checkInTime} 
                             onChange={(e) => handleTimeUpdate(item._id, 'checkInTime', e.target.value)}
-                            className="bg-white/5 border border-white/10 rounded px-2 py-1 text-white text-sm focus:ring-1 focus:ring-primary-500 outline-none w-24"
+                            className="bg-white border border-[#E6E8EC] rounded-lg px-2.5 py-1 text-[#354052] text-sm focus:border-[#BFD8C2] focus:ring-1 focus:ring-[#BFD8C2] outline-none w-28"
                           />
                         </td>
                         <td className="px-6 py-4">
@@ -154,7 +154,7 @@ const Attendance = () => {
                             type="time" 
                             value={item.checkOutTime} 
                             onChange={(e) => handleTimeUpdate(item._id, 'checkOutTime', e.target.value)}
-                            className="bg-white/5 border border-white/10 rounded px-2 py-1 text-white text-sm focus:ring-1 focus:ring-primary-500 outline-none w-24"
+                            className="bg-white border border-[#E6E8EC] rounded-lg px-2.5 py-1 text-[#354052] text-sm focus:border-[#BFD8C2] focus:ring-1 focus:ring-[#BFD8C2] outline-none w-28"
                           />
                         </td>
                         <td className="px-6 py-4">
@@ -163,8 +163,22 @@ const Attendance = () => {
                           </Badge>
                         </td>
                         <td className="px-6 py-4 text-right space-x-2 whitespace-nowrap">
-                          <Button size="sm" variant={item.status === 'present' ? 'primary' : 'outline'} onClick={() => handleStatusChange(item._id, 'present')}>Present</Button>
-                          <Button size="sm" variant={item.status === 'absent' ? 'danger' : 'outline'} className={item.status === 'absent' ? '' : 'text-red-400 border-red-500/30 hover:bg-red-500/10'} onClick={() => handleStatusChange(item._id, 'absent')}>Absent</Button>
+                          <Button 
+                            size="sm" 
+                            variant={item.status === 'present' ? 'primary' : 'outline'} 
+                            className={item.status === 'present' ? '!bg-[#BFD8C2] !text-[#26372B] font-medium' : '!border-[#E6E8EC] !text-[#354052] hover:!bg-[#F5F1FA]'}
+                            onClick={() => handleStatusChange(item._id, 'present')}
+                          >
+                            Present
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant={item.status === 'absent' ? 'danger' : 'outline'} 
+                            className={item.status === 'absent' ? '!bg-[#F2D6DD] !text-[#852E3E]' : '!border-[#F2D6DD] !text-[#9A3445] hover:!bg-[#F2D6DD]/30'} 
+                            onClick={() => handleStatusChange(item._id, 'absent')}
+                          >
+                            Absent
+                          </Button>
                         </td>
                       </tr>
                     );
@@ -181,7 +195,7 @@ const Attendance = () => {
                 />
               </div>
             )}
-          </Card>
+          </div>
         )}
       </div>
     </DashboardLayout>

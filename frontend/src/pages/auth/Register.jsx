@@ -4,7 +4,7 @@ import { useForm as useHookForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, User, Building, ArrowLeft, Loader2, Info, Sparkles, ShieldCheck, Phone, Check, AlertCircle } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, User, Building, ArrowLeft, Loader2, Info, Sparkles, ShieldCheck, Phone, Check, AlertCircle, Heart } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import { authService } from '../../services/authService';
@@ -142,7 +142,7 @@ const Register = () => {
     await executeRegistration(payload);
   };
 
-  // Optional OTP flow initiation
+  // Step 2 to Step 3: Trigger OTP flow if user desires
   const onStartOtpFlow = async (data) => {
     const payload = {
       name: data.name,
@@ -154,48 +154,42 @@ const Register = () => {
     if (selectedRole === 'ngo') {
       payload.organizationName = data.organizationName;
     }
-
     setPendingPayload(payload);
     setStep(3);
-    setOtpCode('');
-    setOtpChannel('email');
-    dispatchOTP(data.email, 'email');
+
+    const identifier = payload.email;
+    await dispatchOTP(identifier, 'email');
   };
 
-  const handleChangeChannel = (channel) => {
-    setOtpChannel(channel);
-    const activePhone = pendingPayload?.phone || manualPhone;
-    if (channel === 'sms' && !activePhone) {
-      toast('Please enter your phone number below to receive your SMS code.', { icon: '📱' });
+  const handleChangeChannel = async (newChannel) => {
+    setOtpChannel(newChannel);
+    const identifier = newChannel === 'sms' ? (pendingPayload?.phone || manualPhone) : pendingPayload?.email;
+    if (identifier) {
+      await dispatchOTP(identifier, newChannel);
+    }
+  };
+
+  const handleSendManualPhone = async () => {
+    if (!manualPhone || manualPhone.length < 7) {
+      toast.error('Please enter a valid phone number with country code');
       return;
     }
-    const id = channel === 'sms' ? activePhone : pendingPayload?.email;
-    dispatchOTP(id, channel);
+    await dispatchOTP(manualPhone, 'sms');
   };
 
-  const handleSendManualPhone = () => {
-    if (!manualPhone || manualPhone.trim().length < 6) {
-      toast.error('Please enter a valid phone number');
-      return;
-    }
-    const cleanPhone = manualPhone.trim();
-    setPendingPayload(prev => ({ ...prev, phone: cleanPhone }));
-    dispatchOTP(cleanPhone, 'sms');
-  };
-
-  const handleResendOTP = () => {
+  const handleResendOTP = async () => {
     if (cooldown > 0) return;
-    const activePhone = pendingPayload?.phone || manualPhone;
-    const id = otpChannel === 'sms' ? (activePhone || pendingPayload?.email) : pendingPayload?.email;
-    dispatchOTP(id, otpChannel);
+    const identifier = otpChannel === 'sms' ? (pendingPayload?.phone || manualPhone) : pendingPayload?.email;
+    if (identifier) {
+      await dispatchOTP(identifier, otpChannel);
+    }
   };
 
   const handleVerifyAndRegister = async () => {
-    if (otpCode.length !== 6) {
-      toast.error('Please enter the complete 6-digit verification code');
+    if (!otpCode || otpCode.length !== 6) {
+      toast.error('Please enter the 6-digit verification code');
       return;
     }
-
     setIsLoading(true);
     try {
       const activePhone = pendingPayload?.phone || manualPhone;
@@ -208,7 +202,6 @@ const Register = () => {
           purpose: 'registration'
         });
       } catch (otpErr) {
-        // If OTP verification failed
         throw otpErr;
       }
 
@@ -225,105 +218,120 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center p-4 sm:p-6 relative overflow-hidden pt-20 pb-16 bg-transparent">
+    <div className="min-h-screen flex flex-col justify-center items-center p-4 sm:p-6 relative overflow-hidden pt-16 pb-16 bg-transparent">
+      
+      {/* Decorative subtle pastel shapes */}
+      <div 
+        className="absolute -top-24 -left-24 w-80 h-80 rounded-full blur-[100px] pointer-events-none"
+        style={{ backgroundColor: 'rgba(221, 213, 243, 0.40)' }} // Pale lavender
+      />
+      <div 
+        className="absolute -bottom-24 -right-24 w-80 h-80 rounded-full blur-[100px] pointer-events-none"
+        style={{ backgroundColor: 'rgba(216, 238, 229, 0.45)' }} // Mint
+      />
+
       <div className="relative z-10 w-full max-w-4xl">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-block text-3xl font-extrabold tracking-tight">
-            <span className="text-slate-900 dark:text-white">Volunteer</span>
-            <span className="gradient-text">Connect</span>
+          <Link to="/" className="inline-flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 rounded-xl bg-[#BFD8C2] border border-[#AFCDB5] flex items-center justify-center shadow-soft-sm">
+              <Heart className="w-4 h-4 text-[#26372B] fill-[#9fc2a6]" />
+            </div>
+            <span className="text-2xl font-bold tracking-tight text-[#26372B]">
+              Volunteer<span className="text-[#556e5a]">Connect</span>
+            </span>
           </Link>
-          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mt-2">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#26372B]">
             Create your account
           </h2>
-          <p className="text-sm text-slate-600 dark:text-gray-300 mt-1">
+          <p className="text-xs sm:text-sm text-[#667085] mt-1">
             Join a global community of changemakers and verified organizations
           </p>
         </div>
 
         <AnimatePresence mode="wait">
-          {/* STEP 1: ROLE SELECTION */}
+          {/* STEP 1: ROLE SELECTION (Requirement 21) */}
           {step === 1 && (
             <motion.div 
               key="step1"
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, x: -30 }}
+              exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.25 }}
               className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto"
             >
-              {/* Volunteer Card */}
+              {/* Volunteer Card: Sage & Powder Blue */}
               <button 
                 type="button"
                 onClick={() => handleRoleSelect('volunteer')}
-                className="bg-white/80 dark:bg-[#0a0f28]/50 backdrop-blur-xl border border-slate-200/90 dark:border-white/12 p-8 rounded-3xl hover:border-primary-400 dark:hover:border-primary-500/50 hover:shadow-xl hover:-translate-y-1 transition-all group text-left relative overflow-hidden"
+                className="glass-card p-6 sm:p-8 hover:border-[#BFD8C2] transition-all group text-left relative overflow-hidden bg-gradient-to-br from-white/95 via-[#f5f9f6]/90 to-[#eef5fa]/90 shadow-soft-md"
               >
-                <div className="flex items-center justify-between mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-primary-100 dark:bg-primary-500/20 border border-primary-200 dark:border-primary-500/30 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <User className="w-7 h-7 text-primary-600 dark:text-primary-400" />
+                <div className="flex items-center justify-between mb-5">
+                  <div className="w-12 h-12 rounded-2xl bg-[#D8EEE5] border border-[#bce1d3] flex items-center justify-center group-hover:scale-105 transition-transform text-[#244e44]">
+                    <User className="w-6 h-6" />
                   </div>
-                  <span className="text-xs font-semibold px-3 py-1 rounded-full bg-primary-50 dark:bg-primary-500/15 text-primary-700 dark:text-primary-300 border border-primary-200 dark:border-primary-500/25">
+                  <span className="text-xs font-semibold px-3 py-1 rounded-full bg-[#D8EEE5] text-[#244e44] border border-[#bce1d3]">
                     Individual
                   </span>
                 </div>
 
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">I want to Volunteer</h3>
-                <p className="text-slate-600 dark:text-gray-300 text-sm mb-6 leading-relaxed">
-                  Discover community causes, track your volunteer hours, and earn verifiable digital certificates.
+                <h3 className="text-xl sm:text-2xl font-bold text-[#26372B] mb-2">I want to Volunteer</h3>
+                <p className="text-[#667085] text-xs sm:text-sm mb-5 leading-relaxed">
+                  Discover community causes, track volunteer hours, and earn verifiable digital certificates.
                 </p>
 
-                <div className="relative aspect-[16/9] rounded-xl overflow-hidden mb-5 bg-slate-100 dark:bg-gray-900 border border-slate-200 dark:border-white/10">
+                <div className="relative aspect-[16/9] rounded-xl overflow-hidden mb-4 bg-slate-100 border border-[#E6E8EC]">
                   <img
                     src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600&auto=format&fit=crop&q=80"
-                    alt="Volunteer"
+                    alt="Volunteering moment"
                     loading="lazy"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                   <span className="absolute bottom-2 left-3 text-xs font-semibold text-white">
-                    🌱 12,000+ Active Drives
+                    🌱 Verified Opportunities
                   </span>
                 </div>
 
-                <span className="inline-flex items-center text-primary-600 dark:text-primary-400 font-semibold group-hover:translate-x-1 transition-transform text-sm">
-                  Continue as Volunteer <ArrowLeft className="w-4 h-4 ml-2 rotate-180" />
+                <span className="inline-flex items-center text-[#556e5a] font-semibold group-hover:translate-x-1 transition-transform text-xs sm:text-sm">
+                  Continue as Volunteer <ArrowLeft className="w-4 h-4 ml-1.5 rotate-180" />
                 </span>
               </button>
 
-              {/* NGO Card */}
+              {/* NGO Card: Lavender & Blush */}
               <button 
                 type="button"
                 onClick={() => handleRoleSelect('ngo')}
-                className="bg-white/80 dark:bg-[#0a0f28]/50 backdrop-blur-xl border border-slate-200/90 dark:border-white/12 p-8 rounded-3xl hover:border-secondary-400 dark:hover:border-secondary-500/50 hover:shadow-xl hover:-translate-y-1 transition-all group text-left relative overflow-hidden"
+                className="glass-card p-6 sm:p-8 hover:border-[#DDD5F3] transition-all group text-left relative overflow-hidden bg-gradient-to-br from-white/95 via-[#faf8fe]/90 to-[#fdf7f8]/90 shadow-soft-md"
               >
-                <div className="flex items-center justify-between mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-secondary-100 dark:bg-secondary-500/20 border border-secondary-200 dark:border-secondary-500/30 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Building className="w-7 h-7 text-secondary-600 dark:text-secondary-400" />
+                <div className="flex items-center justify-between mb-5">
+                  <div className="w-12 h-12 rounded-2xl bg-[#DDD5F3] border border-[#c5b8eb] flex items-center justify-center group-hover:scale-105 transition-transform text-[#4d387a]">
+                    <Building className="w-6 h-6" />
                   </div>
-                  <span className="text-xs font-semibold px-3 py-1 rounded-full bg-secondary-50 dark:bg-secondary-500/15 text-secondary-700 dark:text-secondary-300 border border-secondary-200 dark:border-secondary-500/25">
-                    Non-Profit
+                  <span className="text-xs font-semibold px-3 py-1 rounded-full bg-[#DDD5F3] text-[#4d387a] border border-[#c5b8eb]">
+                    Organization
                   </span>
                 </div>
 
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">I represent an NGO</h3>
-                <p className="text-slate-600 dark:text-gray-300 text-sm mb-6 leading-relaxed">
-                  Publish impactful initiatives, recruit passionate volunteers, and issue automated certificates.
+                <h3 className="text-xl sm:text-2xl font-bold text-[#26372B] mb-2">I am an NGO</h3>
+                <p className="text-[#667085] text-xs sm:text-sm mb-5 leading-relaxed">
+                  Publish volunteer drives, review applicants, and issue verified certificates to participants.
                 </p>
 
-                <div className="relative aspect-[16/9] rounded-xl overflow-hidden mb-5 bg-slate-100 dark:bg-gray-900 border border-slate-200 dark:border-white/10">
+                <div className="relative aspect-[16/9] rounded-xl overflow-hidden mb-4 bg-slate-100 border border-[#E6E8EC]">
                   <img
                     src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=600&auto=format&fit=crop&q=80"
-                    alt="NGO"
+                    alt="NGO Community Initiative"
                     loading="lazy"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                   <span className="absolute bottom-2 left-3 text-xs font-semibold text-white">
-                    🛡️ Official Verification
+                    🛡️ Verified NGO Status
                   </span>
                 </div>
 
-                <span className="inline-flex items-center text-secondary-600 dark:text-secondary-400 font-semibold group-hover:translate-x-1 transition-transform text-sm">
-                  Continue as NGO <ArrowLeft className="w-4 h-4 ml-2 rotate-180" />
+                <span className="inline-flex items-center text-[#7556bf] font-semibold group-hover:translate-x-1 transition-transform text-xs sm:text-sm">
+                  Continue as NGO <ArrowLeft className="w-4 h-4 ml-1.5 rotate-180" />
                 </span>
               </button>
             </motion.div>
@@ -337,7 +345,7 @@ const Register = () => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.25 }}
-              className="bg-white/90 dark:bg-[#0a0f28]/60 backdrop-blur-2xl border border-slate-200/90 dark:border-white/12 p-8 rounded-3xl max-w-lg mx-auto w-full shadow-xl dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.35)]"
+              className="glass-card p-6 sm:p-8 max-w-lg mx-auto w-full border border-[#E6E8EC] shadow-soft-lg"
             >
               <button 
                 type="button"
@@ -345,30 +353,34 @@ const Register = () => {
                   setSearchParams({});
                   setStep(1);
                 }}
-                className="flex items-center text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white mb-6 text-sm transition-colors"
+                className="flex items-center text-[#667085] hover:text-[#26372B] mb-5 text-xs sm:text-sm transition-colors font-medium"
               >
                 <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to role selection
               </button>
 
-              <div className="flex items-center mb-6 p-4 bg-slate-50 dark:bg-white/[0.04] backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-white/10">
+              <div className="flex items-center mb-5 p-3.5 bg-[#FFF8EF]/50 rounded-2xl border border-[#E6E8EC]">
                 {selectedRole === 'volunteer' ? (
-                  <User className="w-6 h-6 text-primary-500 mr-3" />
+                  <div className="w-9 h-9 rounded-xl bg-[#D8EEE5] text-[#244e44] border border-[#bce1d3] flex items-center justify-center mr-3">
+                    <User className="w-5 h-5" />
+                  </div>
                 ) : (
-                  <Building className="w-6 h-6 text-secondary-500 mr-3" />
+                  <div className="w-9 h-9 rounded-xl bg-[#DDD5F3] text-[#4d387a] border border-[#c5b8eb] flex items-center justify-center mr-3">
+                    <Building className="w-5 h-5" />
+                  </div>
                 )}
                 <div>
-                  <h3 className="text-slate-900 dark:text-white font-semibold">
-                    Registering as {selectedRole === 'volunteer' ? 'Volunteer' : 'NGO'}
+                  <h3 className="text-sm font-bold text-[#26372B]">
+                    Registering as {selectedRole === 'volunteer' ? 'Individual Volunteer' : 'Non-Profit Organization'}
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-gray-400">Fill in your information to get started</p>
+                  <p className="text-xs text-[#667085]">Fill in your information to get started</p>
                 </div>
               </div>
 
               {selectedRole === 'ngo' && (
-                <div className="mb-6 p-4 bg-secondary-50 dark:bg-secondary-500/10 border border-secondary-200 dark:border-secondary-500/20 rounded-2xl flex items-start">
-                  <Info className="w-5 h-5 text-secondary-600 dark:text-secondary-400 mr-3 mt-0.5 shrink-0" />
-                  <p className="text-xs text-secondary-700 dark:text-secondary-300 leading-relaxed">
-                    NGO accounts undergo standard administrative verification before initiatives are published publicly.
+                <div className="mb-5 p-3.5 bg-[#DDD5F3]/30 border border-[#c5b8eb] rounded-2xl flex items-start gap-2.5">
+                  <Info className="w-4 h-4 text-[#7556bf] shrink-0 mt-0.5" />
+                  <p className="text-xs text-[#4d387a] leading-relaxed">
+                    NGO accounts undergo standard administrative verification before events are published publicly.
                   </p>
                 </div>
               )}
@@ -376,160 +388,159 @@ const Register = () => {
               <form onSubmit={handleSubmit(onDirectRegister)} className="space-y-4">
                 {selectedRole === 'ngo' && (
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 mb-1.5">
+                    <label className="block text-xs font-semibold text-[#354052] mb-1.5">
                       Organization Name *
                     </label>
                     <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                        <Building className="h-5 w-5 text-slate-400 dark:text-gray-400" />
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#667085]">
+                        <Building className="h-4 w-4" />
                       </div>
                       <input
                         type="text"
                         {...register('organizationName')}
-                        className={`block w-full pl-11 pr-3 py-3 bg-slate-50 dark:bg-white/[0.05] border ${errors.organizationName ? 'border-red-500' : 'border-slate-200 dark:border-white/10 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20'} rounded-xl text-slate-900 dark:text-white outline-none transition-all placeholder-slate-400 dark:placeholder-gray-500 text-sm`}
+                        className={`w-full pl-10 pr-3.5 py-2.5 sm:py-3 bg-white border ${errors.organizationName ? 'border-[#F2D6DD]' : 'border-[#E6E8EC] focus:border-[#BFD8C2] focus:ring-2 focus:ring-[#BFD8C2]/40'} rounded-xl text-xs sm:text-sm text-[#354052] placeholder-[#98A2B3] outline-none transition-all shadow-soft-sm`}
                         placeholder="e.g. Green Earth Foundation"
                       />
                     </div>
-                    {errors.organizationName && <p className="mt-1 text-xs text-red-500">{errors.organizationName.message}</p>}
+                    {errors.organizationName && <p className="mt-1 text-xs text-[#8C3B4A]">{errors.organizationName.message}</p>}
                   </div>
                 )}
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 mb-1.5">
+                  <label className="block text-xs font-semibold text-[#354052] mb-1.5">
                     Full Name {selectedRole === 'ngo' ? '(Contact Person)' : ''} *
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                      <User className="h-5 w-5 text-slate-400 dark:text-gray-400" />
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#667085]">
+                      <User className="h-4 w-4" />
                     </div>
                     <input
                       type="text"
                       {...register('name')}
-                      className={`block w-full pl-11 pr-3 py-3 bg-slate-50 dark:bg-white/[0.05] border ${errors.name ? 'border-red-500' : 'border-slate-200 dark:border-white/10 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20'} rounded-xl text-slate-900 dark:text-white outline-none transition-all placeholder-slate-400 dark:placeholder-gray-500 text-sm`}
+                      className={`w-full pl-10 pr-3.5 py-2.5 sm:py-3 bg-white border ${errors.name ? 'border-[#F2D6DD]' : 'border-[#E6E8EC] focus:border-[#BFD8C2] focus:ring-2 focus:ring-[#BFD8C2]/40'} rounded-xl text-xs sm:text-sm text-[#354052] placeholder-[#98A2B3] outline-none transition-all shadow-soft-sm`}
                       placeholder="e.g. Alex Johnson"
                     />
                   </div>
-                  {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>}
+                  {errors.name && <p className="mt-1 text-xs text-[#8C3B4A]">{errors.name.message}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 mb-1.5">
+                  <label className="block text-xs font-semibold text-[#354052] mb-1.5">
                     Email Address *
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                      <Mail className="h-5 w-5 text-slate-400 dark:text-gray-400" />
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#667085]">
+                      <Mail className="h-4 w-4" />
                     </div>
                     <input
                       type="email"
                       {...register('email')}
-                      className={`block w-full pl-11 pr-3 py-3 bg-slate-50 dark:bg-white/[0.05] border ${errors.email ? 'border-red-500' : 'border-slate-200 dark:border-white/10 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20'} rounded-xl text-slate-900 dark:text-white outline-none transition-all placeholder-slate-400 dark:placeholder-gray-500 text-sm`}
+                      className={`w-full pl-10 pr-3.5 py-2.5 sm:py-3 bg-white border ${errors.email ? 'border-[#F2D6DD]' : 'border-[#E6E8EC] focus:border-[#BFD8C2] focus:ring-2 focus:ring-[#BFD8C2]/40'} rounded-xl text-xs sm:text-sm text-[#354052] placeholder-[#98A2B3] outline-none transition-all shadow-soft-sm`}
                       placeholder="alex@example.org"
                     />
                   </div>
-                  {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
+                  {errors.email && <p className="mt-1 text-xs text-[#8C3B4A]">{errors.email.message}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 mb-1.5">
-                    Phone Number <span className="font-normal text-slate-400 dark:text-gray-500">(Optional)</span>
+                  <label className="block text-xs font-semibold text-[#354052] mb-1.5">
+                    Phone Number <span className="font-normal text-[#667085]">(Optional)</span>
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                      <Phone className="h-5 w-5 text-slate-400 dark:text-gray-400" />
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#667085]">
+                      <Phone className="h-4 w-4" />
                     </div>
                     <input
                       type="tel"
                       {...register('phone')}
-                      className="block w-full pl-11 pr-3 py-3 bg-slate-50 dark:bg-white/[0.05] border border-slate-200 dark:border-white/10 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20 rounded-xl text-slate-900 dark:text-white outline-none transition-all placeholder-slate-400 dark:placeholder-gray-500 text-sm"
+                      className="w-full pl-10 pr-3.5 py-2.5 sm:py-3 bg-white border border-[#E6E8EC] focus:border-[#BFD8C2] focus:ring-2 focus:ring-[#BFD8C2]/40 rounded-xl text-xs sm:text-sm text-[#354052] placeholder-[#98A2B3] outline-none transition-all shadow-soft-sm"
                       placeholder="+1 (555) 000-0000"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 mb-1.5">
+                  <label className="block text-xs font-semibold text-[#354052] mb-1.5">
                     Password *
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                      <Lock className="h-5 w-5 text-slate-400 dark:text-gray-400" />
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#667085]">
+                      <Lock className="h-4 w-4" />
                     </div>
                     <input
                       type={showPassword ? 'text' : 'password'}
                       {...register('password')}
-                      className={`block w-full pl-11 pr-10 py-3 bg-slate-50 dark:bg-white/[0.05] border ${errors.password ? 'border-red-500' : 'border-slate-200 dark:border-white/10 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20'} rounded-xl text-slate-900 dark:text-white outline-none transition-all placeholder-slate-400 dark:placeholder-gray-500 text-sm`}
+                      className={`w-full pl-10 pr-10 py-2.5 sm:py-3 bg-white border ${errors.password ? 'border-[#F2D6DD]' : 'border-[#E6E8EC] focus:border-[#BFD8C2] focus:ring-2 focus:ring-[#BFD8C2]/40'} rounded-xl text-xs sm:text-sm text-[#354052] placeholder-[#98A2B3] outline-none transition-all shadow-soft-sm`}
                       placeholder="At least 6 characters"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-gray-200"
+                      className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#667085] hover:text-[#354052]"
                     >
-                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                   </div>
-                  {/* Strength indicator */}
                   {passwordValue && (
                     <div className="flex mt-2 space-x-1">
-                      <div className={`h-1 flex-1 rounded-full ${strength === 'weak' ? 'bg-red-500' : strength === 'fair' ? 'bg-amber-400' : 'bg-emerald-500'}`} />
-                      <div className={`h-1 flex-1 rounded-full ${strength === 'fair' || strength === 'strong' ? (strength === 'fair' ? 'bg-amber-400' : 'bg-emerald-500') : 'bg-slate-200 dark:bg-white/10'}`} />
-                      <div className={`h-1 flex-1 rounded-full ${strength === 'strong' ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-white/10'}`} />
+                      <div className={`h-1 flex-1 rounded-full ${strength === 'weak' ? 'bg-[#d48ea0]' : strength === 'fair' ? 'bg-[#eebd9e]' : 'bg-[#54947f]'}`} />
+                      <div className={`h-1 flex-1 rounded-full ${strength === 'fair' || strength === 'strong' ? (strength === 'fair' ? 'bg-[#eebd9e]' : 'bg-[#54947f]') : 'bg-slate-200'}`} />
+                      <div className={`h-1 flex-1 rounded-full ${strength === 'strong' ? 'bg-[#54947f]' : 'bg-slate-200'}`} />
                     </div>
                   )}
-                  {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>}
+                  {errors.password && <p className="mt-1 text-xs text-[#8C3B4A]">{errors.password.message}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 mb-1.5">
+                  <label className="block text-xs font-semibold text-[#354052] mb-1.5">
                     Confirm Password *
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                      <Lock className="h-5 w-5 text-slate-400 dark:text-gray-400" />
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#667085]">
+                      <Lock className="h-4 w-4" />
                     </div>
                     <input
                       type={showConfirmPassword ? 'text' : 'password'}
                       {...register('confirmPassword')}
-                      className={`block w-full pl-11 pr-10 py-3 bg-slate-50 dark:bg-white/[0.05] border ${errors.confirmPassword ? 'border-red-500' : 'border-slate-200 dark:border-white/10 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20'} rounded-xl text-slate-900 dark:text-white outline-none transition-all placeholder-slate-400 dark:placeholder-gray-500 text-sm`}
+                      className={`w-full pl-10 pr-10 py-2.5 sm:py-3 bg-white border ${errors.confirmPassword ? 'border-[#F2D6DD]' : 'border-[#E6E8EC] focus:border-[#BFD8C2] focus:ring-2 focus:ring-[#BFD8C2]/40'} rounded-xl text-xs sm:text-sm text-[#354052] placeholder-[#98A2B3] outline-none transition-all shadow-soft-sm`}
                       placeholder="Repeat your password"
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-gray-200"
+                      className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#667085] hover:text-[#354052]"
                     >
-                      {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                   </div>
-                  {errors.confirmPassword && <p className="mt-1 text-xs text-red-500">{errors.confirmPassword.message}</p>}
+                  {errors.confirmPassword && <p className="mt-1 text-xs text-[#8C3B4A]">{errors.confirmPassword.message}</p>}
                 </div>
 
                 {/* Primary Action Button */}
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full flex justify-center items-center py-3.5 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500 hover:opacity-95 shadow-glow-sm focus:outline-none focus:ring-2 focus:ring-primary-400 disabled:opacity-50 transition-all mt-6"
+                  className="btn-primary-pastel w-full py-3 rounded-xl text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 mt-4"
                 >
                   {isLoading ? (
                     <>
-                      <Loader2 className="w-5 h-5 animate-spin mr-2" />
-                      Creating Account...
+                      <Loader2 className="w-4 h-4 animate-spin text-[#26372B]" />
+                      <span>Creating Account...</span>
                     </>
                   ) : (
-                    'Create Account & Get Started →'
+                    <span>Create Account & Get Started →</span>
                   )}
                 </button>
 
-                {/* Optional OTP verification route */}
+                {/* Optional OTP route button */}
                 <div className="pt-2 text-center">
                   <button
                     type="button"
                     onClick={handleSubmit(onStartOtpFlow)}
                     disabled={isLoading || otpSending}
-                    className="text-xs text-slate-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-300 transition-colors inline-flex items-center gap-1.5 font-medium"
+                    className="text-xs text-[#667085] hover:text-[#26372B] transition-colors inline-flex items-center gap-1.5 font-medium"
                   >
-                    <ShieldCheck className="w-4 h-4 text-primary-500" />
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#54947f]" />
                     <span>Prefer to verify with Email / SMS code first?</span>
                   </button>
                 </div>
@@ -545,14 +556,14 @@ const Register = () => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.25 }}
-              className="bg-white/90 dark:bg-[#0a0f28]/60 backdrop-blur-2xl border border-slate-200/90 dark:border-white/15 p-8 rounded-3xl max-w-lg mx-auto w-full shadow-xl dark:shadow-[0_16px_40px_rgba(0,0,0,0.5)] text-center"
+              className="glass-card p-6 sm:p-8 max-w-lg mx-auto w-full border border-[#E6E8EC] shadow-soft-lg text-center"
             >
-              <div className="w-16 h-16 rounded-2xl bg-primary-100 dark:bg-primary-500/20 border border-primary-200 dark:border-primary-500/30 flex items-center justify-center mx-auto mb-4 text-primary-600 dark:text-primary-400">
-                <ShieldCheck className="w-8 h-8" />
+              <div className="w-14 h-14 rounded-2xl bg-[#D8EEE5] border border-[#bce1d3] flex items-center justify-center mx-auto mb-4 text-[#244e44]">
+                <ShieldCheck className="w-7 h-7" />
               </div>
 
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-1">Verify Your Account</h3>
-              <p className="text-xs text-slate-600 dark:text-gray-300 mb-6">
+              <h3 className="text-xl font-bold text-[#26372B] mb-1">Verify Your Account</h3>
+              <p className="text-xs text-[#667085] mb-5">
                 Enter the 6-digit one-time code to complete your registration.
               </p>
 
@@ -561,33 +572,33 @@ const Register = () => {
                 <button
                   type="button"
                   onClick={() => handleChangeChannel('email')}
-                  className={`p-3 rounded-2xl border text-xs font-semibold flex items-center justify-center gap-2 transition-all ${
+                  className={`p-2.5 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
                     otpChannel === 'email'
-                      ? 'bg-primary-50 dark:bg-primary-500/25 border-primary-400 text-primary-700 dark:text-white shadow-sm'
-                      : 'bg-slate-50 dark:bg-white/5 border-slate-200 dark:border-white/10 text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
+                      ? 'bg-[#D8EEE5] border-[#bce1d3] text-[#244e44] shadow-soft-sm'
+                      : 'bg-white border-[#E6E8EC] text-[#667085] hover:text-[#26372B]'
                   }`}
                 >
-                  <Mail className="w-4 h-4" />
+                  <Mail className="w-3.5 h-3.5" />
                   <span>Verify by Email</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => handleChangeChannel('sms')}
-                  className={`p-3 rounded-2xl border text-xs font-semibold flex items-center justify-center gap-2 transition-all ${
+                  className={`p-2.5 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
                     otpChannel === 'sms'
-                      ? 'bg-primary-50 dark:bg-primary-500/25 border-primary-400 text-primary-700 dark:text-white shadow-sm'
-                      : 'bg-slate-50 dark:bg-white/5 border-slate-200 dark:border-white/10 text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
+                      ? 'bg-[#D8EEE5] border-[#bce1d3] text-[#244e44] shadow-soft-sm'
+                      : 'bg-white border-[#E6E8EC] text-[#667085] hover:text-[#26372B]'
                   }`}
                 >
-                  <Phone className="w-4 h-4" />
+                  <Phone className="w-3.5 h-3.5" />
                   <span>Verify by SMS</span>
                 </button>
               </div>
 
               {otpChannel === 'sms' && !pendingPayload?.phone && (
-                <div className="mb-4 text-left p-3.5 bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 rounded-2xl">
-                  <label className="block text-xs font-medium text-slate-700 dark:text-gray-300 mb-1.5">
+                <div className="mb-4 text-left p-3.5 bg-white border border-[#E6E8EC] rounded-2xl">
+                  <label className="block text-xs font-medium text-[#354052] mb-1.5">
                     Enter Phone Number to Receive SMS Code:
                   </label>
                   <div className="flex gap-2">
@@ -596,13 +607,13 @@ const Register = () => {
                       value={manualPhone}
                       onChange={(e) => setManualPhone(e.target.value)}
                       placeholder="+1 (555) 000-0000"
-                      className="flex-1 py-2 px-3 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/15 rounded-xl text-slate-900 dark:text-white text-xs outline-none focus:border-primary-400"
+                      className="flex-1 py-2 px-3 bg-white border border-[#E6E8EC] rounded-xl text-xs text-[#354052] outline-none focus:border-[#BFD8C2]"
                     />
                     <button
                       type="button"
                       onClick={handleSendManualPhone}
                       disabled={otpSending}
-                      className="px-3.5 py-2 bg-primary-600 hover:bg-primary-500 rounded-xl text-xs font-semibold text-white transition-all disabled:opacity-50 whitespace-nowrap"
+                      className="btn-primary-pastel px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap"
                     >
                       {otpSending ? 'Sending...' : 'Send SMS OTP'}
                     </button>
@@ -610,29 +621,28 @@ const Register = () => {
                 </div>
               )}
 
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 mb-6 text-xs text-slate-600 dark:text-gray-300">
+              <div className="p-3 rounded-xl bg-white border border-[#E6E8EC] mb-5 text-xs text-[#667085]">
                 <span>Code dispatched to: </span>
-                <strong className="text-slate-900 dark:text-white">
+                <strong className="text-[#26372B]">
                   {otpChannel === 'sms' ? (pendingPayload?.phone || manualPhone || 'your phone number') : pendingPayload?.email}
                 </strong>
               </div>
 
-              {/* Notice if SMTP or SMS is unconfigured or failed */}
               {otpError && (
-                <div className="p-3.5 mb-5 rounded-2xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-left flex items-start gap-2.5">
-                  <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                <div className="p-3 mb-4 rounded-xl bg-[#FFF8EF] border border-[#E6E8EC] text-left flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 text-[#7a4221] shrink-0 mt-0.5" />
                   <div className="flex-1 text-xs">
-                    <p className="font-semibold text-amber-800 dark:text-amber-300">OTP Delivery Notice</p>
-                    <p className="text-amber-700 dark:text-amber-200/90 mt-0.5">
-                      Email/SMS verification service is in preview mode on this deployment. You can complete registration directly below.
+                    <p className="font-semibold text-[#26372B]">Verification Notice</p>
+                    <p className="text-[#667085] mt-0.5">
+                      Email/SMS verification service preview. You can also register directly below.
                     </p>
                   </div>
                 </div>
               )}
 
               {/* 6-Digit Code Input */}
-              <div className="mb-6">
-                <label className="block text-xs font-medium text-slate-600 dark:text-gray-400 mb-2">
+              <div className="mb-5">
+                <label className="block text-xs font-medium text-[#667085] mb-2">
                   6-Digit Verification Code
                 </label>
                 <input
@@ -641,51 +651,50 @@ const Register = () => {
                   value={otpCode}
                   onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
                   placeholder="• • • • • •"
-                  className="w-full text-center tracking-[10px] text-2xl font-mono py-3.5 bg-slate-50 dark:bg-white/[0.06] border border-slate-200 dark:border-white/15 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/25 rounded-2xl text-slate-900 dark:text-white outline-none transition-all placeholder-slate-400 dark:placeholder-gray-500"
+                  className="w-full text-center tracking-[10px] text-2xl font-mono py-3 bg-white border border-[#E6E8EC] focus:border-[#BFD8C2] focus:ring-2 focus:ring-[#BFD8C2]/40 rounded-xl text-[#26372B] outline-none transition-all placeholder-[#98A2B3]"
                 />
               </div>
 
-              {/* Action Button */}
-              <div className="space-y-3">
+              {/* Action Buttons */}
+              <div className="space-y-2.5">
                 <button
                   type="button"
                   onClick={handleVerifyAndRegister}
                   disabled={isLoading || otpCode.length !== 6}
-                  className="w-full py-3.5 px-4 rounded-xl font-semibold text-sm text-white bg-primary-600 hover:bg-primary-500 disabled:opacity-50 transition-all shadow-glow-sm flex items-center justify-center gap-2"
+                  className="btn-primary-pastel w-full py-3 rounded-xl font-semibold text-xs sm:text-sm flex items-center justify-center gap-2"
                 >
-                  {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Verify & Complete Registration'}
+                  {isLoading ? <Loader2 className="w-4 h-4 animate-spin text-[#26372B]" /> : 'Verify & Complete Registration'}
                 </button>
 
-                {/* Instant Bypass Button for Seamless Demo / Live Preview */}
                 <button
                   type="button"
                   onClick={() => executeRegistration(pendingPayload)}
                   disabled={isLoading}
-                  className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-slate-700 dark:text-gray-300 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 border border-slate-200 dark:border-white/10 transition-all flex items-center justify-center gap-1.5"
+                  className="btn-secondary-pastel w-full py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5"
                 >
-                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                  <Check className="w-3.5 h-3.5 text-[#54947f]" />
                   <span>Register Directly (Skip OTP Code)</span>
                 </button>
               </div>
 
               {/* Resend & Back */}
-              <div className="flex items-center justify-between mt-5 text-xs text-slate-500 dark:text-gray-400">
+              <div className="flex items-center justify-between mt-5 text-xs text-[#667085]">
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="hover:text-slate-900 dark:hover:text-white transition-colors"
+                  className="hover:text-[#26372B] transition-colors"
                 >
                   ← Edit Information
                 </button>
 
                 {cooldown > 0 ? (
-                  <span>Resend code in {cooldown}s</span>
+                  <span>Resend in {cooldown}s</span>
                 ) : (
                   <button
                     type="button"
                     onClick={handleResendOTP}
                     disabled={otpSending}
-                    className="text-primary-600 dark:text-primary-400 hover:underline font-medium transition-colors"
+                    className="text-[#556e5a] hover:text-[#26372B] font-medium transition-colors"
                   >
                     {otpSending ? 'Sending...' : 'Resend Code'}
                   </button>
@@ -695,10 +704,10 @@ const Register = () => {
           )}
         </AnimatePresence>
 
-        <div className="mt-8 text-center relative z-10">
-          <p className="text-sm text-slate-600 dark:text-gray-400">
+        <div className="mt-6 text-center relative z-10">
+          <p className="text-xs sm:text-sm text-[#667085]">
             Already have an account?{' '}
-            <Link to="/login" className="font-semibold text-primary-600 dark:text-primary-400 hover:underline transition-colors">
+            <Link to="/login" className="font-semibold text-[#556e5a] hover:text-[#26372B] transition-colors">
               Sign in here
             </Link>
           </p>

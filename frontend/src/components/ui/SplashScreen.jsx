@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Sparkles, ArrowRight, ShieldCheck, Users } from 'lucide-react';
-import FoldText from './FoldText';
 import RisingParticles from './RisingParticles';
-import Floating from '../animations/Floating';
 
-const SplashScreen = ({ onFinish, duration = 5000 }) => {
+const SplashScreen = ({ onFinish, duration = 4000 }) => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // 5-second progress ticker
     const intervalMs = 25;
     const step = 100 / (duration / intervalMs);
     const timer = setInterval(() => {
@@ -42,154 +39,97 @@ const SplashScreen = ({ onFinish, duration = 5000 }) => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0, scale: 1.05, filter: 'blur(8px)' }}
-      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#050816] text-white select-none overflow-hidden"
+      exit={{ opacity: 0, filter: 'blur(6px)' }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#FAF8F5] text-slate-800 select-none overflow-hidden"
+      style={{
+        background: 'linear-gradient(135deg, #FFF8EF 0%, #F5F1FA 50%, #EEF7F3 100%)'
+      }}
     >
-      {/* Soft Rising Particles Background */}
-      <RisingParticles count={70} speed={0.9} glow={true} />
+      {/* Floating ambient pastel dots */}
+      <RisingParticles count={30} speed={0.3} />
 
-      {/* Floating radial gradient orbs */}
-      <div className="absolute w-[650px] h-[650px] bg-primary-600/25 rounded-full blur-[160px] -top-32 -left-32 animate-pulse" />
-      <div className="absolute w-[650px] h-[650px] bg-purple-600/25 rounded-full blur-[170px] -bottom-32 -right-32 animate-pulse" style={{ animationDelay: '2s' }} />
-      <div className="absolute w-[450px] h-[450px] bg-cyan-500/20 rounded-full blur-[140px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-
-      {/* Dot Grid */}
-      <div className="absolute inset-0 opacity-[0.12] bg-[radial-gradient(#818cf8_1px,transparent_1px)] [background-size:28px_28px]" />
-
-      {/* Subtle Floating Ambient Cards in background */}
-      <div className="hidden lg:block absolute left-12 top-1/3 pointer-events-none opacity-40 hover:opacity-80 transition-opacity">
-        <Floating distance={12} duration={6} delay={0.3} rotate={-3}>
-          <div className="p-3 bg-white/[0.05] backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl flex items-center gap-3 w-56">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="text-xs font-bold text-white">Vetted Non-Profits</p>
-              <p className="text-[10px] text-gray-400">Authentic Impact</p>
-            </div>
-          </div>
-        </Floating>
-      </div>
-
-      <div className="hidden lg:block absolute right-12 bottom-1/3 pointer-events-none opacity-40 hover:opacity-80 transition-opacity">
-        <Floating distance={10} duration={5.5} delay={0.8} rotate={3}>
-          <div className="p-3 bg-white/[0.05] backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl flex items-center gap-3 w-56">
-            <div className="w-10 h-10 rounded-xl bg-primary-500/20 text-primary-400 flex items-center justify-center border border-primary-500/30">
-              <Users className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="text-xs font-bold text-white">Community Driven</p>
-              <p className="text-[10px] text-gray-400">Verified Service Hours</p>
-            </div>
-          </div>
-        </Floating>
-      </div>
+      {/* Floating blurred pastel atmosphere */}
+      <div className="absolute w-[500px] h-[500px] bg-[#DDD5F3]/30 rounded-full blur-[140px] -top-24 -left-24" />
+      <div className="absolute w-[500px] h-[500px] bg-[#D8EEE5]/35 rounded-full blur-[140px] -bottom-24 -right-24" />
+      <div className="absolute w-[400px] h-[400px] bg-[#F6D8C5]/25 rounded-full blur-[130px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
 
       {/* Skip Button */}
       <button
         onClick={handleSkip}
-        className="absolute top-6 right-6 z-20 flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-xs tracking-wider uppercase font-semibold text-gray-200 hover:text-white transition-all backdrop-blur-xl shadow-lg"
+        className="absolute top-6 right-6 z-20 flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/80 hover:bg-white border border-[#E6E8EC] text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all shadow-soft-sm backdrop-blur-md"
       >
         <span>Skip</span>
         <ArrowRight className="w-3.5 h-3.5" />
       </button>
 
-
-      {/* Center Reveal Content */}
-      <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-2xl">
-        {/* Animated Glowing Logo Icon */}
+      {/* Center Welcome Card */}
+      <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-lg">
+        {/* Soft Pastel Logo Icon */}
         <motion.div
-          initial={{ scale: 0, rotate: -45 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ type: 'spring', stiffness: 220, damping: 20, delay: 0.1 }}
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
           className="relative mb-6"
         >
-          {/* Pulsing ring aura */}
-          <motion.div
-            animate={{ scale: [1, 1.35, 1], opacity: [0.5, 0.1, 0.5] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute -inset-4 rounded-3xl bg-gradient-to-tr from-primary-500 via-purple-500 to-cyan-400 blur-xl opacity-60"
-          />
-
-          <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-tr from-primary-500 via-indigo-500 to-cyan-400 p-0.5 shadow-2xl flex items-center justify-center">
-            <div className="w-full h-full bg-[#050816]/80 backdrop-blur-xl rounded-[22px] flex items-center justify-center relative overflow-hidden">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-              >
-                <Heart className="w-10 h-10 sm:w-12 sm:h-12 text-transparent fill-primary-400 stroke-primary-300 filter drop-shadow-[0_0_15px_rgba(99,102,241,0.9)]" />
-              </motion.div>
-              <Sparkles className="w-4 h-4 text-cyan-300 absolute top-2.5 right-2.5 animate-spin" style={{ animationDuration: '6s' }} />
-            </div>
+          <div className="w-20 h-20 rounded-3xl bg-white/90 border border-[#E6E8EC] shadow-soft-md flex items-center justify-center p-4 relative backdrop-blur-xl">
+            <Heart className="w-10 h-10 text-[#556e5a] fill-[#BFD8C2]" />
+            <Sparkles className="w-4 h-4 text-[#7faadc] absolute top-2 right-2 animate-pulse" />
           </div>
         </motion.div>
 
-        {/* WELCOME 3D FoldText Component */}
+        {/* Small badge */}
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mb-3"
+          transition={{ duration: 0.5, delay: 0.15 }}
+          className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 border border-[#E6E8EC] text-xs font-medium text-slate-600 mb-3 shadow-soft-sm"
         >
-          <FoldText
-            text="WELCOME"
-            splitBy="char"
-            hinge="top"
-            trigger="mount"
-            duration={0.65}
-            stagger={0.045}
-            perspective={700}
-            creaseShading={0.55}
-            fontSize="clamp(2.4rem, 7vw, 4.8rem)"
-            fontWeight={900}
-            color="#f7f2e8"
-          />
+          <span>Connecting People With Purpose</span>
         </motion.div>
 
         {/* Brand Name */}
         <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.6 }}
-          className="text-2xl sm:text-3xl font-black tracking-tight mb-2 text-gray-200"
-        >
-          To Volunteer<span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-400 via-purple-400 to-cyan-400">Connect</span>
-        </motion.h1>
-
-        {/* Tagline / Subtitle */}
-        <motion.p
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.8 }}
-          className="text-sm sm:text-base text-gray-300 font-medium tracking-wide mb-8"
+          transition={{ duration: 0.5, delay: 0.25 }}
+          className="text-3xl sm:text-4xl font-extrabold text-[#26372B] tracking-tight mb-2"
         >
-          Connect. Volunteer. Make an Impact.
+          Volunteer<span className="text-[#556e5a]">Connect</span>
+        </motion.h1>
+
+        {/* Tagline */}
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.35 }}
+          className="text-sm sm:text-base text-[#667085] font-normal mb-8 max-w-sm"
+        >
+          Discover meaningful causes, collaborate with verified NGOs, and make a real difference.
         </motion.p>
 
         {/* Progress Bar & Status */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.1 }}
-          className="w-56 sm:w-64 flex flex-col items-center gap-2"
+          transition={{ delay: 0.45 }}
+          className="w-56 sm:w-64 flex flex-col items-center gap-2.5"
         >
-          <div className="w-full h-1.5 bg-gray-800/80 rounded-full overflow-hidden p-0.5 border border-white/5">
+          <div className="w-full h-1.5 bg-[#E6E8EC] rounded-full overflow-hidden p-0.5">
             <motion.div
-              className="h-full bg-gradient-to-r from-primary-500 via-purple-500 to-cyan-400 rounded-full"
+              className="h-full bg-gradient-to-r from-[#BFD8C2] to-[#AFCDB5] rounded-full"
               style={{ width: `${Math.min(progress, 100)}%` }}
               transition={{ ease: 'linear' }}
             />
           </div>
-          <span className="text-[11px] font-medium tracking-wider text-gray-400 uppercase">
-            Launching Platform...
+          <span className="text-[11px] font-medium tracking-wider text-[#667085] uppercase">
+            Loading Experience...
           </span>
         </motion.div>
       </div>
 
-      {/* Footer subtle brand badge */}
-      <div className="absolute bottom-6 text-center text-xs text-gray-400 font-medium">
+      {/* Footer text */}
+      <div className="absolute bottom-6 text-center text-xs text-[#667085] font-medium">
         Empowering Communities Worldwide
       </div>
     </motion.div>

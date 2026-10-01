@@ -109,32 +109,35 @@ const EditOpportunity = () => {
     }
   };
 
-  if (loading) return <DashboardLayout sidebar={<NGOSidebar />}><div className="flex justify-center items-center h-full"><div className="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"/></div></DashboardLayout>;
+  if (loading) return <DashboardLayout sidebar={<NGOSidebar />}><div className="flex justify-center items-center h-full"><div className="w-8 h-8 border-2 border-[#5b7f63] border-t-transparent rounded-full animate-spin"/></div></DashboardLayout>;
 
   return (
     <DashboardLayout sidebar={<NGOSidebar />}>
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        <div className="flex items-center gap-4 mb-6">
-          <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="text-gray-400 hover:text-white">
+        <div className="flex items-center gap-4 pastel-card p-5 border border-[#E6E8EC]">
+          <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="text-[#667085] hover:text-[#354052] hover:bg-[#F5F1FA]">
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          <h1 className="text-2xl font-bold text-white">Edit Opportunity</h1>
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold text-[#354052]">Edit Opportunity</h1>
+            <p className="text-xs text-[#667085] mt-0.5">Update details, dates, or volunteer capacity for this initiative.</p>
+          </div>
         </div>
 
-        <Card className="p-6">
+        <Card className="p-6 sm:p-8 pastel-card border border-[#E6E8EC]">
           <form className="space-y-6">
             
             {/* Image Upload */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Cover Image</label>
+              <label className="block text-xs font-semibold text-[#354052] mb-2">Cover Image</label>
               <div className="flex items-center justify-center w-full">
-                <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-white/20 border-dashed rounded-xl cursor-pointer bg-white/5 hover:bg-white/10 transition-colors overflow-hidden relative">
+                <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-[#E6E8EC] border-dashed rounded-2xl cursor-pointer bg-[#F5F1FA] hover:bg-[#FFF8EF]/50 transition-colors overflow-hidden relative">
                   {imagePreview ? (
                     <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                   ) : (
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      <ImageIcon className="w-8 h-8 text-gray-400 mb-2" />
-                      <p className="text-sm text-gray-400">Click to upload new image</p>
+                      <ImageIcon className="w-8 h-8 text-[#667085] mb-2" />
+                      <p className="text-xs text-[#667085]">Click to upload new image</p>
                     </div>
                   )}
                   <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
@@ -146,10 +149,10 @@ const EditOpportunity = () => {
               <div className="space-y-4">
                 <Input label="Title" {...register('title', { required: true })} />
                 <div className="space-y-1">
-                  <label className="block text-sm font-medium text-gray-300">Category</label>
-                  <select {...register('category', { required: true })} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all">
-                    <option value="" className="bg-gray-900">Select Category</option>
-                    {CATEGORIES.map(c => <option key={c} value={c} className="bg-gray-900">{c}</option>)}
+                  <label className="block text-xs font-semibold text-[#354052]">Category</label>
+                  <select {...register('category', { required: true })} className="w-full bg-white border border-[#E6E8EC] rounded-xl px-4 py-2.5 text-xs font-semibold text-[#354052] focus:border-[#BFD8C2] focus:ring-2 focus:ring-[#BFD8C2]/40 outline-none transition-all">
+                    <option value="">Select Category</option>
+                    {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -164,23 +167,23 @@ const EditOpportunity = () => {
                 
                 {/* Skills */}
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-300">Required Skills</label>
+                  <label className="block text-xs font-semibold text-[#354052]">Required Skills</label>
                   <div className="flex flex-wrap gap-2 mb-2">
                     {skills.map(skill => (
-                      <span key={skill} className="bg-primary-500/20 text-primary-300 border border-primary-500/30 px-2 py-1 rounded-full text-xs flex items-center gap-1">
-                        {skill} <button type="button" onClick={() => removeSkill(skill)}><X className="w-3 h-3" /></button>
+                      <span key={skill} className="bg-[#DDD5F3] text-[#30264A] border border-[#DDD5F3] px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5 shadow-soft-sm">
+                        {skill} <button type="button" onClick={() => removeSkill(skill)}><X className="w-3.5 h-3.5 text-[#667085] hover:text-[#9B5B65]" /></button>
                       </span>
                     ))}
                   </div>
                   <div className="flex gap-2">
                     <Input value={newSkill} onChange={(e) => setNewSkill(e.target.value)} placeholder="Add a skill" className="flex-1" onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill())} />
-                    <Button type="button" onClick={addSkill} variant="outline" size="icon"><Plus className="w-4 h-4" /></Button>
+                    <Button type="button" onClick={addSkill} variant="outline" size="icon" className="btn-secondary-pastel"><Plus className="w-4 h-4" /></Button>
                   </div>
                 </div>
               </div>
             </div>
 
-            <h3 className="text-lg font-medium text-white pt-4 border-t border-white/10">Location Details</h3>
+            <h3 className="text-base font-semibold text-[#354052] pt-4 border-t border-[#E6E8EC]">Location Details</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Input label="Street Address" {...register('address', { required: true })} />
               <Input label="City" {...register('city', { required: true })} />
@@ -188,8 +191,8 @@ const EditOpportunity = () => {
               <Input label="Country" {...register('country', { required: true })} />
             </div>
 
-            <div className="flex justify-end gap-4 pt-6 border-t border-white/10">
-              <Button type="button" onClick={handleSubmit((data) => onSubmit(data))} isLoading={saving}>Save Changes</Button>
+            <div className="flex justify-end gap-3 pt-6 border-t border-[#E6E8EC]">
+              <Button type="button" className="btn-primary-pastel text-xs font-semibold" onClick={handleSubmit((data) => onSubmit(data))} isLoading={saving}>Save Changes</Button>
             </div>
           </form>
         </Card>
